@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './styles/App.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import Frame1Cardapio from './components/Frame1Cardapio';
@@ -6,6 +6,28 @@ import Frame2Categorias from './components/Frame2Categorias';
 import Frame3Produtos from './components/Frame3Produtos';
 import Frame5DetalhesProduto from './components/Frame5DetalhesProduto';
 import CarrinhoFrame from './components/CarrinhoFrame';
+
+// Função throttle movida para fora do componente
+const throttle = (func, limit) => {
+  let lastFunc;
+  let lastRan;
+  return function() {
+    const context = this;
+    const args = arguments;
+    if (!lastRan) {
+      func.apply(context, args);
+      lastRan = Date.now();
+    } else {
+      clearTimeout(lastFunc);
+      lastFunc = setTimeout(function() {
+        if ((Date.now() - lastRan) >= limit) {
+          func.apply(context, args);
+          lastRan = Date.now();
+        }
+      }, limit - (Date.now() - lastRan));
+    }
+  };
+};
 
 function App() {
   const [frame, setFrame] = useState(1);
@@ -16,7 +38,7 @@ function App() {
   const [ingredientes, setIngredientes] = useState([]);
   const [alergenicos, setAlergenicos] = useState([]);
   const [carrinho, setCarrinho] = useState([]);
-  const [showCarrinho, setShowCarrinho] = useState(false);
+  const [showCarrinho, setShowCarrinho] = useState(false);  
 
   useEffect(() => {
     fetch('https://www.mockachino.com/a0c8bbde-7d0d-4a/snacksItems')
@@ -32,6 +54,18 @@ function App() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [frame]);
+
+
+  useEffect(() => {
+    const handleScroll = throttle(() => {
+      setShowScrollButton(window.scrollY > 300);
+    }, 100);
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Removed duplicate scrollToTop function
 
   const handleMenuClick = (targetFrame) => {
     setCategoriaSelecionada(null);
@@ -52,9 +86,24 @@ function App() {
     window.open('https://wa.me/5562999948?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20a%20_Snack%20di%20Chris_', '_blank');
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const [showScrollButton, setShowScrollButton] = useState(false);
+
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollButton(window.scrollY > 300);
+    };
+
+    const throttledScroll = throttle(handleScroll, 100);
+    window.addEventListener('scroll', throttledScroll);
+    return () => window.removeEventListener('scroll', throttledScroll);
+  }, []);
 
   const ordemCategorias = [
     'Batata recheada',
@@ -90,6 +139,22 @@ function App() {
     });
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollButton(true);
+      } else {
+        setShowScrollButton(false);
+      }
+    };
+    
+    // Adiciona throttle para melhor performance
+    const throttledScroll = throttle(handleScroll, 200);
+    window.addEventListener('scroll', throttledScroll);
+    
+    return () => window.removeEventListener('scroll', throttledScroll);
+  }, []);
+    
   const abrirCarrinho = () => setShowCarrinho(true);
   const fecharCarrinho = () => setShowCarrinho(false);
   const limparCarrinho = () => setCarrinho([]);
@@ -177,29 +242,63 @@ function App() {
         />
       )}
 
-      <button className="voltar-topo" onClick={scrollToTop}>Voltar ao topo</button>
+      {/* Botão Voltar ao Topo */}
+      {showScrollButton && (
+        <button 
+          alt="Voltar ao topo" 
+          title="Voltar ao topo" 
+          className="button-to-top"
+          onClick={scrollToTop}
+        >
+          <div>Voltar<br />ao Topo</div>
+          <span className="arrow"></span>
+        </button>
+      )}
 
       <footer className="footer">
+        {/* Seção Esquerda - Títulos com fontes especiais */}
         <div className="footer-left">
-          <p className="footer-title">SNACKS di Chris</p>
+          <p className="footer-title"><span className="primeiraparte">SNACKS</span> <span className="segundaparte"> di Chris</span></p>
           <p className="footer-subtitle">batataria e gostosuras</p>
         </div>
+        
+        {/* Seção Central - Desenvolvido por */}
         <div className="footer-center">
-          <p className="footer-dev">desenvolvido por</p>
-          <a href="https://optmaidea.wixsite.com/optmaidea" target="_blank" rel="noopener noreferrer">
-            <img src="assets/images/icons/optma-idea.svg" alt="Optma Idea" className="footer-logo" />
-            <p className="footer-dev-name">2025</p>
+          <p className="footer-dev">desenvolvido por:</p>
+          <a href="https://optmaidea.wixsite.com/optmaidea" target="_blank" rel="noopener noreferrer" className="footer-link">
+            <img 
+              src="/assets/images/icons/optma-idea.svg" 
+              alt="Optma Idea" 
+              className="footer-logo" 
+            />
           </a>
+          <p className="footer-dev-name">2025</p>
         </div>
+        
+        {/* Seção Direita - Redes Sociais */}
         <div className="footer-right">
           <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-            <img src="assets/images/icons/instagram-logo-branca.png" alt="Instagram" className="footer-icon" />
+            <img 
+              src="/assets/images/icons/instagram-logo-branca.png" 
+              alt="Instagram" 
+              className="footer-icon" 
+            />
           </a>
           <a href="https://ifood.com.br" target="_blank" rel="noopener noreferrer">
-            <img src="assets/images/icons/ifood-logo-branca.png" alt="iFood" className="footer-icon" />
+            <img 
+              src="/assets/images/icons/ifood-logo-branca.png" 
+              alt="iFood" 
+              className="footer-icon" 
+            />
           </a>
-          <a href="https://wa.me/5562999948?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20a%20_Snack%20di%20Chris_" target="_blank" rel="noopener noreferrer">
-            <img src="assets/images/icons/whatsapp-logo-branca.png" alt="WhatsApp" className="footer-icon" />
+          <a href="https://wa.me/5562999948?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20a%20_Snack%20di%20Chris_" 
+            target="_blank" 
+            rel="noopener noreferrer">
+            <img 
+              src="/assets/images/icons/whatsapp-logo-branca.png" 
+              alt="WhatsApp" 
+              className="footer-icon" 
+            />
           </a>
         </div>
       </footer>

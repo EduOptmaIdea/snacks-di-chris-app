@@ -3,9 +3,9 @@ import { fetchSnacks } from '../services/api';
 import { SnackItem } from '../types/snacks';
 
 export const SnackList = () => {
-  const [snacks, setSnacks] = useState<SnackItem[]>([]);
+  const [snacks, setSnacks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadSnacks = async () => {

@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../../assets/images/logo.svg"; // Importação correta
+import logo from '../../assets/images/logo.svg'; // Importação correta
 import "./Header.css";
 
 export default function Header({ setFrame }) {

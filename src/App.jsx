@@ -19,11 +19,11 @@ function App() {
   const [showCarrinho, setShowCarrinho] = useState(false);
 
   useEffect(() => {
-    fetch('https://www.mockachino.com/a0c8bbde-7d0d-4a/snacks')
+    fetch('https://www.mockachino.com/a0c8bbde-7d0d-4a/snacksItems')
       .then((res) => res.json())
       .then((data) => {
-        setCategorias(data.Categorias || []);
-        setProdutos(data.Produtos || []);
+        setCategorias(data.categories || []);
+        setProdutos(data.products || []);
         setIngredientes(data.Ingredientes || []);
         setAlergenicos(data.Alergenicos || []);
       });
@@ -107,7 +107,7 @@ function App() {
     <div className="App">
       <header>
         <div className="header-content">
-          <img src="/img/logo.svg" alt="Logo" className="logo" style={{ height: '100px' }} />
+          <img src="assets/images/logo.svg" alt="Logo" className="logo" style={{ height: '100px' }} />
           <nav className="menu">
             <button className={`menu-item ${frame === 1 ? 'active' : ''}`} onClick={() => handleMenuClick(1)}>Cardápio</button>
             <button className={`menu-item ${frame === 2 ? 'active' : ''}`} onClick={() => handleMenuClick(2)}>Categorias</button>
@@ -118,7 +118,7 @@ function App() {
 
           <div className="cart-container">
             <button className="cart-button" onClick={abrirCarrinho}>
-              <img src="/img/icons/icone-cesta.svg" alt="Carrinho de compras" className="carrinho-grande" style={{ height: '100px' }} />
+              <img src="assets/images/icons/icone-cesta.svg" alt="Carrinho de compras" className="carrinho-grande" style={{ height: '100px' }} />
               <span>{carrinho.length}</span>
             </button>
           </div>
@@ -187,19 +187,19 @@ function App() {
         <div className="footer-center">
           <p className="footer-dev">desenvolvido por</p>
           <a href="https://optmaidea.wixsite.com/optmaidea" target="_blank" rel="noopener noreferrer">
-            <img src="/img/icons/optma-idea.svg" alt="Optma Idea" className="footer-logo" />
+            <img src="assets/images/icons/optma-idea.svg" alt="Optma Idea" className="footer-logo" />
             <p className="footer-dev-name">2025</p>
           </a>
         </div>
         <div className="footer-right">
           <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-            <img src="/img/icons/instagram-logo-branca.png" alt="Instagram" className="footer-icon" />
+            <img src="assets/images/icons/instagram-logo-branca.png" alt="Instagram" className="footer-icon" />
           </a>
           <a href="https://ifood.com.br" target="_blank" rel="noopener noreferrer">
-            <img src="/img/icons/ifood-logo-branca.png" alt="iFood" className="footer-icon" />
+            <img src="assets/images/icons/ifood-logo-branca.png" alt="iFood" className="footer-icon" />
           </a>
           <a href="https://wa.me/5562999948?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20a%20_Snack%20di%20Chris_" target="_blank" rel="noopener noreferrer">
-            <img src="/img/icons/whatsapp-logo-branca.png" alt="WhatsApp" className="footer-icon" />
+            <img src="assets/images/icons/whatsapp-logo-branca.png" alt="WhatsApp" className="footer-icon" />
           </a>
         </div>
       </footer>

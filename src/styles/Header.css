@@ -1,31 +1,36 @@
 .header {
-    width: 100%;
-    padding: 18px 36px;
-    background-color: var(--cor1);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 999;
-  }
-  
-  .logo {
-    height: 80px;
-  }
-  
-  .voltar-topo {
-    background-color: var(--cor3);
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    font-weight: bold;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .voltar-topo:hover {
-    background-color: #c6911e;
-  }
-  
+  background: #ffffff;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo {
+  height: 90px;
+  width: auto;
+}
+
+.menu-button {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.menu-button:hover {
+  background: #ff5252;
+}

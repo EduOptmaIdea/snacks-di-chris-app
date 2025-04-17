@@ -1,13 +1,17 @@
 import React from "react";
+import logo from "../../assets/images/logo.svg"; // Importação correta
+import "./Header.css";
 
 export default function Header({ setFrame }) {
   return (
-    <header>
+    <header className="header">
       <div className="header-content">
-        <img src="images/logo.svg" alt="Logo Snacks di Chris" className="logo" style={{ height: "90px" }}/>
-        <button className="menu-button" onClick={() => setFrame(1)}>
-          Cardápio
-        </button>
+        <img 
+          src={logo}  // Usando a importação
+          alt="Logo Snacks di Chris" 
+          className="logo" 
+        />
+        {/* ... */}
       </div>
     </header>
   );

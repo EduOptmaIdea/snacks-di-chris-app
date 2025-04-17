@@ -1,8 +1,18 @@
 {
-    "compilerOptions": {
-      "jsx": "react-jsx", // Isso habilita o JSX Transform
-      "types": ["vite/client"] // Para projetos Vite
-    },
-    
-    "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "ESNext",
+    "lib": ["ES2017", "DOM"],
+    "jsx": "react-jsx",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": ["vite/client"],
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules"]
 }

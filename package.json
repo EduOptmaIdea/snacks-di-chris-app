@@ -2,40 +2,50 @@
   "compilerOptions": {
     "target": "ES2017",
     "module": "ESNext",
-    "lib": ["ES2017", "DOM"],
+    "lib": [
+      "ES2017",
+      "DOM"
+    ],
     "jsx": "react-jsx",
     "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": ["vite/client"],
+    "types": [
+      "vite/client"
+    ],
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
     "rootDir": "./src"
   },
-
   "scripts": {
-  "dev": "vite",
-  "start": "vite",
-  "build": "tsc && vite build",
-  "preview": "vite preview"
+    "dev": "vite",
+    "start": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^0.27.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.4.3",
-    "axios": "^0.27.2",
+    "react-icons": "^4.3.1",
     "react-query": "^3.39.2",
-    "react-icons": "^4.3.1"
+    "react-router-dom": "^6.4.3"
   },
   "devDependencies": {
-    "typescript": "^4.9.5",
-    "vite": "^4.0.0",
-    "@vitejs/plugin-react": "^4.0.0",
+    "@types/node": "^22.14.1",
     "@types/react": "^18.2.7",
     "@types/react-dom": "^18.2.4",
-    "@types/react-router-dom": "^5.3.3"
+    "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^4.4.0",
+    "typescript": "^4.9.5",
+    "vite": "^4.5.13"
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

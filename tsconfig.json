@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-      "jsx": "react-jsx" // Isso habilita o JSX Transform
-    }
-
-    //"include": ["src/**/*.ts", "src/**/*.tsx"],
+      "jsx": "react-jsx", // Isso habilita o JSX Transform
+      "types": ["vite/client"] // Para projetos Vite
+    },
+    
+    "include": ["src/**/*.ts", "src/**/*.tsx"],
 }
-  

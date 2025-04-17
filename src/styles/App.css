@@ -238,28 +238,28 @@ nav.menu {
 
 @font-face {
   font-family: 'Neufreit';
-  src: url('/fonts/Neufreit-ExtraBold.otf') format('opentype');
+  src: url('/assets/fonts/Neufreit-ExtraBold.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Roboto';
-  src: url('/fonts/Roboto-VariableFont_wdth,wght.ttf') format('truetype');
+  src: url('/assets/fonts/Roboto-VariableFont_wdth\,wght.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'RobotoSemi';
-  src: url('/fonts/Roboto-SemiBold.ttf') format('truetype');
+  src: url('/assets/fonts/Roboto-SemiBold.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Plau';
-  src: url('/fonts/PlauTest-Regular.otf') format('opentype');
+  src: url('/assets/fonts/PlauTest-Regular.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }

@@ -96,13 +96,17 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = throttle(() => {
       setShowScrollButton(window.scrollY > 300);
-    };
+    }, 100);
 
-    const throttledScroll = throttle(handleScroll, 100);
-    window.addEventListener('scroll', throttledScroll);
-    return () => window.removeEventListener('scroll', throttledScroll);
+    // Adiciona o listener
+    window.addEventListener('scroll', handleScroll);
+    
+    // Limpeza: remove o listener quando o componente desmontar
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const ordemCategorias = [
@@ -242,19 +246,47 @@ function App() {
         />
       )}
 
-      {/* Botão Voltar ao Topo */}
+      {/* Botão Voltar ao Topo com estilos inline para garantia */}
+
       {showScrollButton && (
         <button 
           alt="Voltar ao topo" 
           title="Voltar ao topo" 
-          className="button-to-top"
           onClick={scrollToTop}
+          style={{
+            position: 'fixed',
+            bottom: '0', // Alinhado na base
+            right: '20px', // Posicionado à esquerda
+            zIndex: 1000,
+            background: '#EFB42B', // Cor de fundo
+            color: '#F1EDD2', // Cor do texto
+            border: 'none',
+            borderTopLeftRadius: '15px', // Arredondar canto superior esquerdo
+            borderTopRightRadius: '15px', // Arredondar canto superior direito
+            padding: '12px 20px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            cursor: 'pointer',
+            boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.2)', // Sombra na parte superior
+            fontFamily: 'Neufreit, sans-serif', // Fonte Neufreit
+            fontSize: '20px',
+            transition: 'all 0.3s ease'
+          }}
         >
-          <div>Voltar<br />ao Topo</div>
-          <span className="arrow"></span>
+          <div style={{ lineHeight: '1.2', textAlign: 'center' }}>
+            Voltar<br />ao topo
+          </div>
+          <span style={{
+            display: 'inline-block',
+            width: '16px',
+            height: '16px',
+            borderTop: '2px solid #F1EDD2',
+            borderRight: '2px solid #F1EDD2',
+            transform: 'rotate(-45deg)'
+          }}></span>
         </button>
       )}
-
       <footer className="footer">
         {/* Seção Esquerda - Títulos com fontes especiais */}
         <div className="footer-left">
@@ -264,7 +296,7 @@ function App() {
         
         {/* Seção Central - Desenvolvido por */}
         <div className="footer-center">
-          <p className="footer-dev">desenvolvido por:</p>
+          <p className="footer-dev">Desenvolvido por Optma Idea. 2025</p>
           <a href="https://optmaidea.wixsite.com/optmaidea" target="_blank" rel="noopener noreferrer" className="footer-link">
             <img 
               src="/assets/images/icons/optma-idea.svg" 
@@ -272,7 +304,7 @@ function App() {
               className="footer-logo" 
             />
           </a>
-          <p className="footer-dev-name">2025</p>
+          <p className="footer-dev">Todos os direitos reservados</p>
         </div>
         
         {/* Seção Direita - Redes Sociais */}

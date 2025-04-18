@@ -9,7 +9,7 @@ function Frame2Categorias({ categorias, onCategoriaClick }) {
         {categorias.map((cat, idx) => (
           <div key={idx} className="categoria-card" onClick={() => onCategoriaClick(cat)}>
             <img
-              src={cat.imagem || '/img/categorias/default.jpg'}
+              src={cat.imagem || 'assets/images/categories/default.jpg'}
               alt={cat.categoria || 'Categoria'}
               className="categoria-img"
             />

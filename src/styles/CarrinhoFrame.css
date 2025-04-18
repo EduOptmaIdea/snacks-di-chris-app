@@ -234,3 +234,19 @@
     }
   }
   
+  .comentario-carrinho {
+    font-size: 0.85rem;
+    color: #333;
+    margin-top: 4px;
+  }
+  
+  .comentario-carrinho textarea {
+    width: 100%;
+    resize: vertical;
+    border-radius: 6px;
+    padding: 6px;
+    font-size: 0.85rem;
+    border: 1px solid #ccc;
+    margin-top: 4px;
+  }
+  

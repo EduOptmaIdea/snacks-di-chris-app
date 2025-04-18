@@ -16,7 +16,14 @@ const CarrinhoFrame = ({ items, onClose, onRemoveItem, onClearCart, onVoltarProd
       [id]: prev[id] > 1 ? prev[id] - 1 : 1,
     }));
   };
-
+  
+  const handleComentarioChange = (id, novoComentario) => {
+    const updatedItems = items.map(item =>
+      item.id === id ? { ...item, comentario: novoComentario } : item
+    );
+    localStorage.setItem('carrinho', JSON.stringify(updatedItems)); // se estiver usando localStorage
+    // Recarregar os items atualizados (opcional: pode ser por props ou lift state up)
+  };
   const total = items.reduce((acc, item) => {
     const qtd = quantidade[item.id] || 1;
     return acc + item.preco * qtd;
@@ -44,20 +51,35 @@ const CarrinhoFrame = ({ items, onClose, onRemoveItem, onClearCart, onVoltarProd
                 {items.map(item => (
                   <div className="item" key={item.id}>
                     <img
-                      src={item.imagem || '/img/produtos/default.jpg'}
+                      src={item.imagem || 'assets/images/products/default.jpg'}
                       alt={item.nome}
                       className="item-img-pequena"
                     />
-                    <div className="item-details">
-                      <h3>{item.nome}</h3>
-                      <div className="preco">R$ {item.preco.toFixed(2)}</div>
+                      <div className="item-details">
+                        <h3>{item.nome}</h3>
 
-                      <div className="contador-quantidade">
-                        <button onClick={() => decrementar(item.id)} disabled={quantidade[item.id] <= 1}>-</button>
-                        <div className="contador-valor">{quantidade[item.id] || 1}</div>
-                        <button onClick={() => incrementar(item.id)}>+</button>
+                        {item.comentario && (
+                        <div className="comentario-carrinho">
+                          <label>
+                            <strong>Comentário:</strong>
+                            <textarea
+                              rows="2"
+                              placeholder="Ex: Sem cebola, bem passado..."
+                              value={item.comentario || ''}
+                              onChange={(e) => handleComentarioChange(item.id, e.target.value)}
+                            />
+                          </label>
+                        </div>
+                        )}
+
+                        <div className="preco">R$ {item.preco.toFixed(2)}</div>
+
+                        <div className="contador-quantidade">
+                          <button onClick={() => decrementar(item.id)} disabled={quantidade[item.id] <= 1}>-</button>
+                          <div className="contador-valor">{quantidade[item.id] || 1}</div>
+                          <button onClick={() => incrementar(item.id)}>+</button>
+                        </div>
                       </div>
-                    </div>
                     <button className="btn-remover" onClick={() => handleRemove(item.id)}>🗑</button>
                   </div>
                 ))}

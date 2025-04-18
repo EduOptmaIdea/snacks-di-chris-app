@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/Frame5DetalhesProduto.css';
 
-const Frame5DetalhesProduto = ({ produto, onClose, ingredientes, alergenicos, adicionarAoCarrinho }) => {
+const Frame5DetalhesProduto = ({ produto, onClose, adicionarAoCarrinho }) => {
   const [quantidade, setQuantidade] = useState(1);
   const [comentario, setComentario] = useState("");
 
@@ -10,14 +10,11 @@ const Frame5DetalhesProduto = ({ produto, onClose, ingredientes, alergenicos, ad
   const incrementar = () => setQuantidade(q => q + 1);
   const decrementar = () => setQuantidade(q => (q > 1 ? q - 1 : 1));
 
-  const precoTotal = (produto.preco * quantidade).toFixed(2);
+  const precoTotal = (produto.price * quantidade).toFixed(2);  // Corrigido para 'price'
 
-  const ingredientesDetalhados = produto.ingredientes_ids
-    ? produto.ingredientes_ids.split(',').map(ing => ing.trim())
-    : [];
-  const alergicosDetalhados = produto.alergicos_ids
-    ? produto.alergicos_ids.split(',').map(al => al.trim())
-    : [];
+  // Ingredientes e alergênicos agora vêm do produto, ajustados conforme o formato do endpoint
+  const ingredientesDetalhados = produto.ingredients ? produto.ingredients.split(',').map(ing => ing.trim()) : [];
+  const alergicosDetalhados = produto['allergenic-agents'] ? produto['allergenic-agents'].split(',').map(al => al.trim()) : [];
 
   const handleAdicionarAoCarrinho = () => {
     // Passando o item para o carrinho
@@ -30,19 +27,19 @@ const Frame5DetalhesProduto = ({ produto, onClose, ingredientes, alergenicos, ad
         <button className="close-btn" onClick={onClose}>X</button>
 
         <img
-          src={produto.imagens || '/img/produtos/default.jpg'}
-          alt={produto.nome}
+          src={produto.images || 'assets/images/products/default.jpg'}
+          alt={produto.productname}
           className="produto-img-modal"
         />
 
         <div className="produto-details">
           <div className="produto-header">
-            <h2>{produto.nome}</h2>
-            <div className="preco">R$ {produto.preco.toFixed(2)}</div>
+            <h2>{produto.productname}</h2> {/* Atualizado para productname */}
+            <div className="preco">R$ {produto.price.toFixed(2)}</div> {/* Atualizado para price */}
           </div>
 
           <div className="produto-scroll">
-            <p>{produto.descricao}</p>
+            <p>{produto.description}</p> {/* Atualizado para description */}
             <p><strong>Ingredientes:</strong> {ingredientesDetalhados.join(', ')}</p>
             <p><strong>Alergênicos:</strong> {alergicosDetalhados.join(', ')}</p>
 

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import '../styles/Frame3Produtos.css';
 import { motion } from 'framer-motion';
 
+const skeletonCount = window.innerWidth < 768 ? 4 : 6;
+
+
 // Skeleton para carregamento dos produtos
 function ProdutoSkeleton() {
   return (

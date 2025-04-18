@@ -9,7 +9,7 @@ export default function Header({ setFrame }) {
         <img 
           src={logo}  // Usando a importação
           alt="Logo Snacks di Chris" 
-          className="logo" 
+          className="logo"
         />
         {/* ... */}
       </div>

@@ -55,7 +55,6 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [frame]);
 
-
   useEffect(() => {
     const handleScroll = throttle(() => {
       setShowScrollButton(window.scrollY > 300);
@@ -64,8 +63,6 @@ function App() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Removed duplicate scrollToTop function
 
   const handleMenuClick = (targetFrame) => {
     setCategoriaSelecionada(null);

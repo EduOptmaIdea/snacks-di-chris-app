@@ -4,10 +4,10 @@ function Frame1Cardapio() {
   const [categorias, setCategorias] = useState([]);
 
   useEffect(() => {
-    fetch('https://www.mockachino.com/a0c8bbde-7d0d-4a/snacks')
+    fetch('https://www.mockachino.com/a0c8bbde-7d0d-4a/snacksItems')
       .then((res) => res.json())
       .then((data) => {
-        setCategorias(data.categorias || []);
+        setCategorias(data.categories || []);
       });
   }, []);
 

@@ -42,10 +42,10 @@ function Frame3Produtos({ categoriaSelecionada, produtos = [], onProdutoClick, c
               onClick={() => onProdutoClick(produto)}
               whileHover={{ scale: 1.03 }}
             >
-              <img src={produto.imagens || '/img/produtos/default.jpg'} alt={produto.nome} className="produto-img" />
+              <img src={products.images || "/assets/images/products/default.jpg"} alt={products.productname} className="produto-img" />
               <div className="produto-info">
-                <p className="produto-nome">{produto.nome}</p>
-                <p className="produto-preco">R$ {produto.preco.toFixed(2)}</p>
+                <p className="produto-nome">{products.productname}</p>
+                <p className="produto-preco">R$ {products.price.toFixed(2)}</p>
               </div>
             </motion.div>
           ))}

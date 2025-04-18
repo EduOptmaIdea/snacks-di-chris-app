@@ -8,13 +8,13 @@ function Frame2Categorias({ categorias, onCategoriaClick }) {
         {categorias.map((cat, idx) => (
           <div key={idx} className="categoria-card" onClick={() => onCategoriaClick(cat)}>
             <img
-              src={cat.imagem || 'assets/images/categories/default.jpg'}
+              src={cat.image || 'assets/images/categories/default.jpg'}
               alt={cat.categoria || 'Categoria'}
               className="categoria-img"
             />
             <div className="categoria-info">
-              <p className="categoria-nome neufreit cor1">{cat.categoria || 'Categoria sem nome'}</p>
-              <p className="categoria-descricao neufreit cor3">{cat.descricao}</p>
+              <p className="categoria-nome neufreit cor1">{cat.category || 'Categoria sem nome'}</p>
+              <p className="categoria-descricao neufreit cor3">{cat.description}</p>
             </div>
           </div>
         ))}

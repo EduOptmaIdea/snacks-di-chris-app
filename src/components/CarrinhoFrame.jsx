@@ -34,7 +34,7 @@ const CarrinhoFrame = ({ items, onClose, onRemoveItem, onClearCart, onVoltarProd
         <div className="carrinho-content">
           {items.length === 0 ? (
             <div className="carrinho-vazio">
-              <img src="/img/icons/carrinho-vazio.svg" alt="Carrinho vazio" className="img-vazio" />
+              <img src="assets/images/icons/carrinho-vazio.svg" alt="Carrinho vazio" className="img-vazio" />
               <h2>Carrinho vazio</h2>
               <button className="btn-voltar" onClick={onVoltarProdutos}>Voltar aos produtos</button>
             </div>

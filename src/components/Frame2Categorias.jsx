@@ -1,5 +1,4 @@
 import React from 'react';
-/*import '../styles/Frame2Categorias.css';*/
 
 function Frame2Categorias({ categorias, onCategoriaClick }) {
   return (

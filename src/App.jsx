@@ -40,7 +40,8 @@ function App() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
   const [produtoSelecionado, setProdutoSelecionado] = useState(null);
   const [carrinho, setCarrinho] = useState([]);
-  const [showCarrinho, setShowCarrinho] = useState(false);  
+  const [showCarrinho, setShowCarrinho] = useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
   useEffect(() => {
     fetch(API_URL)
@@ -84,7 +85,7 @@ function App() {
     window.open(WHATSAPP_URL, '_blank');
   };
 
-  const [showScrollButton, setShowScrollButton] = useState(false);
+  
 
   const scrollToTop = useCallback(() => {
     window.scrollTo({
@@ -206,41 +207,13 @@ function App() {
 
       {showScrollButton && (
         <button 
-          title="Voltar ao topo" 
-          onClick={scrollToTop}
-          style={{
-            position: 'fixed',
-            bottom: '0', // Alinhado na base
-            right: '20px', // Posicionado à esquerda
-            zIndex: 1000,
-            background: '#EFB42B', // Cor de fundo
-            color: '#F1EDD2', // Cor do texto
-            border: 'none',
-            borderTopLeftRadius: '15px', // Arredondar canto superior esquerdo
-            borderTopRightRadius: '15px', // Arredondar canto superior direito
-            padding: '12px 20px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            cursor: 'pointer',
-            boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.2)', // Sombra na parte superior
-            fontFamily: 'Neufreit, sans-serif', // Fonte Neufreit
-            fontSize: '20px',
-            transition: 'all 0.3s ease'
-          }}
-        >
-          <div style={{ lineHeight: '1.2', textAlign: 'center' }}>
-            Voltar<br />ao topo
-          </div>
-          <span style={{
-            display: 'inline-block',
-            width: '16px',
-            height: '16px',
-            borderTop: '2px solid #F1EDD2',
-            borderRight: '2px solid #F1EDD2',
-            transform: 'rotate(-45deg)'
-          }}></span>
-        </button>
+        className="button-to-top active"
+        title="Voltar ao topo"
+        onClick={scrollToTop}
+      >
+        <div>Voltar<br />ao topo</div>
+        <span className="arrow"></span>
+      </button>
       )}
   <Footer></Footer>
     </div>

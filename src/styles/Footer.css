@@ -99,26 +99,23 @@
   /* Botão Voltar ao Topo */
   .button-to-top {
     position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background-color: var(--bg-color-scroll-top, #A9373E);
-    color:#F1EDD2;
+    bottom: 0; /* Alinhado na base */
+    right: 20px; /* Posicionado à esquerda*/
+    z-index: 1000;
+    background: #EFB42B; /* Cor de fundo*/
+    color: #F1EDD2; /* Cor do texto*/
     border: none;
-    border-radius: 50px;
+    border-top-left-radius: 15px; /* Arredondar canto superior esquerdo*/
+    border-top-right-radius: 15px; /* Arredondar canto superior direito*/
     padding: 12px 20px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 500;
-    font-size: 16px;
-    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2); /* Sombra na parte superior*/
+    font-family: 'Neufreit', sans-serif;
+    font-size: 20px;
     transition: all 0.3s ease;
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(20px);
   }
   
   .button-to-top.active {
@@ -128,7 +125,8 @@
   }
   
   .button-to-top:hover {
-    background-color: #A9373E;
+    background: #F1EDD2; /* Cor de fundo*/
+    color: #A9373E; /* Cor do texto*/
     transform: translateY(-3px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   }

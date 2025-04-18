@@ -1,26 +1,31 @@
-
 import React, { useState } from 'react';
 import '../styles/CarrinhoFrame.css';
 
-const CarrinhoFrame = ({ items, onClose, onRemoveItem, onClearCart, onVoltarProdutos }) => {
+const CarrinhoFrame = ({ items, onClose, onRemoveItem, onClearCart, onVoltarProdutos, onUpdateQuantidade }) => {
   const [quantidade, setQuantidade] = useState(
     items.reduce((acc, item) => ({ ...acc, [item.id]: item.quantidade || 1 }), {})
   );
 
   const incrementar = (id) => {
-    setQuantidade(prev => ({ ...prev, [id]: (prev[id] || 1) + 1 }));
+    setQuantidade(prev => {
+      const novaQtd = (prev[id] || 1) + 1;
+      onUpdateQuantidade(id, novaQtd);
+      return { ...prev, [id]: novaQtd };
+    });
   };
 
   const decrementar = (id) => {
-    setQuantidade(prev => ({
-      ...prev,
-      [id]: prev[id] > 1 ? prev[id] - 1 : 1,
-    }));
+    setQuantidade(prev => {
+      const novaQtd = prev[id] > 1 ? prev[id] - 1 : 1;
+      onUpdateQuantidade(id, novaQtd);
+      return { ...prev, [id]: novaQtd };
+    });
   };
 
   const total = items.reduce((acc, item) => {
-    const qtd = quantidade[item.id] || 1;
-    return acc + item.preco * qtd;
+    const qtd = quantidade[item.id] || item.quantidade || 1;
+    const precoUnitario = item.price || item.preco || 0;
+    return acc + precoUnitario * qtd;
   }, 0).toFixed(2);
 
   const handleRemove = (id) => {
@@ -43,20 +48,20 @@ const CarrinhoFrame = ({ items, onClose, onRemoveItem, onClearCart, onVoltarProd
             <>
               <div className="itens-carrinho">
                 {items.map(item => (
-                  <div className="item" key={item.id}>
+                  <div className="item" key={`${item.id}-${item.comentario || ''}`.replace(/\s+/g, '-') }>
                     <img
-                      src={item.imagens || '/img/produtos/default.jpg'}
-                      alt={item.nome}
+                      src={item.images || item.imagens || '/img/produtos/default.jpg'}
+                      alt={item.productname || item.nome}
                       className="item-img-pequena"
                     />
                     <div className="item-details">
-                      <h3>{item.nome}</h3>
+                      <h3>{item.productname || item.nome}</h3>
                       {item.comentario && <p className="comentario-item">Obs: {item.comentario}</p>}
-                      <div className="preco">R$ {item.preco.toFixed(2)}</div>
+                      <div className="preco">R$ {(item.price || item.preco)?.toFixed(2) || '0,00'}</div>
 
                       <div className="contador-quantidade">
                         <button onClick={() => decrementar(item.id)} disabled={quantidade[item.id] <= 1}>-</button>
-                        <div className="contador-valor">{quantidade[item.id] || 1}</div>
+                        <div className="contador-valor">{quantidade[item.id] || item.quantidade || 1}</div>
                         <button onClick={() => incrementar(item.id)}>+</button>
                       </div>
                     </div>
@@ -67,7 +72,7 @@ const CarrinhoFrame = ({ items, onClose, onRemoveItem, onClearCart, onVoltarProd
 
               <div className="carrinho-footer">
                 <div className="total">
-                  <span>Total: R$ {total}</span>
+                  <span>Total: R$ {isNaN(total) ? '0,00' : total}</span>
                 </div>
                 <div className="botoes-carrinho">
                   <button className="btn-limpar" onClick={onClearCart}>Limpar Carrinho</button>

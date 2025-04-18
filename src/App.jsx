@@ -145,6 +145,15 @@ function App() {
     setFrame(3);
   };
 
+  const atualizarQuantidade = (id, novaQuantidade) => {
+    setCarrinho((prevCarrinho) =>
+      prevCarrinho.map(item =>
+        item.id === id ? { ...item, quantidade: novaQuantidade } : item
+      )
+    );
+  };
+  
+
   return (
     <div className="App">
       <Header
@@ -195,6 +204,7 @@ function App() {
           onRemoveItem={removerItem}
           onClearCart={limparCarrinho}
           onVoltarProdutos={voltarParaProdutos}
+          onUpdateQuantidade={atualizarQuantidade}
         />
       )}
   

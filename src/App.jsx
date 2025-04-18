@@ -106,11 +106,15 @@ function App() {
     ? products.filter(p => p.category === categoriaSelecionada.category)
     : ordemCategorias.flatMap(cat => products.filter(p => p.category === cat));
 
-  const produtoDetalhado = produtoSelecionado
+    const produtoDetalhado = produtoSelecionado
     ? {
         ...produtoSelecionado,
-        ingredientesDetalhados: ingredientes.filter(ing => produtoSelecionado.ingredientes_ids?.includes(ing.id)),
-        alergenicosDetalhados: alergenicos.filter(al => produtoSelecionado.alergicos_ids?.includes(al.id))
+        ingredientesDetalhados: produtoSelecionado.ingredients
+          ? produtoSelecionado.ingredients.split(',').map(i => i.trim())
+          : [],
+        alergenicosDetalhados: produtoSelecionado['allergenic-agents']
+          ? produtoSelecionado['allergenic-agents'].split(',').map(a => a.trim())
+          : []
       }
     : null;
 
@@ -150,7 +154,7 @@ function App() {
         abrirCarrinho={abrirCarrinho}
         carrinho={carrinho}
       />
-
+  
       <AnimatePresence mode="wait">
         {frame === 1 && (
           <motion.div key="frame1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -172,7 +176,7 @@ function App() {
           <motion.div key="frame3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <Frame3Produtos
               categoriaSelecionada={categoriaSelecionada}
-              products={produtosFiltrados}
+              produtos={produtosFiltrados}
               onProdutoClick={handleProdutoClick}
               categoriasOrdenadas={ordemCategorias}
               onVoltar={() => {
@@ -183,7 +187,7 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
-
+  
       {showCarrinho && (
         <CarrinhoFrame
           items={carrinho}
@@ -193,7 +197,7 @@ function App() {
           onVoltarProdutos={voltarParaProdutos}
         />
       )}
-
+  
       {produtoSelecionado && frame === 5 && (
         <Frame5DetalhesProduto
           produto={produtoDetalhado}
@@ -202,19 +206,18 @@ function App() {
           abrirCarrinho={abrirCarrinho}
         />
       )}
-
-      {/* Botão Voltar ao Topo com estilos inline para garantia */}
-
+  
       {showScrollButton && (
         <button 
-        className="button-to-top active"
-        title="Voltar ao topo"
-        onClick={scrollToTop}
-      >
-        <div>Voltar<br />ao topo</div>
-        <span className="arrow"></span>
-      </button>
+          title="Voltar ao topo"
+          className="button-to-top active"
+          onClick={scrollToTop}
+        >
+          <div>Voltar<br />ao topo</div>
+          <span className="arrow"></span>
+        </button>
       )}
+
   <Footer></Footer>
     </div>
   );

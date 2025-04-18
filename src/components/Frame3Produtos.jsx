@@ -34,6 +34,9 @@ function Frame3Produtos({ categoriaSelecionada, produtos = [], onProdutoClick, c
     ? produtos.filter(p => p.category === categoriaSelecionada.category && p.productname.toLowerCase().includes(busca.toLowerCase()))
     : produtos.filter(p => p.productname.toLowerCase().includes(busca.toLowerCase()));
 
+  // Verifica se estamos na visualização do carrossel horizontal
+  const exibirCarrossel = !categoriaSelecionada;
+
   return (
     <motion.section
       className="frame"
@@ -95,7 +98,7 @@ function Frame3Produtos({ categoriaSelecionada, produtos = [], onProdutoClick, c
               <span className="neufreit cor1">{grupo.nome.toUpperCase()}</span>
             </h2>
             <motion.div 
-              className="carrossel-horizontal"
+              className={`produtos-carrossel ${exibirCarrossel ? 'carrossel-horizontal' : ''}`}
               initial={{ opacity: 0, y: 10 }} 
               animate={{ opacity: 1, y: 0 }} 
               transition={{ delay: 0.1 * idx, duration: 0.3 }}

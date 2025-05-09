@@ -1,0 +1,67 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "ESNext",
+    "lib": [
+      "ES2017",
+      "DOM"
+    ],
+    "jsx": "react-jsx",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": [
+      "vite/client"
+    ],
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "scripts": {
+    "convert:webp": "node src/components/conversor.js",
+    "dev": "vite",
+    "start": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "optimize:assets": "node src/components/conversor.js",
+    "prebuild": "npm run optimize:assets",
+    "convert:webp:backup": "xcopy public\\categories public\\categories-backup /E /I && xcopy public\\products public\\products-backup /E /I && node src/components/conversor.js"
+  },
+  "dependencies": {
+    "axios": "^0.30.0",
+    "framer-motion": "^10.16.4",
+    "lucide-react": "^0.503.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.3.1",
+    "react-lazy-load-image-component": "^1.6.3",
+    "react-query": "^3.39.2",
+    "react-responsive": "^10.0.1",
+    "react-router-dom": "^7.5.1",
+    "sharp": "^0.34.1",
+    "vite-plugin-pwa": "^1.0.0",
+    "vite-plugin-radar": "^0.10.0"
+  },
+  "devDependencies": {
+    "@svgr/core": "^8.1.0",
+    "@types/node": "^22.14.1",
+    "@types/react": "^18.3.20",
+    "@types/react-dom": "^18.3.6",
+    "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^4.4.0",
+    "typescript": "^4.9.5",
+    "vite": "^4.5.13",
+    "vite-plugin-svgr": "^4.3.0"
+  },
+    "engines": {
+    "node": "22.14.0"
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

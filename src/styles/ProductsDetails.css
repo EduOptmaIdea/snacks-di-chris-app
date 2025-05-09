@@ -1,0 +1,363 @@
+/* Overlay para o fundo do modal */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal */
+.modal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 900px;
+  width: 90%;
+  max-height: 90vh;
+  display:  flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+/* Botão de fechar flutuante */
+.modal .close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 100;
+  background-color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #A9373E;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+.modal-header {
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  width: 90%;
+  display: flex;
+  gap: 20px;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.modal-header-left{
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5px;
+}
+
+.produto-img-modal {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.produto-header {
+  font-size: 1.1rem;
+  font-family: 'Roboto', sans-serif;
+  text-align: justify;
+  text-wrap: balance;
+  color: #000;
+}
+
+.modal-header-right{
+  flex: 2;
+  width: auto;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: auto;
+  position: relative;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.preco-total {
+  font-size: 1.2rem;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bolder;
+  color: #A9373E;
+}
+
+.produto-detalhes p {
+  font-size: 0.9rem;
+  text-align: justify;
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Área de comentário */
+.comentario-area {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+}
+
+.comentario-label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.comentario-input {
+  min-height: 80px;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  resize: vertical;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background-color: #f9f9f9;
+}
+
+.produto-footer {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #eee;
+}
+
+/* Contador de quantidade */
+.contador-quantidade {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Alinha os botões de quantidade e o botão adicionar */
+  gap: 10px;
+  margin: 16px 0;
+  width: 100%; /* Garante que os botões se estiquem na largura */
+}
+
+.btn-counter {
+  background-color: #A9373E;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  height: 40px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.contador-quantidade button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.contador-valor {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #8c2e35;
+  width: 32px;
+  text-align: center;
+}
+
+/* Botão adicionar ao carrinho */
+.btn-adicionar-carrinho {
+  background-color: #A9373E;
+  color: #ffffff;
+  padding: 16px;
+  font-size: 1;
+  border: none;
+  border-radius: 12px;
+  width: auto;
+  height: 42px;
+  font-family: 'RobotoSemi', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-self: center; /* Alinha o botão com os outros elementos */
+}
+
+.btn-adicionar-carrinho:hover {
+  background-color: #8c2e35;
+}
+
+/* Mensagem de sucesso */
+.mensagem-sucesso {
+  text-align: center;
+  padding: 1rem;
+  background-color: #d4edda;
+  color: #155724;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+/* Opções após adicionar ao carrinho */
+.opcoes-pos-adicao {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.link-opcao {
+  background: #EFB42B;
+  font-weight: 600;
+  font-size: 1rem;
+  width: 11rem;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 8px;
+  color: #333;
+  padding: 16px 24px;
+  cursor: pointer;
+  border-color: none;
+  border-style: none;
+  transition: color 0.3s ease;
+}
+
+.link-opcao:hover {
+  color: #fff;
+  background: #855f06;
+}
+
+/* Animação de entrada */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* Modal */
+  .modal {
+    width: 95%;
+    padding: 12px;
+    padding-bottom: 3px;
+    gap: 0px;
+    max-height: 95%;
+  }
+
+  /* Modal Header */
+  .modal-header {
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    width: 100%;
+    gap: 0px;
+    padding-bottom: 3px;
+  }
+
+  /* Botão de fechar flutuante */
+.modal .close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 100;
+  background-color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #A9373E;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+  .modal-header-left {
+    width: 100%;
+  }
+
+  .produto-img-modal {
+    max-height: 200px;
+  }
+
+  .modal-header-right {
+    width: 100%;
+    padding-right: 0;
+  }
+
+  .produto-header {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  /* Área de comentário */
+  .comentario-area {
+    width: 100%;
+  }
+
+  .comentario-input {
+    font-size: 0.9rem;
+  }
+
+  /* Produto Footer */
+  .produto-footer {
+    width: 100%;
+    gap: 0.5rem;
+    padding-top: 0rem;
+  }
+
+  /* Contador de quantidade */
+  .contador-quantidade {
+    flex-direction: column;
+    align-items: center;
+    gap: 0px;
+  }
+
+  .contador-valor {
+    font-size: 1.5rem;
+  }
+
+  .btn-adicionar-carrinho {
+    width: 100%;
+    height: 40px;
+    font-size: 0.7rem;
+    font-family: 'Plau', sans-serif;
+    font-weight: bold;
+  }
+
+  /* Botões de opções após adicionar */
+  .opcoes-pos-adicao {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .link-opcao {
+    width: 100%;
+    padding: 12px;
+  }
+}

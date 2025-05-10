@@ -6,62 +6,81 @@
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta http-equiv="Content-Security-Policy" content="
-      default-src 'self';
-      connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.mockachino.com;
-      img-src 'self' data: blob: https://www.google-analytics.com;
-      script-src 'self' 'unsafe-inline' https://www.googletagmanager.com;
-      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-      font-src 'self' https://fonts.gstatic.com;
-      frame-src 'none';
-    ">
+  <!-- Google Tag Manager -->
+  <script>(function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({
+        'gtm.start':
+          new Date().getTime(), event: 'gtm.js'
+      });
+      var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true; j.src =
+        'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-5RZ49HVV');</script>
+  <!-- End Google Tag Manager -->
 
+  <!-- Preconexões para melhor performance -->
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Metadados básicos -->
   <title>SNACKS di Chris | Loja Gostosuras</title>
   <meta name="description"
     content="Bem-vindo ao site da Snacks di Chris! Nosso forte são gostosuras. Aqui você encontra as informações sobre nossas delícias. Explore e se delicie!">
+
+  <!-- Open Graph / Facebook -->
   <meta property="og:title" content="Snacks di Chris | Loja de Gostosuras">
   <meta property="og:description"
     content="Bem-vindo ao site da Snacks di Chris! Nosso forte são gostosuras. Aqui você encontra as informações sobre nossas delícias. Explore e se delicie!">
-  <meta property="og:image" content="/logo.svg">
+  <meta property="og:image" content="https://snacksdichriscardapio.netlify.app/logo.svg">
   <meta property="og:image:alt" content="Logo Snacks di Chris">
-  <meta property="og:url" content="https://snacksdichris.netlify.app/">
+  <meta property="og:url" content="https://snacksdichriscardapio.netlify.app/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Snacks di Chris">
   <meta property="og:locale" content="pt_BR">
+  <!-- Add this meta tag to head -->
+  <meta name="ads-tag" content="none">
+
+  <!-- SEO -->
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://snacksdichris.netlify.app/">
 
-  <link rel="icon" type="image/x-icon" href="./assets/favicon.Bm3oYO-a.ico">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
+
+  <!-- Webfonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- PWA Manifest -->
   <link rel="manifest" href="./manifest.webmanifest" />
+  <!-- Preload critical fonts -->
+  <link rel="preload" href="./fonts/Roboto-SemiBold.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="./fonts/Neufreit-ExtraBold.otf" as="font" type="font/otf" crossorigin>
 
-
-  <!-- Preconnect para Google Tag Manager -->
-  <link rel="preconnect" href="https://www.googletagmanager.com">
-
-  <!-- PWA manifest -->
-  <link rel="manifest" href="./manifest.webmanifest" />
-
-  <!-- Google tag (gtag.js) - Modificado para melhor compatibilidade -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YRKFC5YT57"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-
-    gtag('config', 'G-YRKFC5YT57', {
-      transport_url: 'https://www.google-analytics.com',
-      anonymize_ip: true
-    });
-  </script>
-  <script type="module" crossorigin src="./assets/index.BSQyq3J2.js"></script>
+  <!-- Add font-display swap to CSS -->
+  <style>
+    @font-face {
+      font-family: 'Roboto';
+      src: url('fonts/Roboto-SemiBold.ttf') format('truetype');
+      font-display: swap;
+    }
+  </style>
+  <script type="module" crossorigin src="./assets/index.boV_rRRL.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/vendor.Cz-MWmGP.js">
   <link rel="stylesheet" crossorigin href="./assets/index.gdmWlQ46.css">
 <link rel="manifest" href="./manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="./registerSW.js"></script></head>
 
 <body style="background-color: #FFFFFF">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5RZ49HVV" height="0" width="0"
+      style="display:none;visibility:hidden">
+    </iframe>
+  </noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
   <div id="root"></div>
 </body>
 

@@ -32,7 +32,7 @@ const optimizeSVG = async (inputPath, outputPath) => {
       .replace(/\s+/g, ' ')
       .replace(/<!--.*?-->/g, '')
       .trim();
-    
+
     await writeFile(outputPath, optimized);
     console.log(`⚡ Optimized ${path.basename(inputPath)}`);
     return true;
@@ -54,21 +54,47 @@ const processDirectory = async (dirPath) => {
 
       if (item.isDirectory()) {
         convertedCount += await processDirectory(fullPath);
-      } 
+      }
       else if (IMG_EXTENSIONS.includes(ext)) {
         const outputPath = path.join(dirPath, `${path.basename(item.name, ext)}.webp`);
-        
+
+        // Verifica se o arquivo WebP já existe e se está atualizado
         if (!fs.existsSync(outputPath)) {
           const success = await convertToWebP(fullPath, outputPath);
           if (success) convertedCount++;
+        } else {
+          // Verifica se o arquivo original foi modificado após a conversão
+          const statsOrig = fs.statSync(fullPath);
+          const statsWebP = fs.statSync(outputPath);
+
+          if (statsOrig.mtimeMs > statsWebP.mtimeMs) {
+            const success = await convertToWebP(fullPath, outputPath);
+            if (success) convertedCount++;
+          }
         }
       }
       else if (ext === SVG_EXTENSION) {
-        const optimizedPath = path.join(dirPath, `${path.basename(item.name, ext)}.min.svg`);
-        
+        // Verifica se o arquivo já é minificado
+        if (item.name.endsWith('.min.svg')) {
+          continue;
+        }
+
+        const baseName = path.basename(item.name, ext);
+        const optimizedPath = path.join(dirPath, `${baseName}.min.svg`);
+
+        // Verifica se o arquivo minificado já existe e se está atualizado
         if (!fs.existsSync(optimizedPath)) {
           const success = await optimizeSVG(fullPath, optimizedPath);
           if (success) convertedCount++;
+        } else {
+          // Verifica se o arquivo original foi modificado após a minificação
+          const statsOrig = fs.statSync(fullPath);
+          const statsMin = fs.statSync(optimizedPath);
+
+          if (statsOrig.mtimeMs > statsMin.mtimeMs) {
+            const success = await optimizeSVG(fullPath, optimizedPath);
+            if (success) convertedCount++;
+          }
         }
       }
     }
@@ -84,7 +110,7 @@ const processDirectory = async (dirPath) => {
 const directoriesToProcess = [
   path.join(__dirname, '../../public/categories'),
   path.join(__dirname, '../../public/products'),
-  path.join(__dirname, '../../src/assets/imgs/icons') // Nova pasta de ícones
+  path.join(__dirname, '../../src/assets/imgs/icons')
 ];
 
 // Execução principal

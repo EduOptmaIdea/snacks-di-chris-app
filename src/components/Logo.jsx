@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '@icons/logo.svg'; // Usando o alias configurado no vite.config.ts
+import logo from '@icons/logo.min.svg'; // Usando o alias configurado no vite.config.ts
 
 const Logo = () => (
   <img

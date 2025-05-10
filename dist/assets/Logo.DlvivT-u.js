@@ -1,0 +1,1 @@
+import{j as o}from"./vendor.Cz-MWmGP.js";const s=""+new URL("logo.min.DNDJFi1n.svg",import.meta.url).href,a=()=>o.jsx("img",{src:s,alt:"Snacks di Chris",className:"logo",width:"120",height:"60",loading:"lazy"});export{a as default};

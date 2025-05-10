@@ -40,6 +40,8 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Snacks di Chris">
   <meta property="og:locale" content="pt_BR">
+  <!-- Add this meta tag to head -->
+  <meta name="ads-tag" content="none">
 
   <!-- SEO -->
   <meta name="robots" content="index, follow">
@@ -53,6 +55,18 @@
 
   <!-- PWA Manifest -->
   <link rel="manifest" href="/manifest.webmanifest" />
+  <!-- Preload critical fonts -->
+  <link rel="preload" href="/fonts/Roboto-SemiBold.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="/fonts/Neufreit-ExtraBold.otf" as="font" type="font/otf" crossorigin>
+
+  <!-- Add font-display swap to CSS -->
+  <style>
+    @font-face {
+      font-family: 'Roboto';
+      src: url('/fonts/Roboto-SemiBold.ttf') format('truetype');
+      font-display: swap;
+    }
+  </style>
 </head>
 
 <body style="background-color: #FFFFFF">

@@ -11,49 +11,59 @@
       w[l] = w[l] || []; w[l].push({
         'gtm.start':
           new Date().getTime(), event: 'gtm.js'
-      }); var f = d.getElementsByTagName(s)[0],
-        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+      });
+      var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true; j.src =
+        'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+      f.parentNode.insertBefore(j, f);
     })(window, document, 'script', 'dataLayer', 'GTM-5RZ49HVV');</script>
   <!-- End Google Tag Manager -->
 
+  <!-- Preconexões para melhor performance -->
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Metadados básicos -->
   <title>SNACKS di Chris | Loja Gostosuras</title>
   <meta name="description"
     content="Bem-vindo ao site da Snacks di Chris! Nosso forte são gostosuras. Aqui você encontra as informações sobre nossas delícias. Explore e se delicie!">
+
+  <!-- Open Graph / Facebook -->
   <meta property="og:title" content="Snacks di Chris | Loja de Gostosuras">
   <meta property="og:description"
     content="Bem-vindo ao site da Snacks di Chris! Nosso forte são gostosuras. Aqui você encontra as informações sobre nossas delícias. Explore e se delicie!">
-  <meta property="og:image" content="/logo.svg">
+  <meta property="og:image" content="https://snacksdichris.netlify.app/logo.svg">
   <meta property="og:image:alt" content="Logo Snacks di Chris">
   <meta property="og:url" content="https://snacksdichris.netlify.app/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Snacks di Chris">
   <meta property="og:locale" content="pt_BR">
+
+  <!-- SEO -->
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://snacksdichris.netlify.app/">
 
-  <link rel="icon" type="image/x-icon" href="src/favicon.ico">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+  <!-- Webfonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- PWA Manifest -->
   <link rel="manifest" href="/manifest.webmanifest" />
-
-
-  <!-- Preconnect para Google Tag Manager 
-  <link rel="preconnect" href="https://www.googletagmanager.com"> -->
-
-  <!-- PWA manifest -->
-  <link rel="manifest" href="/manifest.webmanifest" />
-
-
-  </script>
 </head>
 
 <body style="background-color: #FFFFFF">
   <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5RZ49HVV" height="0" width="0"
-      style="display:none;visibility:hidden"></iframe></noscript>
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5RZ49HVV" height="0" width="0"
+      style="display:none;visibility:hidden">
+    </iframe>
+  </noscript>
   <!-- End Google Tag Manager (noscript) -->
+
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>

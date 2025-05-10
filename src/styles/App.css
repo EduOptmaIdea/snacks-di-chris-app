@@ -1,3 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 body {
   margin: 0;
   background-color: #FFFFFF;
@@ -55,7 +60,7 @@ body {
   min-width: 200px;
   border-radius: 12px;
   background: #F1EDD2;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
   scroll-snap-align: start;
   cursor: pointer;
@@ -97,13 +102,13 @@ body {
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   cursor: pointer;
   transition: box-shadow 0.2s ease;
 }
 
 .produto-card:hover {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .produto-img {
@@ -141,7 +146,7 @@ body {
     gap: 2rem;
     text-align: center;
   }
-  
+
   .footer-left,
   .footer-right {
     text-align: center;
@@ -196,6 +201,7 @@ body {
 .frame-top-adjusted {
   margin-top: -60px;
 }
+
 /* Estilos para a lista de snacks */
 .snack-grid {
   display: grid;
@@ -223,7 +229,8 @@ body {
   border-radius: 4px;
 }
 
-.loading, .error {
+.loading,
+.error {
   text-align: center;
   padding: 20px;
   font-size: 18px;

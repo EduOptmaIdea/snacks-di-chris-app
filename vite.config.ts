@@ -125,6 +125,17 @@ export default defineConfig(({ mode }) => {
         },
       }),
     ],
+    css: {
+      postcss: {
+        config: false, // Desativa a busca automática de configuração
+        plugins: [
+          require('@tailwindcss/postcss')({
+            config: './tailwind.config.js'
+          }),
+          require('autoprefixer'),
+        ],
+      },
+    },
     server: {
       host: "0.0.0.0",
       port: 5173,

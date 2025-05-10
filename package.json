@@ -24,8 +24,10 @@
     "start": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "tailwind:build": "tailwindcss -i ./src/styles/tailwind.css -o ./src/styles/tailwind.generated.css",
+    "tailwind:watch": "tailwindcss -i ./src/styles/tailwind.css -o ./src/styles/tailwind.generated.css --watch",
+    "prebuild": "npm run optimize:assets && npm run tailwind:build",
     "optimize:assets": "node src/components/conversor.js",
-    "prebuild": "npm run optimize:assets",
     "convert:webp:backup": "xcopy public\\categories public\\categories-backup /E /I && xcopy public\\products public\\products-backup /E /I && node src/components/conversor.js"
   },
   "dependencies": {
@@ -45,11 +47,20 @@
   },
   "devDependencies": {
     "@svgr/core": "^8.1.0",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/postcss": "^4.1.6",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^22.14.1",
     "@types/react": "^18.3.20",
     "@types/react-dom": "^18.3.6",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^4.4.0",
+    "autoprefixer": "^10.4.21",
+    "cssnano": "^7.0.7",
+    "postcss": "^8.5.3",
+    "postcss-import": "^16.1.0",
+    "postcss-nested": "^7.0.2",
+    "tailwindcss": "^3.4.17",
     "typescript": "^4.9.5",
     "vite": "^6.3.5",
     "vite-plugin-svgr": "^4.3.0"

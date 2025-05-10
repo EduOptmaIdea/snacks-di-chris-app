@@ -35,6 +35,7 @@
   border: none;
   cursor: pointer;
   color: #A9373E;
+  font-family: 'Roboto', sans-serif;
   font-weight: bold;
   z-index: 10;
 }
@@ -146,6 +147,7 @@
 
 .total {
   font-size: 1.2rem;
+  font-family: 'Roboto', sans-serif;
   font-weight: bold;
 }
 

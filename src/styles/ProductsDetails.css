@@ -120,7 +120,8 @@
 }
 
 .comentario-label {
-  font-weight: 600;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
   margin-bottom: 0.5rem;
   color: #333;
 }
@@ -175,6 +176,7 @@
 
 .contador-valor {
   font-size: 2rem;
+  font-family: 'Roboto', sans-serif;
   font-weight: bold;
   color: #8c2e35;
   width: 32px;
@@ -207,6 +209,7 @@
   padding: 1rem;
   background-color: #d4edda;
   color: #155724;
+  font-family: 'Roboto', sans-serif;
   font-weight: bold;
   border-radius: 8px;
 }
@@ -224,7 +227,6 @@
 
 .link-opcao {
   background: #EFB42B;
-  font-weight: 600;
   font-size: 1rem;
   width: 11rem;
   font-family: 'Roboto', sans-serif;

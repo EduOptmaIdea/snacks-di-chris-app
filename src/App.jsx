@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import './styles/App.css';
+import './styles/fonts.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -93,7 +94,7 @@ function AppContent() {
   const handleMenuClick = (targetFrame) => {
     setCategoriaSelecionada(null);
     setFrame(targetFrame);
-    
+
     if (targetFrame === 1) navigate('/');
     if (targetFrame === 3) navigate('/cardapio');
     if (targetFrame === 'privacy') navigate('/politica-de-privacidade');
@@ -135,14 +136,14 @@ function AppContent() {
 
   const produtoDetalhado = produtoSelecionado
     ? {
-        ...produtoSelecionado,
-        ingredientesDetalhados: produtoSelecionado.ingredients
-          ? produtoSelecionado.ingredients.split(',').map(i => i.trim())
-          : [],
-        alergenicosDetalhados: produtoSelecionado['allergenic-agents']
-          ? produtoSelecionado['allergenic-agents'].split(',').map(a => a.trim())
-          : []
-      }
+      ...produtoSelecionado,
+      ingredientesDetalhados: produtoSelecionado.ingredients
+        ? produtoSelecionado.ingredients.split(',').map(i => i.trim())
+        : [],
+      alergenicosDetalhados: produtoSelecionado['allergenic-agents']
+        ? produtoSelecionado['allergenic-agents'].split(',').map(a => a.trim())
+        : []
+    }
     : null;
 
   const adicionarAoCarrinho = (novoItem) => {
@@ -151,7 +152,7 @@ function AppContent() {
         item.id === novoItem.id &&
         item.comentario === novoItem.comentario
       );
-    
+
       if (existente) {
         return carrinhoAtual.map(item =>
           item === existente
@@ -168,7 +169,7 @@ function AppContent() {
     setShowCarrinho(false);
     setShowFinalizacao(true);
   };
-    
+
   const fecharFinalizacao = () => {
     setShowFinalizacao(false);
     setFrame(3);
@@ -203,7 +204,7 @@ function AppContent() {
       )
     );
   };
-  
+
   return (
     <div className="App">
       <Header
@@ -213,20 +214,20 @@ function AppContent() {
         irParaCarrinho={irParaCarrinho}
         carrinho={carrinho}
       />
-  
+
       <AnimatePresence mode="wait">
         <Suspense fallback={<Loading />}>
           {frame === 1 && (
             <motion.div key="frame1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <Home onCategoriaClick={(categoria) => {
-                  setCategoriaSelecionada(categoria);
-                  setFrame(3);
-                  navigate('/cardapio');
-                }} 
+                setCategoriaSelecionada(categoria);
+                setFrame(3);
+                navigate('/cardapio');
+              }}
               />
             </motion.div>
           )}
-          
+
           {frame === 3 && (
             <motion.div key="frame3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <Menu
@@ -242,13 +243,13 @@ function AppContent() {
               />
             </motion.div>
           )}
-          
+
           {frame === 'privacy' && (
             <motion.div key="privacy" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <PrivacyPolicy />
             </motion.div>
           )}
-          
+
           {frame === 5 && produtoSelecionado && (
             <ProductsDetails
               produto={produtoDetalhado}
@@ -260,7 +261,7 @@ function AppContent() {
           )}
         </Suspense>
       </AnimatePresence>
-  
+
       <Suspense fallback={null}>
         {showCarrinho && (
           <ShoppinCart
@@ -284,9 +285,9 @@ function AppContent() {
           />
         )}
       </Suspense>
-  
+
       {showScrollButton && (
-        <button 
+        <button
           title="Voltar ao topo"
           className="button-to-top active"
           onClick={scrollToTop}

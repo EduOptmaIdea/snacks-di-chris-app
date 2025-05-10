@@ -1,1 +1,0 @@
-import{j as o}from"./vendor-6172415f.js";const t=""+new URL("optma-idea.min-783fefb5.svg",import.meta.url).href,e=()=>o.jsx("img",{src:t,alt:"Optma Idea",className:"footer-logo",width:"80",height:"40",loading:"lazy"});export{e as default};

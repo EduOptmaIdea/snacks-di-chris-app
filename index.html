@@ -6,15 +6,16 @@
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta http-equiv="Content-Security-Policy" content="
-      default-src 'self';
-      connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.mockachino.com;
-      img-src 'self' data: blob: https://www.google-analytics.com;
-      script-src 'self' 'unsafe-inline' https://www.googletagmanager.com;
-      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-      font-src 'self' https://fonts.gstatic.com;
-      frame-src 'none';
-    ">
+  <!-- Google Tag Manager -->
+  <script>(function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({
+        'gtm.start':
+          new Date().getTime(), event: 'gtm.js'
+      }); var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-5RZ49HVV');</script>
+  <!-- End Google Tag Manager -->
 
   <title>SNACKS di Chris | Loja Gostosuras</title>
   <meta name="description"
@@ -38,8 +39,8 @@
   <link rel="manifest" href="/manifest.webmanifest" />
 
 
-  <!-- Preconnect para Google Tag Manager -->
-  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <!-- Preconnect para Google Tag Manager 
+  <link rel="preconnect" href="https://www.googletagmanager.com"> -->
 
   <!-- PWA manifest -->
   <link rel="manifest" href="/manifest.webmanifest" />
@@ -59,6 +60,10 @@
 </head>
 
 <body style="background-color: #FFFFFF">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5RZ49HVV" height="0" width="0"
+      style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>

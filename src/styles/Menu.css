@@ -49,7 +49,7 @@
   top: 0;
   gap: 8px;
   font-family: 'RobotoSemi', sans-serif;
-  color: #EFB42B;
+  color: #FFF;
   background-color: #A9373E;
   padding: 8px 16px;
   border: none;
@@ -227,7 +227,7 @@
   }
   
   .produto-img-container {
-    height: 150px;
+    height: 100px;
   }
   
   .produto-nome {
@@ -239,7 +239,7 @@
   }
 
   .categoria-grupo {
-    margin-bottom: 30px;
+    margin-bottom: 12px;
   }
   
   .categoria-grupo:last-child {
@@ -273,12 +273,20 @@
   .campo-busca {
     max-width: 90%;
     padding: 12px 16px;
-    margin: 0 auto 20px auto;
+    margin: 0 auto 10px auto;
   }
 
   .produto-card {
-    width: 95%;
-    margin-right: 0;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 95%;
+    padding: 0;  
   }
 
   .produto-img {
@@ -287,7 +295,7 @@
 
   .produto-info {
     padding: 12px 16px;
-    gap: 3px;
+    gap: 4px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -350,15 +358,15 @@
     justify-content: column;
     align-items: center;
     margin-top: 20px;
-    gap: 20px;
+    gap: 10px;
   }
   
   .produtos-grid, .carrossel-horizontal {
     margin-bottom: 0px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
-    grid-gap: 10px 10%;
-    padding: 0px 8px;
-    row-gap: 20px
+    grid-gap: 10px 8%;
+    padding: 0px 0px;
+    row-gap: 12px
   }
 }

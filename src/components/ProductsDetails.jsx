@@ -67,7 +67,7 @@ const ProductsDetails = ({
   return (
     <div className="overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <button className="close-btn" onClick={onClose}><X/></button>
+        <button className="close-btn" onClick={onClose}><X /></button>
         <div className="modal-header">
           <div className="modal-header-left">
             <img
@@ -77,37 +77,38 @@ const ProductsDetails = ({
             />
             <div className="produto-header">
               <h3>{produto.productname}</h3>
-            </div>        
+            </div>
           </div>
           <div className="modal-header-right">
-              <div className="preco-total">
-                Total: R$ {precoTotal}
+            <div className="preco-total">
+              Total: R$ {precoTotal}
+            </div>
+            <div className="produto-detalhes">
+              <p>{produto.description}</p>
+              <p><strong>Ingredientes:</strong> {ingredientesDetalhados.join(', ')}</p>
+              <p><strong>Alergênicos:</strong> {alergicosDetalhados.join(', ')}</p>
+              <div className="comentario-area">
+                <label htmlFor="comentario" className="comentario-label">Algum comentário?</label>
+                <textarea
+                  id="comentario"
+                  className="comentario-input"
+                  value={comentario}
+                  onChange={(e) => setComentario(e.target.value)}
+                  placeholder="Ex: Retirar cebola, adicionar maionese..."
+                />
               </div>
-              <div className="produto-detalhes">
-                <p>{produto.description}</p>
-                <p><strong>Ingredientes:</strong> {ingredientesDetalhados.join(', ')}</p>
-                <p><strong>Alergênicos:</strong> {alergicosDetalhados.join(', ')}</p>
-                <div className="comentario-area">
-                  <label htmlFor="comentario" className="comentario-label">Algum comentário?</label>
-                  <textarea
-                    id="comentario"
-                    className="comentario-input"
-                    value={comentario}
-                    onChange={(e) => setComentario(e.target.value)}
-                    placeholder="Ex: Retirar cebola, adicionar maionese..." 
-                  />
-                </div>
             </div>
           </div>
         </div>
         <div className="produto-footer">
-            {sucesso ? (
-              <div className="mensagem-sucesso">
-                Produto adicionado com sucesso!
-              </div>
-            ) : !mostrarOpcoes ? (
-              <>
-                <div className="contador-quantidade">
+          {sucesso ? (
+            <div className="mensagem-sucesso">
+              Produto adicionado com sucesso!
+            </div>
+          ) : !mostrarOpcoes ? (
+            <>
+              <div className="contador-quantidade">
+                <div className="quantidade">
                   <button className="btn-counter" onClick={decrementar} disabled={quantidade <= 1} aria-label="Diminuir quantidade">
                     <Minus size={20} color="#FFFFFF" />
                   </button>
@@ -117,20 +118,21 @@ const ProductsDetails = ({
                   <button className="btn-counter" onClick={incrementar} aria-label="Aumentar quantidade">
                     <Plus size={20} color="#FFFFFF" />
                   </button>
-
+                </div>
+                <div className="adicionar-itens">
                   <button className="btn-adicionar-carrinho" onClick={handleAdicionar}>
                     Adicionar - R$ {precoTotal}
                   </button>
-
                 </div>
-              </>
-            ) : (
-              <div className="opcoes-pos-adicao">
-                
-                <button className="link-opcao" onClick={handleComprarMais}>Comprar mais</button>
-                <button className="link-opcao" onClick={handleIrParaCarrinho}>Ir para o carrinho</button>
               </div>
-            )}
+            </>
+          ) : (
+            <div className="opcoes-pos-adicao">
+
+              <button className="link-opcao" onClick={handleComprarMais}>Comprar mais</button>
+              <button className="link-opcao" onClick={handleIrParaCarrinho}>Ir para o carrinho</button>
+            </div>
+          )}
         </div>
       </div>
     </div>

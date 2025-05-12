@@ -5,12 +5,12 @@ import { Minus, Plus, Trash2, X } from 'lucide-react';
 import { getLocalProductImageUrl } from '../constants';
 import vazio from '../assets/imgs/icons/carrinho-vazio.svg';
 
-const ShoppinCart = ({ 
-  items, 
-  onClose, 
-  onRemoveItem, 
-  onClearCart, 
-  voltarParaProdutos, 
+const ShoppinCart = ({
+  items,
+  onClose,
+  onRemoveItem,
+  onClearCart,
+  voltarParaProdutos,
   onUpdateQuantidade
 }) => {
   const [quantidades, setQuantidades] = useState(
@@ -56,7 +56,7 @@ const ShoppinCart = ({
   return (
     <div className="overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <button className="close-btn" onClick={onClose}><X/></button>
+        <button className="close-btn" onClick={onClose}><X /></button>
 
         <div className="carrinho-content">
           {processedItems.length === 0 ? (
@@ -64,7 +64,7 @@ const ShoppinCart = ({
               <img src={vazio} alt="Carrinho vazio" className="img-vazio" />
               <h2>Carrinho vazio</h2>
               <button
-                className="btn-voltar"
+                className="btn-voltar-aos-produtos"
                 onClick={() => {
                   onClose();
                   voltarParaProdutos();
@@ -77,11 +77,11 @@ const ShoppinCart = ({
             <>
               <div className="itens-carrinho">
                 {processedItems.map(item => (
-                  <div 
-                    className="item" 
+                  <div
+                    className="item"
                     key={`${item.id}-${item.comentario || ''}`.replace(/\s+/g, '-')}
                   >
-                    <img 
+                    <img
                       src={item.imageUrl || '/products/default.jpg'}
                       alt={item.productname}
                       className="item-img-pequena"
@@ -90,7 +90,7 @@ const ShoppinCart = ({
                         e.target.onerror = null;
                       }}
                     />
-                    
+
                     <div className="item-details">
                       <h3>{item.productname}</h3>
                       {item.comentario && (
@@ -101,28 +101,28 @@ const ShoppinCart = ({
                       </div>
 
                       <div className="contador-quantidade">
-                        <button 
-                          onClick={() => decrementar(item.id)} 
+                        <button
+                          onClick={() => decrementar(item.id)}
                           disabled={quantidades[item.id] <= 1}
                           aria-label="Diminuir quantidade"
                         >
-                          <Minus size={17}/>
+                          <Minus size={17} />
                         </button>
                         <div className="contador-valor">
                           {quantidades[item.id] || 1}
                         </div>
-                        <button 
+                        <button
                           onClick={() => incrementar(item.id)}
                           aria-label="Aumentar quantidade"
                         >
-                          <Plus size={17}/>
+                          <Plus size={17} />
                         </button>
-                        <button 
+                        <button
                           onClick={() => onRemoveItem(item.id)}
                           aria-label="Remover item"
                           className="text-xs"
                         >
-                          <Trash2 size={17}/>
+                          <Trash2 size={17} />
                         </button>
                       </div>
                     </div>
@@ -135,8 +135,8 @@ const ShoppinCart = ({
                   <span>Total: R$ {total}</span>
                 </div>
                 <div className="botoes-carrinho">
-                  <button 
-                    className="btn-voltar" 
+                  <button
+                    className="btn-comprar-mais"
                     onClick={() => {
                       onClose();
                       voltarParaProdutos();
@@ -144,15 +144,15 @@ const ShoppinCart = ({
                   >
                     Comprar mais
                   </button>
-                  <button 
-                    className="btn-finalizar" 
+                  <button
+                    className="btn-finalizar"
                     onClick={handleFinalizarCompra}
                     disabled={processedItems.length === 0}
                   >
                     Finalizar compra
                   </button>
-                  <button 
-                    className="btn-limpar" 
+                  <button
+                    className="btn-limpar"
                     onClick={onClearCart}
                     disabled={processedItems.length === 0}
                   >

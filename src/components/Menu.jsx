@@ -30,10 +30,10 @@ function Menu({ categoriaSelecionada, produtos = [], onProdutoClick, categoriasO
   // Função para converter URL para WebP
   const getWebPImageUrl = (imagePath) => {
     if (!imagePath) return '/products/default.webp';
-    
+
     // Verifica se já é WebP
     if (imagePath.endsWith('.webp')) return imagePath;
-    
+
     // Converte para WebP
     const baseUrl = imagePath.split('?')[0]; // Remove query params se existirem
     return baseUrl.replace(/\.(jpg|jpeg|png)$/i, '.webp');
@@ -53,25 +53,25 @@ function Menu({ categoriaSelecionada, produtos = [], onProdutoClick, categoriasO
 
   const produtosFiltrados = categoriaSelecionada
     ? processedProducts.filter(
-        p => p.category === categoriaSelecionada.category && 
+      p => p.category === categoriaSelecionada.category &&
         p.productname.toLowerCase().includes(busca.toLowerCase())
-      )
+    )
     : processedProducts.filter(p => p.productname.toLowerCase().includes(busca.toLowerCase()));
 
   const renderProdutoCard = (produto) => (
-    <motion.div 
-      key={produto.id} 
-      className="produto-card" 
+    <motion.div
+      key={produto.id}
+      className="produto-card"
       onClick={() => onProdutoClick(produto)}
       whileHover={{ scale: 1.03 }}
     >
       <div className="produto-img-container">
         <picture>
           <source srcSet={produto.imageUrl} type="image/webp" />
-          <img 
+          <img
             src={produto.imageUrl.replace('.webp', '.jpg')} // Fallback para JPG
-            alt={produto.productname} 
-            className="produto-img" 
+            alt={produto.productname}
+            className="produto-img"
             loading="lazy"
             onError={(e) => {
               e.target.src = '/products/default.webp';
@@ -102,24 +102,26 @@ function Menu({ categoriaSelecionada, produtos = [], onProdutoClick, categoriasO
           className="campo-busca"
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
-        />      
+        />
         <button className="btn-voltar" onClick={onVoltar}>
-          <span className="btn-icon"><ChevronLeft size={20} /></span> 
+          <span className="btn-icon"><ChevronLeft size={20} /></span>
           <span className="btn-text">Voltar</span>
         </button>
       </div>
-      
-      <div className="frame-title-area">
-        <h2 className="categoria-titulo">
-          <span className="neufreit cor1">{categoriaSelecionada ? categoriaSelecionada.category : ''}</span>
-        </h2>
-      </div>
+
+      {categoriaSelecionada && (
+        <div className="frame-title-area">
+          <h2 className="categoria-titulo">
+            <span className="neufreit cor1">{categoriaSelecionada.category}</span>
+          </h2>
+        </div>
+      )}
 
       {categoriaSelecionada ? (
-        <motion.div 
+        <motion.div
           className="produtos-grid"
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
           {isLoading
@@ -134,10 +136,10 @@ function Menu({ categoriaSelecionada, produtos = [], onProdutoClick, categoriasO
                 <span className="neufreit cor1">{grupo.nome.toUpperCase()}</span>
               </h2>
             </div>
-            <motion.div 
+            <motion.div
               className="produtos-carrossel carrossel-horizontal"
-              initial={{ opacity: 0, y: 10 }} 
-              animate={{ opacity: 1, y: 0 }} 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 * idx, duration: 0.3 }}
             >
               {isLoading

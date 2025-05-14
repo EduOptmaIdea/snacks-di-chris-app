@@ -5,8 +5,11 @@ import './styles/fonts.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import { API_URL, WHATSAPP_URL } from './constants';
+import { API_URL, WHATSAPP_URL } from './constants'; // Mantenha se ainda usar para outras coisas
 import { ChevronsUp } from 'lucide-react';
+
+import { db } from './firebase';
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 
 // Componentes carregados de forma lazy
 const Home = lazy(() => import('./components/Home'));
@@ -58,14 +61,47 @@ function AppContent() {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const navigate = useNavigate();
 
+  // Lógica atual para buscar dados da API_URL
   useEffect(() => {
+    console.log("Buscando dados da API_URL:", API_URL);
     fetch(API_URL)
       .then((res) => res.json())
       .then((data) => {
+        console.log("Dados recebidos da API_URL:", data);
         setCategorias(data.categories || []);
         setProducts(data.products || []);
-      });
+      })
+      .catch(error => console.error("Erro ao buscar dados da API_URL:", error));
   }, []);
+
+  // EXEMPLO: Lógica para buscar produtos do Firebase (Firestore)
+  // Você pode habilitar esta e desabilitar a de cima quando estiver pronto para migrar
+  /*
+  useEffect(() => {
+    const fetchFirebaseProducts = async () => {
+      try {
+        console.log("Buscando produtos do Firebase...");
+        const productsCollection = collection(db, "produtos"); // "produtos" é o nome da sua coleção no Firestore
+        const productSnapshot = await getDocs(query(productsCollection, orderBy("nome"))); // Exemplo: ordenar por nome
+        const productList = productSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setProducts(productList);
+        console.log("Produtos carregados do Firebase:", productList);
+
+        // Lógica para extrair e definir categorias a partir dos produtos do Firebase
+        const uniqueCategories = [...new Set(productList.map(p => p.categoria))];
+        // Você pode querer uma estrutura mais elaborada para categorias, com ID, nome, imagem, etc.
+        // Por enquanto, vamos apenas usar os nomes das categorias encontradas nos produtos.
+        setCategorias(uniqueCategories.map(catName => ({ category: catName, name: catName }))); 
+        console.log("Categorias definidas a partir do Firebase:", uniqueCategories.map(catName => ({ category: catName, name: catName })));
+
+      } catch (error) {
+        console.error("Erro ao buscar produtos do Firebase: ", error);
+      }
+    };
+
+    fetchFirebaseProducts();
+  }, []);
+  */
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -103,6 +139,8 @@ function AppContent() {
   const handleProdutoClick = (produto) => {
     setProdutoSelecionado(produto);
     setFrame(5);
+    // Exemplo de como você poderia registrar uma visualização de produto no Firebase
+    // logProductView(produto.id); // Você precisaria criar essa função, similar ao firebase_reporting_details.md
   };
 
   const closeProdutoDetalhes = () => {
@@ -130,18 +168,20 @@ function AppContent() {
     'Bebidas'
   ];
 
+  // Ajuste aqui se as categorias do Firebase tiverem uma estrutura diferente
   const produtosFiltrados = categoriaSelecionada
-    ? products.filter(p => p.category === categoriaSelecionada.category)
-    : ordemCategorias.flatMap(cat => products.filter(p => p.category === cat));
+    ? products.filter(p => p.categoria === categoriaSelecionada.category) // Se categoriaSelecionada.category for o nome da categoria
+    : ordemCategorias.flatMap(catName => products.filter(p => p.categoria === catName));
 
   const produtoDetalhado = produtoSelecionado
     ? {
       ...produtoSelecionado,
-      ingredientesDetalhados: produtoSelecionado.ingredients
-        ? produtoSelecionado.ingredients.split(',').map(i => i.trim())
+      // Adapte os campos abaixo para corresponderem à estrutura do seu produto no Firebase
+      ingredientesDetalhados: produtoSelecionado.ingredientes // Supondo que você tenha um campo 'ingredientes' (array ou string)
+        ? (Array.isArray(produtoSelecionado.ingredientes) ? produtoSelecionado.ingredientes : produtoSelecionado.ingredientes.split(',').map(i => i.trim()))
         : [],
-      alergenicosDetalhados: produtoSelecionado['allergenic-agents']
-        ? produtoSelecionado['allergenic-agents'].split(',').map(a => a.trim())
+      alergenicosDetalhados: produtoSelecionado.alergenicos // Supondo um campo 'alergenicos'
+        ? (Array.isArray(produtoSelecionado.alergenicos) ? produtoSelecionado.alergenicos : produtoSelecionado.alergenicos.split(',').map(a => a.trim()))
         : []
     }
     : null;
@@ -224,6 +264,8 @@ function AppContent() {
                 setFrame(3);
                 navigate('/cardapio');
               }}
+              // Passe as categorias do Firebase para o Home se necessário
+              // categorias={categorias} 
               />
             </motion.div>
           )}
@@ -234,7 +276,9 @@ function AppContent() {
                 categoriaSelecionada={categoriaSelecionada}
                 produtos={produtosFiltrados}
                 onProdutoClick={handleProdutoClick}
-                categoriasOrdenadas={ordemCategorias}
+                // Ajuste para usar as categorias do Firebase
+                categoriasFromFirebase={categorias} // Novo prop, ou adapte 'categoriasOrdenadas'
+                categoriasOrdenadas={ordemCategorias} // Mantenha se a ordem for manual, ou derive do Firebase
                 onVoltar={() => {
                   setCategoriaSelecionada(null);
                   setFrame(1);

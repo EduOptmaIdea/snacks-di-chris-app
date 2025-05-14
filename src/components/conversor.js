@@ -1,7 +1,8 @@
-const sharp = require('sharp');
-const fs = require('fs');
-const path = require('path');
-const { promisify } = require('util');
+import sharp from 'sharp';
+import fs from 'fs';
+import path from 'path';
+import { promisify } from 'util';
+import { fileURLToPath } from 'url';
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
@@ -107,16 +108,19 @@ const processDirectory = async (dirPath) => {
 };
 
 // Diretórios a serem processados
-const directoriesToProcess = [
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+/*const directoriesToProcess = [
   path.join(__dirname, '../../public/categories'),
   path.join(__dirname, '../../public/products'),
   path.join(__dirname, '../../src/assets/imgs/icons')
-];
+];*/
 
 // Execução principal
 (async () => {
   console.log('🔄 Starting image conversion...');
-  console.log('📂 Directories to process:');
+  /* console.log('📂 Directories to process:');
   directoriesToProcess.forEach(dir => console.log(`- ${dir}`));
 
   let totalConverted = 0;
@@ -134,5 +138,5 @@ const directoriesToProcess = [
   }
 
   const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-  console.log(`\n✨ Done! Converted ${totalConverted} files in ${duration}s`);
+  console.log(`\n✨ Done! Converted ${totalConverted} files in ${duration}s`);*/
 })();

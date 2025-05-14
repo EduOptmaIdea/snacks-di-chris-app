@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
 import { resolve } from "path";
@@ -36,6 +37,7 @@ export default defineConfig(({ mode }) => {
           }
         } 
       }),
+      tailwindcss(),
       VitePWA({
         registerType: "autoUpdate",
         includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
@@ -125,7 +127,7 @@ export default defineConfig(({ mode }) => {
         },
       }),
     ],
-    css: {
+   /*css: {
       postcss: {
         config: false, // Desativa a busca automática de configuração
         plugins: [
@@ -135,7 +137,7 @@ export default defineConfig(({ mode }) => {
           require('autoprefixer'),
         ],
       },
-    },
+    },*/
     server: {
       host: "0.0.0.0",
       port: 5173,

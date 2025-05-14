@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "compilerOptions": {
     "target": "ES2017",
     "module": "ESNext",
@@ -24,13 +25,12 @@
     "start": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tailwind:build": "tailwindcss -i ./src/styles/tailwind.css -o ./src/styles/tailwind.generated.css",
-    "tailwind:watch": "tailwindcss -i ./src/styles/tailwind.css -o ./src/styles/tailwind.generated.css --watch",
-    "prebuild": "npm run optimize:assets && npm run tailwind:build",
+    "prebuild": "npm run optimize:assets",
     "optimize:assets": "node src/components/conversor.js",
     "convert:webp:backup": "xcopy public\\categories public\\categories-backup /E /I && xcopy public\\products public\\products-backup /E /I && node src/components/conversor.js"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.1.6",
     "axios": "^0.30.0",
     "firebase": "^11.7.1",
     "framer-motion": "^10.16.4",

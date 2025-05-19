@@ -1,0 +1,16 @@
+/*
+  Content-Security-Policy: default-src 'self'; 
+    script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com 'unsafe-inline' 'unsafe-eval'; 
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com;
+    img-src 'self' data: blob: https://www.google-analytics.com https://*.google-analytics.com https://firebasestorage.googleapis.com;
+    connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.mockachino.com https://*.googleapis.com https://firestore.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://*.cloudfunctions.net;
+    manifest-src 'self';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: no-referrer-when-downgrade
+    Permissions-Policy: geolocation=( ), microphone=(), camera=()
+  */

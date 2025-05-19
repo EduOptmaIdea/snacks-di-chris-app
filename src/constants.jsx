@@ -1,5 +1,5 @@
 // Funções para gerar mensagens
-const generateContactMessage = () => {
+const generateContactMessage = ( ) => {
   const hour = new Date().getHours();
   let greeting;
   
@@ -33,18 +33,15 @@ const generatePrivacyMessage = () => {
 export const WHATSAPP_BASE_URL = 'https://wa.me/5562999944838';
 
 // URLs completas com mensagens específicas
-export const WHATSAPP_URL = `${WHATSAPP_BASE_URL}?text=${generateContactMessage()}`;
+export const WHATSAPP_URL = `${WHATSAPP_BASE_URL}?text=${generateContactMessage( )}`;
 export const WHATSAPP_PRIVACY_URL = `${WHATSAPP_BASE_URL}?text=${generatePrivacyMessage()}`;
 
-// Restante das constantes...
-export const API_URL = import.meta.env.VITE_API_BASE_URL 
-  ? `${import.meta.env.VITE_API_BASE_URL}/snacksItems`
-  : 'https://www.mockachino.com/a0c8bbde-7d0d-4a/snacksItems';
-
+// Funções atualizadas para imagens
 export const getImageUrl = (path) => {
   if (!path) return '/products/default.jpg';
-  if (path.startsWith('http') || path.startsWith('/')) return path;
-  return `https://www.mockachino.com/a0c8bbde-7d0d-4a/static${path.startsWith('/') ? path : `/${path}`}`;
+  if (path.startsWith('http' ) || path.startsWith('/')) return path;
+  // Se for uma referência ao Storage, use-a diretamente
+  return path;
 };
 
 export const getLocalImageUrl = (imageName) => {
@@ -55,7 +52,8 @@ export const getLocalImageUrl = (imageName) => {
 
 export const getLocalProductImageUrl = (imageName) => {
   if (!imageName) return '/products/default.jpg';
-  const cleanName = imageName.split('/').pop();
+  if (imageName && imageName.startsWith('http' )) return imageName;
+  const cleanName = imageName ? imageName.split('/').pop() : 'default.jpg';
   return `/products/${cleanName}`;
 };
 

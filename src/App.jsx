@@ -5,7 +5,7 @@ import './styles/fonts.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import { API_URL, WHATSAPP_URL } from './constants'; // Mantenha se ainda usar para outras coisas
+import { WHATSAPP_URL } from './constants';
 import { ChevronsUp } from 'lucide-react';
 
 import { db } from './firebase';

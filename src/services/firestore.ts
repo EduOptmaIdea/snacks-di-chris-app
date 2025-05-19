@@ -21,12 +21,19 @@ export const fetchProductsFromFirestore = async (): Promise<SnackItem[]> => {
       // Mapear os campos do Firestore para o formato esperado pelo front-end
       return {
         id: doc.id,
-        name: data.productName || "",
+        productname: data.productName || "",
+        name: data.productName || "", // Adicionado para compatibilidade
         description: data.description || "",
         price: data.price || 0,
         image: data.image || "",
+        imagePath: data.imagePath || "",
         category: data.categoryRef || "",
-        available: data.available !== undefined ? data.available : true, // Incluir campo de disponibilidade
+        categoria: data.categoryRef || "", // Adicionado para compatibilidade
+        available: data.available !== undefined ? data.available : true,
+        ingredients: data.ingredientRefs || [],
+        ingredientes: data.ingredientRefs || [], // Adicionado para compatibilidade
+        "allergenic-agents": data.allergenicAgentRefs || [],
+        alergenicos: data.allergenicAgentRefs || [], // Adicionado para compatibilidade
       };
     });
 

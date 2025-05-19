@@ -16,7 +16,7 @@ const Header = ({ frame, handleMenuClick, openWhatsApp, irParaCarrinho, carrinho
         
         <nav className="menu">
           <button className={`menu-item ${frame === 1 ? 'active' : ''}`} onClick={() => handleMenuClick(1)}>
-            <House size={16} /> Início
+            <House style={{display: 'inline-block'}} size={22} /> Início
           </button>
           <button className={`menu-item ${frame === 3 ? 'active' : ''}`} onClick={() => handleMenuClick(3)}>
             Cardápio

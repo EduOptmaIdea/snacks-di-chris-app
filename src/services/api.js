@@ -1,6 +1,13 @@
-import axios from 'axios';
-const API_URL = 'https://www.mockachino.com/a0c8bbde-7d0d-4a/snacksItems';
+import { fetchProductsFromFirestore } from './firestore';
+
+// Função para buscar snacks do Firestore
 export const fetchSnacks = async () => {
-    const response = await axios.get(API_URL);
-    return response.data.snacks || [];
+  try {
+    // Buscar produtos do Firestore usando o novo serviço
+    const snacks = await fetchProductsFromFirestore();
+    return snacks;
+  } catch (error) {
+    console.error('Erro ao buscar snacks:', error);
+    return [];
+  }
 };

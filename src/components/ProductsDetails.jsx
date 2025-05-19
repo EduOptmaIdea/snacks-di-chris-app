@@ -77,6 +77,9 @@ const ProductsDetails = ({
             />
             <div className="produto-header">
               <h3>{produto.productname}</h3>
+              {produto.available === false && (
+                <div className="produto-indisponivel">Produto Indisponível</div>
+              )}
             </div>
           </div>
           <div className="modal-header-right">
@@ -87,16 +90,18 @@ const ProductsDetails = ({
               <p>{produto.description}</p>
               <p><strong>Ingredientes:</strong> {ingredientesDetalhados.join(', ')}</p>
               <p><strong>Alergênicos:</strong> {alergicosDetalhados.join(', ')}</p>
-              <div className="comentario-area">
-                <label htmlFor="comentario" className="comentario-label">Algum comentário?</label>
-                <textarea
-                  id="comentario"
-                  className="comentario-input"
-                  value={comentario}
-                  onChange={(e) => setComentario(e.target.value)}
-                  placeholder="Ex: Retirar cebola, adicionar maionese..."
-                />
-              </div>
+              {produto.available !== false && (
+                <div className="comentario-area">
+                  <label htmlFor="comentario" className="comentario-label">Algum comentário?</label>
+                  <textarea
+                    id="comentario"
+                    className="comentario-input"
+                    value={comentario}
+                    onChange={(e) => setComentario(e.target.value)}
+                    placeholder="Ex: Retirar cebola, adicionar maionese..."
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -107,28 +112,33 @@ const ProductsDetails = ({
             </div>
           ) : !mostrarOpcoes ? (
             <>
-              <div className="contador-quantidade">
-                <div className="quantidade">
-                  <button className="btn-counter" onClick={decrementar} disabled={quantidade <= 1} aria-label="Diminuir quantidade">
-                    <Minus size={20} color="#FFFFFF" />
-                  </button>
+              {produto.available !== false ? (
+                <div className="contador-quantidade">
+                  <div className="quantidade">
+                    <button className="btn-counter" onClick={decrementar} disabled={quantidade <= 1} aria-label="Diminuir quantidade">
+                      <Minus size={20} color="#FFFFFF" />
+                    </button>
 
-                  <div className="contador-valor">{quantidade}</div>
+                    <div className="contador-valor">{quantidade}</div>
 
-                  <button className="btn-counter" onClick={incrementar} aria-label="Aumentar quantidade">
-                    <Plus size={20} color="#FFFFFF" />
-                  </button>
+                    <button className="btn-counter" onClick={incrementar} aria-label="Aumentar quantidade">
+                      <Plus size={20} color="#FFFFFF" />
+                    </button>
+                  </div>
+                  <div className="adicionar-itens">
+                    <button className="btn-adicionar-carrinho" onClick={handleAdicionar}>
+                      Adicionar - R$ {precoTotal}
+                    </button>
+                  </div>
                 </div>
-                <div className="adicionar-itens">
-                  <button className="btn-adicionar-carrinho" onClick={handleAdicionar}>
-                    Adicionar - R$ {precoTotal}
-                  </button>
+              ) : (
+                <div className="produto-indisponivel-mensagem">
+                  Este produto não está disponível para compra no momento.
                 </div>
-              </div>
+              )}
             </>
           ) : (
             <div className="opcoes-pos-adicao">
-
               <button className="link-opcao" onClick={handleComprarMais}>Comprar mais</button>
               <button className="link-opcao" onClick={handleIrParaCarrinho}>Ir para o carrinho</button>
             </div>

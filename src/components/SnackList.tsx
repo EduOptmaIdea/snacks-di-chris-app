@@ -29,11 +29,14 @@ export const SnackList = () => {
   return (
     <div className="snack-grid">
       {snacks.map((snack) => (
-        <div key={snack.id} className="snack-card">
+        <div key={snack.id} className={`snack-card ${!snack.available ? 'unavailable' : ''}`}>
           <img src={snack.image} alt={snack.name} />
           <h3>{snack.name}</h3>
           <p>{snack.description}</p>
           <span>${snack.price.toFixed(2)}</span>
+          {!snack.available && (
+            <div className="unavailable-badge">Indisponível</div>
+          )}
         </div>
       ))}
     </div>

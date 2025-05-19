@@ -25,5 +25,5 @@ export const SnackList = () => {
         return _jsx("div", { className: "loading", children: "Loading snacks..." });
     if (error)
         return _jsx("div", { className: "error", children: error });
-    return (_jsx("div", { className: "snack-grid", children: snacks.map((snack) => (_jsxs("div", { className: "snack-card", children: [_jsx("img", { src: snack.image, alt: snack.name }), _jsx("h3", { children: snack.name }), _jsx("p", { children: snack.description }), _jsxs("span", { children: ["$", snack.price.toFixed(2)] })] }, snack.id))) }));
+    return (_jsx("div", { className: "snack-grid", children: snacks.map((snack) => (_jsxs("div", { className: `snack-card ${!snack.available ? 'unavailable' : ''}`, children: [_jsx("img", { src: snack.image, alt: snack.name }), _jsx("h3", { children: snack.name }), _jsx("p", { children: snack.description }), _jsxs("span", { children: ["$", snack.price.toFixed(2)] }), !snack.available && (_jsx("div", { className: "unavailable-badge", children: "Indispon\u00EDvel" }))] }, snack.id))) }));
 };

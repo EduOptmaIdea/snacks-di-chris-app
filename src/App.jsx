@@ -61,47 +61,51 @@ function AppContent() {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const navigate = useNavigate();
 
-  // Lógica atual para buscar dados da API_URL
-  useEffect(() => {
-    console.log("Buscando dados da API_URL:", API_URL);
-    fetch(API_URL)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Dados recebidos da API_URL:", data);
-        setCategorias(data.categories || []);
-        setProducts(data.products || []);
-      })
-      .catch(error => console.error("Erro ao buscar dados da API_URL:", error));
-  }, []);
-
-  // EXEMPLO: Lógica para buscar produtos do Firebase (Firestore)
-  // Você pode habilitar esta e desabilitar a de cima quando estiver pronto para migrar
-  /*
+  // Lógica para buscar produtos do Firebase (Firestore)
   useEffect(() => {
     const fetchFirebaseProducts = async () => {
       try {
-        console.log("Buscando produtos do Firebase...");
-        const productsCollection = collection(db, "produtos"); // "produtos" é o nome da sua coleção no Firestore
-        const productSnapshot = await getDocs(query(productsCollection, orderBy("nome"))); // Exemplo: ordenar por nome
-        const productList = productSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setProducts(productList);
-        console.log("Produtos carregados do Firebase:", productList);
+        console.log("Buscando produtos do Firestore...");
+        const productsCollection = collection(db, "products"); // "products" é o nome da coleção no Firestore
+        const productSnapshot = await getDocs(productsCollection);
+        
+        const productList = productSnapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            productname: data.productName || '',
+            description: data.description || '',
+            price: data.price || 0,
+            image: data.image || '',
+            imagePath: data.imagePath || '',
+            categoria: data.categoryRef || '',
+            available: data.available !== undefined ? data.available : true,
+            ingredientes: data.ingredientRefs || [],
+            alergenicos: data.allergenicAgentRefs || []
+          };
+        });
+        
+        // Filtrar apenas produtos disponíveis
+        const availableProducts = productList.filter(product => product.available);
+        
+        setProducts(productList); // Ou use availableProducts se quiser mostrar apenas disponíveis
+        console.log("Produtos carregados do Firestore:", productList);
 
-        // Lógica para extrair e definir categorias a partir dos produtos do Firebase
+        // Extrair categorias únicas dos produtos
         const uniqueCategories = [...new Set(productList.map(p => p.categoria))];
-        // Você pode querer uma estrutura mais elaborada para categorias, com ID, nome, imagem, etc.
-        // Por enquanto, vamos apenas usar os nomes das categorias encontradas nos produtos.
-        setCategorias(uniqueCategories.map(catName => ({ category: catName, name: catName }))); 
-        console.log("Categorias definidas a partir do Firebase:", uniqueCategories.map(catName => ({ category: catName, name: catName })));
+        setCategorias(uniqueCategories.map(catName => ({ 
+          category: catName, 
+          name: catName 
+        })));
+        console.log("Categorias definidas a partir do Firestore:", uniqueCategories);
 
       } catch (error) {
-        console.error("Erro ao buscar produtos do Firebase: ", error);
+        console.error("Erro ao buscar produtos do Firestore: ", error);
       }
     };
 
     fetchFirebaseProducts();
   }, []);
-  */
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -187,6 +191,12 @@ function AppContent() {
     : null;
 
   const adicionarAoCarrinho = (novoItem) => {
+    // Verificar se o produto está disponível antes de adicionar ao carrinho
+    if (novoItem.available === false) {
+      console.log("Produto indisponível não pode ser adicionado ao carrinho:", novoItem);
+      return; // Não adiciona ao carrinho se o produto estiver indisponível
+    }
+    
     setCarrinho((carrinhoAtual) => {
       const existente = carrinhoAtual.find(item =>
         item.id === novoItem.id &&

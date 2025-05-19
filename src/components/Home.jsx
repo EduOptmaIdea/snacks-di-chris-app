@@ -1,22 +1,49 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/Home.css';
 import { motion } from 'framer-motion';
-import { API_URL, getLocalImageUrl } from '../constants';
+import { getLocalImageUrl } from '../constants';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase.ts';
 
 function Home({ onCategoriaClick }) {
   const [categoriasData, setCategoriasData] = useState([]);
 
   useEffect(() => {
-    fetch(API_URL)
-      .then((res) => res.json())
-      .then((data) => {
-        const processedCategories = (data.categories || []).map(categoria => ({
+    const fetchCategories = async () => {
+      try {
+        console.log("Buscando categorias do Firestore...");
+        const categoriesCollection = collection(db, "categories");
+        const categorySnapshot = await getDocs(categoriesCollection);
+        
+        const categoriesList = categorySnapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            category: data.name || '',
+            description: data.description || '',
+            image: data.image || '',
+          };
+        });
+        
+        const processedCategories = categoriesList.map(categoria => ({
           ...categoria,
           image: getLocalImageUrl(categoria.image) // Processa a imagem aqui
         }));
+        
         setCategoriasData(processedCategories);
-      })
-      .catch((err) => console.error('Erro ao carregar categorias:', err));
+        console.log("Categorias carregadas do Firestore:", processedCategories);
+      } catch (err) {
+        console.error('Erro ao carregar categorias do Firestore:', err);
+        
+        // Fallback para categorias do App.jsx se disponíveis
+        if (window.appCategories && window.appCategories.length > 0) {
+          console.log("Usando categorias do App.jsx como fallback");
+          setCategoriasData(window.appCategories);
+        }
+      }
+    };
+    
+    fetchCategories();
   }, []);
 
   return (

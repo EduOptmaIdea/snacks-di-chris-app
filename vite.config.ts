@@ -20,32 +20,33 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       react(),
-      svgr({ 
-        svgrOptions: { 
+      svgr({
+        svgrOptions: {
           icon: true,
           svgoConfig: {
             plugins: [
               {
-                name: 'preset-default',
+                name: "preset-default",
                 params: {
                   overrides: {
-                    removeViewBox: false
-                  }
-                }
-              }
-            ]
-          }
-        } 
+                    removeViewBox: false,
+                  },
+                },
+              },
+            ],
+          },
+        },
       }),
       tailwindcss(),
       VitePWA({
         registerType: "autoUpdate",
-        includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
+        includeAssets: ["favicon.ico", "apple-touch-icon.png"],
         manifest: {
           id: "/",
           name: "SNACKS di Chris",
           short_name: "SNACKS",
-          description: "Loja de gostosuras em Goiânia – faça pedidos via WhatsApp ou retire aqui!",
+          description:
+            "Loja de gostosuras em Goiânia – faça pedidos via WhatsApp ou retire aqui!",
           start_url: "./",
           display: "standalone",
           background_color: "#F1EDD2",
@@ -56,20 +57,20 @@ export default defineConfig(({ mode }) => {
               src: "/pwa-192x192.png",
               sizes: "192x192",
               type: "image/png",
-              purpose: "any"
+              purpose: "any",
             },
             {
               src: "/pwa-512x512.png",
               sizes: "512x512",
               type: "image/png",
-              purpose: "any"
+              purpose: "any",
             },
             {
               src: "/pwa-512x512.png",
               sizes: "512x512",
               type: "image/png",
-              purpose: "maskable"
-            }
+              purpose: "maskable",
+            },
           ],
           screenshots: [
             {
@@ -127,17 +128,6 @@ export default defineConfig(({ mode }) => {
         },
       }),
     ],
-   /*css: {
-      postcss: {
-        config: false, // Desativa a busca automática de configuração
-        plugins: [
-          require('@tailwindcss/postcss')({
-            config: './tailwind.config.js'
-          }),
-          require('autoprefixer'),
-        ],
-      },
-    },*/
     server: {
       host: "0.0.0.0",
       port: 5173,
@@ -147,34 +137,34 @@ export default defineConfig(({ mode }) => {
         "Content-Security-Policy": `
           default-src 'self';
           connect-src 'self' 
-            ${isDev ? "ws://localhost:5173" : ""}
+            ${isDev ? "ws://localhost:5173 wss://localhost:5173" : ""}
+            https://*.googleapis.com 
+            https://firestore.googleapis.com 
+            https://*.firebaseio.com 
+            https://identitytoolkit.googleapis.com 
+            https://*.cloudfunctions.net
             https://www.google-analytics.com 
             https://*.google-analytics.com 
             https://www.googletagmanager.com 
-            https://*.googletagmanager.com
-            https://www.mockachino.com;
+            https://*.googletagmanager.com;
           img-src 'self' data: blob: 
             https://www.google-analytics.com 
-            https://*.google-analytics.com;
+            https://*.google-analytics.com
+            https://firebasestorage.googleapis.com
+            https://www.google.com;
           style-src 'self' 'unsafe-inline' 
             https://fonts.googleapis.com;
           font-src 'self' 
             https://fonts.gstatic.com;
-          script-src 'self' 'unsafe-inline' 
+          script-src 'self' 'unsafe-inline' 'unsafe-eval'
             https://www.googletagmanager.com 
             https://*.googletagmanager.com;
           frame-src 'none';
           worker-src 'self' blob:;
           manifest-src 'self';
-        `.replace(/\n/g, '').replace(/\s{2,}/g, ' ')
-      },
-      proxy: {
-        "/api": {
-          target: "https://www.mockachino.com/a0c8bbde-7d0d-4a",
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ""),
-          secure: false,
-        },
+        `
+          .replace(/\n/g, "")
+          .replace(/\s{2,}/g, " "),
       },
     },
     build: {
@@ -207,7 +197,7 @@ export default defineConfig(({ mode }) => {
         "react-router-dom",
         "@fortawesome/fontawesome-svg-core",
         "@fortawesome/free-solid-svg-icons",
-        "@fortawesome/react-fontawesome"
+        "@fortawesome/react-fontawesome",
       ],
       exclude: ["js-big-decimal"],
     },

@@ -32,8 +32,8 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #A9373E;
-  font-family: 'Roboto', sans-serif;
+  color: #a9373e;
+  font-family: "Roboto", sans-serif;
   font-weight: bold;
   z-index: 10;
 }
@@ -84,8 +84,8 @@
 
 .preco {
   font-size: 1.1rem;
-  font-family: 'RobotoSemi', sans-serif;
-  color: #A9373E;
+  font-family: "RobotoSemi", sans-serif;
+  color: #a9373e;
 }
 
 /* Quantidade */
@@ -100,7 +100,7 @@
 }
 
 .contador-quantidade button {
-  background: #A9373E;
+  background: #a9373e;
   color: white;
   border: none;
   padding: 8px 12px;
@@ -126,10 +126,10 @@
   border: none;
   font-size: 30px;
   cursor: pointer;
-  color: #A9373E;
+  color: #a9373e;
   margin-left: 0px;
   position: relative;
-  }
+}
 
 /* Rodapé do carrinho */
 .carrinho-footer {
@@ -147,7 +147,7 @@
 
 .total {
   font-size: 1.2rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: bold;
 }
 
@@ -162,7 +162,7 @@
 .btn-limpar,
 .btn-voltar-aos-produtos,
 .btn-comprar-mais {
-  background-color: #A9373E;
+  background-color: #a9373e;
   color: #fff;
   text-align: center;
   padding: 10px 16px;
@@ -170,14 +170,13 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-family: 'RobotoSemi', sans-serif;
+  font-family: "RobotoSemi", sans-serif;
   transition: color 0.3s ease;
 }
 
-
 .btn-voltar-aos-produtos,
 .btn-comprar-mais {
-  background-color: #EFB42B;
+  background-color: #efb42b;
 }
 
 .btn-limpar {
@@ -205,6 +204,12 @@
   text-align: center;
   align-items: center;
   padding: 2rem;
+}
+
+.carrinho-vazio h2 {
+  font-size: 1.5rem;
+  font-family: "Robotosemi", sans-serif;
+  margin-bottom: 1rem;
 }
 
 .img-vazio {
@@ -257,20 +262,19 @@
   .preco {
     font-size: 1rem;
     margin-top: 10px;
-    
   }
-  
+
   /* Ajuste no texto do carrinho vazio */
   .carrinho-vazio {
     padding: 1.5rem;
   }
-  
+
   .img-vazio {
     width: 100px;
     height: 100px;
     margin-bottom: 1rem;
   }
-  
+
   /* Ajuste do botão de fechar */
   .close-btn {
     top: 5px;

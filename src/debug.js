@@ -4,7 +4,7 @@
 export const logProductData = (source, product, additionalInfo = '') => {
   console.log(`[DEBUG - ${source}] Dados do produto:`, {
     id: product.id,
-    productName: product.productName, // Campo original do Firebase (com N maiúsculo)
+    productname: product.productname, // Campo original do Firebase (com N maiúsculo)
     productname: product.productname, // Campo esperado pelos componentes (tudo minúsculo)
     name: product.name,               // Alternativa 1
     nome: product.nome,               // Alternativa 2
@@ -16,7 +16,7 @@ export const logProductData = (source, product, additionalInfo = '') => {
 export const logFirestoreData = (source, data, docId) => {
   console.log(`[DEBUG - ${source}] Dados brutos do Firestore:`, {
     docId,
-    productName: data.productName,
+    productname: data.productname,
     name: data.name,
     allKeys: Object.keys(data),
     rawData: data

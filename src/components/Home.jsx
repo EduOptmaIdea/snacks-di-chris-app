@@ -89,7 +89,7 @@ function Home({ onCategoriaClick }) {
               alt={categoria.category}
               className="imagem-vertical"
               onError={(e) => {
-                e.target.src = '/categories/default.jpg'; // Fallback
+                e.target.src = '/default.webp'; // Fallback
               }}
             />
             <div className="texto-overlay-vertical">

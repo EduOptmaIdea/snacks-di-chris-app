@@ -29,7 +29,7 @@ function Menu({ categoriaSelecionada, produtos = [], onProdutoClick, categoriasF
 
   // Função para converter URL para WebP
   const getWebPImageUrl = (imagePath) => {
-    if (!imagePath) return '/products/default.webp';
+    if (!imagePath) return '/default.webp';
     
     // Se for uma URL do Firebase Storage, use-a diretamente
     if (imagePath && imagePath.includes && imagePath.includes('firebasestorage.googleapis.com')) return imagePath;
@@ -144,7 +144,7 @@ function Menu({ categoriaSelecionada, produtos = [], onProdutoClick, categoriasF
           <picture>
             <source srcSet={produto.imageUrl} type="image/webp" />
             <img
-              src={produto.imageUrl && produto.imageUrl.replace ? produto.imageUrl.replace('.webp', '.jpg') : '/products/default.jpg'} // Fallback para JPG
+              src={produto.imageUrl && produto.imageUrl.replace ? produto.imageUrl.replace('.webp', '.jpg') : '/default.webp'} // Fallback para JPG
               alt={produto.productname}
               className="produto-img"
               loading="lazy"

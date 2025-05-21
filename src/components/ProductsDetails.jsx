@@ -81,7 +81,7 @@ const ProductsDetails = ({
         <div className="modal-header">
           <div className="modal-header-left">
             <img
-              src={produto.imageUrl || produto.image || getLocalProductImageUrl(produto.images || produto.imagePath) || '/products/default.jpg'}
+              src={produto.imageUrl || produto.image || getLocalProductImageUrl(produto.images || produto.imagePath) || '/default.webp'}
               alt={nomeProduto}
               className="produto-img-modal"
             />

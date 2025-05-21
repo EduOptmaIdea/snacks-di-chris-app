@@ -12,9 +12,9 @@ const ProductImage = ({ imageName, alt, className }) => {
       img.src = imgUrl;
       
       img.onload = () => setImgSrc(imgUrl);
-      img.onerror = () => setImgSrc('/products/default.jpg');
+      img.onerror = () => setImgSrc('/default.webp');
     } else {
-      setImgSrc('/products/default.jpg');
+      setImgSrc('/default.webp');
     }
   }, [imageName]);
 
@@ -24,7 +24,7 @@ const ProductImage = ({ imageName, alt, className }) => {
       alt={alt}
       className={className}
       onError={(e) => {
-        e.target.src = '/products/default.jpg';
+        e.target.src = '/default.webp';
       }}
     />
   );

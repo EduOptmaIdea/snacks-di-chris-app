@@ -38,7 +38,7 @@ export const WHATSAPP_PRIVACY_URL = `${WHATSAPP_BASE_URL}?text=${generatePrivacy
 
 // Funções atualizadas para imagens do Firebase Storage
 export const getImageUrl = (path) => {
-  if (!path) return '/products/default.jpg';
+  if (!path) return '/default.webp';
   if (path.startsWith('http')) return path; // Se já for uma URL completa, use-a diretamente
   if (path.startsWith('/')) return path; // Se for um caminho local, use-o diretamente
   // Se for uma referência ao Storage, use-a diretamente
@@ -46,14 +46,14 @@ export const getImageUrl = (path) => {
 };
 
 export const getLocalImageUrl = (imageName) => {
-  if (!imageName) return '/categories/default.jpg';
+  if (!imageName) return '/default.webp';
   if (imageName.startsWith('http')) return imageName; // Se já for uma URL completa, use-a diretamente
   const cleanName = imageName.split('/').pop();
   return `/categories/${cleanName}`;
 };
 
 export const getLocalProductImageUrl = (imageName) => {
-  if (!imageName) return '/products/default.jpg';
+  if (!imageName) return '/default.webp';
   if (imageName.startsWith('http')) return imageName; // Se já for uma URL completa, use-a diretamente
   const cleanName = imageName.split('/').pop();
   return `/products/${cleanName}`;

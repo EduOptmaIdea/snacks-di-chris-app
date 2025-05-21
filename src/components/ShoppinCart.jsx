@@ -82,11 +82,11 @@ const ShoppinCart = ({
                     key={`${item.id}-${item.comentario || ''}`.replace(/\s+/g, '-')}
                   >
                     <img
-                      src={item.imageUrl || '/products/default.jpg'}
+                      src={item.imageUrl || '/default.webp'}
                       alt={item.productname}
                       className="item-img-pequena"
                       onError={(e) => {
-                        e.target.src = '/products/default.jpg';
+                        e.target.src = '/default.webp';
                         e.target.onerror = null;
                       }}
                     />

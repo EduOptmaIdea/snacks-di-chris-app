@@ -145,7 +145,7 @@ function AppContent() {
           }
           
           // Garantir que o nome do produto seja mapeado corretamente
-          const productname = data.productName || data.name || '';
+          const productname = data.productname || data.name || '';
           
           const produto = {
             id: doc.id,

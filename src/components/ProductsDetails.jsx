@@ -17,17 +17,24 @@ const ProductsDetails = ({
 
   if (!produto) return null;
 
+  // Garantir que sempre tenhamos um nome de produto válido
+  const nomeProduto = produto.productname || produto.name || produto.nome || "Produto";
+  
   const incrementar = () => setQuantidade(q => q + 1);
   const decrementar = () => setQuantidade(q => (q > 1 ? q - 1 : 1));
-  const precoTotal = (produto.price * quantidade).toFixed(2);
+  const precoTotal = ((produto.price || produto.preco || 0) * quantidade).toFixed(2);
 
-  const ingredientesDetalhados = produto.ingredients
-    ? produto.ingredients.split(',').map(ing => ing.trim())
-    : [];
+  // Usar ingredientesDetalhados do produto se disponível, ou fazer fallback para outros formatos
+  const ingredientesDetalhados = produto.ingredientesDetalhados || 
+    (produto.ingredientes ? 
+      (Array.isArray(produto.ingredientes) ? produto.ingredientes : produto.ingredientes.split(',').map(ing => ing.trim())) : 
+      (produto.ingredients ? produto.ingredients.split(',').map(ing => ing.trim()) : []));
 
-  const alergicosDetalhados = produto['allergenic-agents']
-    ? produto['allergenic-agents'].split(',').map(al => al.trim())
-    : [];
+  // Usar alergenicosDetalhados do produto se disponível, ou fazer fallback para outros formatos
+  const alergicosDetalhados = produto.alergenicosDetalhados || 
+    (produto.alergenicos ? 
+      (Array.isArray(produto.alergenicos) ? produto.alergenicos : produto.alergenicos.split(',').map(al => al.trim())) : 
+      (produto['allergenic-agents'] ? produto['allergenic-agents'].split(',').map(al => al.trim()) : []));
 
   const comentarioValido = comentario && comentario.trim().length >= 5;
   const idFinal = comentarioValido ? `${produto.id}-${Math.floor(Math.random() * 100000)}` : produto.id;
@@ -35,12 +42,15 @@ const ProductsDetails = ({
   const handleAdicionar = () => {
     const item = {
       id: idFinal,
-      productname: produto.productname,
-      price: produto.price,
+      productname: nomeProduto,
+      name: nomeProduto, // Garantir que ambas as propriedades estejam presentes
+      nome: nomeProduto, // Garantir que ambas as propriedades estejam presentes
+      price: produto.price || produto.preco || 0,
+      preco: produto.price || produto.preco || 0, // Garantir que ambas as propriedades estejam presentes
       precoTotal: parseFloat(precoTotal),
       quantidade,
       comentario: comentarioValido ? comentario.trim() : "",
-      imageUrl: getLocalProductImageUrl(produto.images),
+      imageUrl: produto.imageUrl || produto.image || getLocalProductImageUrl(produto.images || produto.imagePath),
     };
 
     adicionarAoCarrinho(item);
@@ -71,12 +81,12 @@ const ProductsDetails = ({
         <div className="modal-header">
           <div className="modal-header-left">
             <img
-              src={produto.imageUrl || '/products/default.jpg'}
-              alt={produto.productname}
+              src={produto.imageUrl || produto.image || getLocalProductImageUrl(produto.images || produto.imagePath) || '/products/default.jpg'}
+              alt={nomeProduto}
               className="produto-img-modal"
             />
             <div className="produto-header">
-              <h3>{produto.productname}</h3>
+              <h3>{nomeProduto}</h3>
               {produto.available === false && (
                 <div className="produto-indisponivel">Produto Indisponível</div>
               )}
@@ -84,12 +94,12 @@ const ProductsDetails = ({
           </div>
           <div className="modal-header-right">
             <div className="preco-total">
-              Total: R$ {precoTotal}
+              R$ {precoTotal}
             </div>
             <div className="produto-detalhes">
               <p>{produto.description}</p>
-              <p><strong>Ingredientes:</strong> {ingredientesDetalhados.join(', ')}</p>
-              <p><strong>Alergênicos:</strong> {alergicosDetalhados.join(', ')}</p>
+              <p><strong>Ingredientes:</strong> {ingredientesDetalhados.length > 0 ? ingredientesDetalhados.join(', ') : 'Não informados'}</p>
+              <p><strong>Alergênicos:</strong> {alergicosDetalhados.length > 0 ? alergicosDetalhados.join(', ') : 'Não informados'}</p>
               {produto.available !== false && (
                 <div className="comentario-area">
                   <label htmlFor="comentario" className="comentario-label">Algum comentário?</label>

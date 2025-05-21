@@ -59,8 +59,11 @@ export default function Checkout({ carrinho, onCancelar, totalPedido, limparCarr
   const handleConfirmarEnvio = () => {
     const itensFormatados = carrinho.map(item => {
       const qtd = item.quantidade || 1;
-      const nome = item.productname || item.nome;
-      const preco = (item.price || item.preco).toFixed(2);
+      // Verificar todas as possíveis propriedades de nome do produto
+      const nome = item.productname || item.name || item.nome || "Produto";
+      console.log("Nome do produto no carrinho:", nome, item);
+      
+      const preco = (item.price || item.preco || 0).toFixed(2);
       const subtotal = (qtd * parseFloat(preco)).toFixed(2);
       const obs = item.comentario ? `Obs: ${item.comentario}` : 'Sem observações';
       return `📝 *${nome}*\nQtd: *${qtd}*\n*${obs}*\nSubtotal: *R$ ${subtotal}* 🔚`;

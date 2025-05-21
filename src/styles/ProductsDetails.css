@@ -18,7 +18,7 @@
   max-width: 900px;
   width: 90%;
   max-height: 90vh;
-  display:  flex;
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -43,8 +43,8 @@
   align-items: center;
   justify-content: center;
   font-size: 20px;
-  color: #A9373E;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  color: #a9373e;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 }
 
@@ -60,12 +60,12 @@
   overflow: hidden;
 }
 
-.modal-header-left{
+.modal-header-left {
   width: 40%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5px;
+  gap: 15px;
 }
 
 .produto-img-modal {
@@ -73,18 +73,18 @@
   max-height: 300px;
   object-fit: cover;
   border-radius: 10px 10px 10px 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .produto-header {
-  font-size: 1.1rem;
-  font-family: 'Roboto', sans-serif;
+  font-size: 2rem;
+  font-family: "Robotosemi", sans-serif;
   text-align: justify;
   text-wrap: balance;
   color: #000;
 }
 
-.modal-header-right{
+.modal-header-right {
   flex: 2;
   width: auto;
   display: flex;
@@ -98,15 +98,15 @@
 
 .preco-total {
   font-size: 1.2rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: bolder;
-  color: #A9373E;
+  color: #a9373e;
 }
 
 .produto-detalhes p {
   font-size: 0.9rem;
   text-align: justify;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   color: #333;
   margin-bottom: 10px;
 }
@@ -119,7 +119,7 @@
 }
 
 .comentario-label {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: bold;
   margin-bottom: 0.5rem;
   color: #333;
@@ -156,16 +156,16 @@
   width: 100%;
 }
 
-  .quantidade{
-    width: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-  }
+.quantidade {
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
 
 .btn-counter {
-  background-color: #A9373E;
+  background-color: #a9373e;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -182,7 +182,7 @@
 
 .contador-valor {
   font-size: 2rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: bold;
   color: #8c2e35;
   width: 32px;
@@ -191,15 +191,16 @@
 
 /* Botão adicionar ao carrinho */
 .btn-adicionar-carrinho {
-  background-color: #A9373E;
+  background-color: #a9373e;
   color: #ffffff;
-  padding: 16px;
-  font-size: 1;
+  padding-right: 16px;
+  padding-left: 16px;
+  font-size: 1rem;
   border: none;
   border-radius: 12px;
   width: auto;
   height: 42px;
-  font-family: 'RobotoSemi', sans-serif;
+  font-family: "RobotoSemi", sans-serif;
   cursor: pointer;
   transition: background-color 0.3s ease;
   align-self: center; /* Alinha o botão com os outros elementos */
@@ -215,7 +216,7 @@
   padding: 1rem;
   background-color: #d4edda;
   color: #155724;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: bold;
   border-radius: 8px;
 }
@@ -232,10 +233,10 @@
 }
 
 .link-opcao {
-  background: #EFB42B;
+  background: #efb42b;
   font-size: 1rem;
   width: 11rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: bold;
   text-align: center;
   border-radius: 8px;
@@ -265,7 +266,6 @@
 }
 
 @media (max-width: 768px) {
-
   /* Modal */
   .modal {
     width: 95%;
@@ -298,13 +298,14 @@
     align-items: center;
     justify-content: center;
     font-size: 12px;
-    color: #A9373E;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    color: #a9373e;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     cursor: pointer;
   }
 
   .modal-header-left {
     width: 100%;
+    margin-bottom: 20px;
   }
 
   .produto-img-modal {
@@ -312,7 +313,7 @@
   }
 
   .produto-header {
-    font-size: 0.9rem;
+    font-size: 1rem;
     text-align: center;
   }
 
@@ -332,7 +333,7 @@
   }
 
   /* Contador de quantidade */
-  .quantidade{
+  .quantidade {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -340,7 +341,7 @@
     gap: 10px;
   }
 
-  .adicionar-itens{
+  .adicionar-itens {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -359,13 +360,12 @@
 
   .btn-adicionar-carrinho {
     width: auto;
-    height: auto;
-    font-size: 0,7rem;
-    font-family: 'Roboto-Semi', sans-serif;
+    height: 40px;
+    font-size: 0.8rem;
+    font-family: "Roboto-Semi", sans-serif;
     font-weight: bold;
   }
 
-  /* Botões de opções após adicionar */
   .opcoes-pos-adicao {
     flex-direction: column;
     gap: 1rem;
@@ -376,7 +376,7 @@
     padding: 12px;
   }
 
-  .modal-header-right{
+  .modal-header-right {
     flex: 2;
     width: auto;
     display: flex;

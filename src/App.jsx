@@ -8,8 +8,9 @@ import Footer from './components/Footer';
 import { WHATSAPP_URL } from './constants';
 import { ChevronsUp } from 'lucide-react';
 
-import { db } from './firebase';
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { db } from './firebase.ts';
+import { collection, getDocs, query, orderBy, doc, getDoc } from "firebase/firestore";
+import { initializeReferenceMaps, enrichProductWithReferences } from './services/firestore-references';
 
 // Componentes carregados de forma lazy
 const Home = lazy(() => import('./components/Home'));
@@ -61,43 +62,120 @@ function AppContent() {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const navigate = useNavigate();
 
+  // Ordem fixa das categorias
+  const ordemFixaCategorias = [
+    'Batata recheada',
+    'Batata Rosti',
+    'Mandioca Rosti',
+    'Sobremesas',
+    'Bebidas'
+  ];
+
   // Lógica para buscar produtos do Firebase (Firestore)
   useEffect(() => {
     const fetchFirebaseProducts = async () => {
       try {
-        console.log("Buscando produtos do Firestore...");
-        const productsCollection = collection(db, "products"); // "products" é o nome da coleção no Firestore
+        // Inicializar mapas de referência para ingredientes e alergênicos
+        await initializeReferenceMaps();
+        
+        // Primeiro, buscar todas as categorias para criar um mapa de ID -> nome
+        const categoriesCollection = collection(db, "categories");
+        const categoriesSnapshot = await getDocs(categoriesCollection);
+        
+        // Criar um mapa de IDs de categoria para nomes de categoria
+        const categoryMap = {};
+        const categoriesList = [];
+        
+        categoriesSnapshot.docs.forEach(doc => {
+          const data = doc.data();
+          const categoryName = data.category || "Categoria " + doc.id;
+          categoryMap[doc.id] = categoryName;
+          categoriesList.push({
+            id: doc.id,
+            category: categoryName,
+            name: categoryName,
+            description: data.description || "",
+            image: data.image || "",
+            order: data.order || 999
+          });
+        });
+        
+        // Ordenar categorias conforme a ordem fixa
+        categoriesList.sort((a, b) => {
+          const indexA = ordemFixaCategorias.indexOf(a.category);
+          const indexB = ordemFixaCategorias.indexOf(b.category);
+          
+          // Se ambas as categorias estiverem na lista fixa, use a ordem da lista
+          if (indexA !== -1 && indexB !== -1) {
+            return indexA - indexB;
+          }
+          
+          // Se apenas uma estiver na lista fixa, priorize-a
+          if (indexA !== -1) return -1;
+          if (indexB !== -1) return 1;
+          
+          // Se nenhuma estiver na lista fixa, use a ordem definida no Firestore
+          return a.order - b.order;
+        });
+        
+        setCategorias(categoriesList);
+        
+        // Agora, buscar os produtos
+        const productsCollection = collection(db, "products");
         const productSnapshot = await getDocs(productsCollection);
         
-        const productList = productSnapshot.docs.map(doc => {
+        const productList = await Promise.all(productSnapshot.docs.map(async (doc) => {
           const data = doc.data();
-          return {
+          
+          // Obter o nome da categoria a partir do ID
+          let categoryName = "Categoria Desconhecida";
+          let categoryId = "";
+          
+          if (data.categoryRef) {
+            // Se categoryRef for um ID direto
+            if (typeof data.categoryRef === 'string') {
+              categoryId = data.categoryRef;
+              categoryName = categoryMap[data.categoryRef] || "Categoria " + data.categoryRef;
+            }
+            // Se categoryRef for uma referência do Firestore
+            else if (data.categoryRef.path) {
+              categoryId = data.categoryRef.path.split('/').pop();
+              categoryName = categoryMap[categoryId] || "Categoria " + categoryId;
+            }
+          }
+          
+          // Garantir que o nome do produto seja mapeado corretamente
+          const productname = data.productName || data.name || '';
+          
+          const produto = {
             id: doc.id,
-            productname: data.productName || '',
+            productname: productname, // Garantir que o nome seja mapeado corretamente
+            name: productname,        // Duplicar para compatibilidade
+            nome: productname,        // Duplicar para compatibilidade
             description: data.description || '',
             price: data.price || 0,
+            preco: data.price || 0,
             image: data.image || '',
             imagePath: data.imagePath || '',
-            categoria: data.categoryRef || '',
+            images: data.image || data.imagePath || '',
+            categoria: categoryName,
+            category: categoryName,
+            categoryId: categoryId,
             available: data.available !== undefined ? data.available : true,
             ingredientes: data.ingredientRefs || [],
             alergenicos: data.allergenicAgentRefs || []
           };
-        });
+          
+          // Enriquecer o produto com nomes de ingredientes e alergênicos
+          const produtoEnriquecido = enrichProductWithReferences(produto);
+          
+          return produtoEnriquecido;
+        }));
         
         // Filtrar apenas produtos disponíveis
         const availableProducts = productList.filter(product => product.available);
         
-        setProducts(productList); // Ou use availableProducts se quiser mostrar apenas disponíveis
-        console.log("Produtos carregados do Firestore:", productList);
-
-        // Extrair categorias únicas dos produtos
-        const uniqueCategories = [...new Set(productList.map(p => p.categoria))];
-        setCategorias(uniqueCategories.map(catName => ({ 
-          category: catName, 
-          name: catName 
-        })));
-        console.log("Categorias definidas a partir do Firestore:", uniqueCategories);
+        setProducts(availableProducts);
 
       } catch (error) {
         console.error("Erro ao buscar produtos do Firestore: ", error);
@@ -143,8 +221,6 @@ function AppContent() {
   const handleProdutoClick = (produto) => {
     setProdutoSelecionado(produto);
     setFrame(5);
-    // Exemplo de como você poderia registrar uma visualização de produto no Firebase
-    // logProductView(produto.id); // Você precisaria criar essa função, similar ao firebase_reporting_details.md
   };
 
   const closeProdutoDetalhes = () => {
@@ -164,53 +240,56 @@ function AppContent() {
     });
   }, []);
 
-  const ordemCategorias = [
-    'Batata recheada',
-    'Batata Rosti',
-    'Mandioca Rosti',
-    'Sobremesas',
-    'Bebidas'
-  ];
-
-  // Ajuste aqui se as categorias do Firebase tiverem uma estrutura diferente
+  // Lógica de filtragem corrigida para lidar com categorias vazias
   const produtosFiltrados = categoriaSelecionada
-    ? products.filter(p => p.categoria === categoriaSelecionada.category) // Se categoriaSelecionada.category for o nome da categoria
-    : ordemCategorias.flatMap(catName => products.filter(p => p.categoria === catName));
+    ? categoriaSelecionada.category 
+      ? products.filter(p => p.categoria === categoriaSelecionada.category || p.category === categoriaSelecionada.category)
+      : products.filter(p => p.categoryId === categoriaSelecionada.id)
+    : products; // Se não houver categoria selecionada, mostre todos os produtos
 
   const produtoDetalhado = produtoSelecionado
     ? {
       ...produtoSelecionado,
-      // Adapte os campos abaixo para corresponderem à estrutura do seu produto no Firebase
-      ingredientesDetalhados: produtoSelecionado.ingredientes // Supondo que você tenha um campo 'ingredientes' (array ou string)
-        ? (Array.isArray(produtoSelecionado.ingredientes) ? produtoSelecionado.ingredientes : produtoSelecionado.ingredientes.split(',').map(i => i.trim()))
-        : [],
-      alergenicosDetalhados: produtoSelecionado.alergenicos // Supondo um campo 'alergenicos'
-        ? (Array.isArray(produtoSelecionado.alergenicos) ? produtoSelecionado.alergenicos : produtoSelecionado.alergenicos.split(',').map(a => a.trim()))
-        : []
+      // Usar os nomes resolvidos de ingredientes e alergênicos
+      ingredientesDetalhados: produtoSelecionado.ingredientesNomes || 
+        (produtoSelecionado.ingredientes
+          ? (Array.isArray(produtoSelecionado.ingredientes) ? produtoSelecionado.ingredientes : produtoSelecionado.ingredientes.split(',').map(i => i.trim()))
+          : []),
+      alergenicosDetalhados: produtoSelecionado.alergenicosNomes || 
+        (produtoSelecionado.alergenicos
+          ? (Array.isArray(produtoSelecionado.alergenicos) ? produtoSelecionado.alergenicos : produtoSelecionado.alergenicos.split(',').map(a => a.trim()))
+          : [])
     }
     : null;
 
   const adicionarAoCarrinho = (novoItem) => {
     // Verificar se o produto está disponível antes de adicionar ao carrinho
     if (novoItem.available === false) {
-      console.log("Produto indisponível não pode ser adicionado ao carrinho:", novoItem);
       return; // Não adiciona ao carrinho se o produto estiver indisponível
     }
     
+    // Garantir que o nome do produto seja preservado
+    const itemComNome = {
+      ...novoItem,
+      productname: novoItem.productname || novoItem.name || novoItem.nome || "Produto",
+      name: novoItem.productname || novoItem.name || novoItem.nome || "Produto",
+      nome: novoItem.productname || novoItem.name || novoItem.nome || "Produto"
+    };
+    
     setCarrinho((carrinhoAtual) => {
       const existente = carrinhoAtual.find(item =>
-        item.id === novoItem.id &&
-        item.comentario === novoItem.comentario
+        item.id === itemComNome.id &&
+        item.comentario === itemComNome.comentario
       );
 
       if (existente) {
         return carrinhoAtual.map(item =>
           item === existente
-            ? { ...item, quantidade: item.quantidade + novoItem.quantidade }
+            ? { ...item, quantidade: item.quantidade + itemComNome.quantidade }
             : item
         );
       } else {
-        return [...carrinhoAtual, { ...novoItem }];
+        return [...carrinhoAtual, { ...itemComNome }];
       }
     });
   };
@@ -275,7 +354,7 @@ function AppContent() {
                 navigate('/cardapio');
               }}
               // Passe as categorias do Firebase para o Home se necessário
-              // categorias={categorias} 
+              categorias={categorias}
               />
             </motion.div>
           )}
@@ -287,8 +366,8 @@ function AppContent() {
                 produtos={produtosFiltrados}
                 onProdutoClick={handleProdutoClick}
                 // Ajuste para usar as categorias do Firebase
-                categoriasFromFirebase={categorias} // Novo prop, ou adapte 'categoriasOrdenadas'
-                categoriasOrdenadas={ordemCategorias} // Mantenha se a ordem for manual, ou derive do Firebase
+                categoriasFromFirebase={categorias}
+                categoriasOrdenadas={ordemFixaCategorias}
                 onVoltar={() => {
                   setCategoriaSelecionada(null);
                   setFrame(1);

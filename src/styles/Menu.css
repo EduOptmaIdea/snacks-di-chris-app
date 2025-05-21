@@ -7,17 +7,18 @@
   justify-content: space-between;
   align-items: center;
   padding: 0px;
-  }
+}
 
 .busca-e-volta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 60px;
+  margin-top: 40px;
+  margin-bottom: 30px;
   position: relative;
 }
 
-  .campo-busca {
+.campo-busca {
   width: 100%;
   display: flex;
   align-items: center;
@@ -29,7 +30,7 @@
   outline: none;
   transition: border-color 0.3s ease;
   display: block;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   position: relative;
   top: 0;
   display: flex;
@@ -48,9 +49,9 @@
   position: relative;
   top: 0;
   gap: 8px;
-  font-family: 'RobotoSemi', sans-serif;
-  color: #FFF;
-  background-color: #A9373E;
+  font-family: "RobotoSemi", sans-serif;
+  color: #fff;
+  background-color: #a9373e;
   padding: 8px 16px;
   border: none;
   border-radius: 8px;
@@ -70,16 +71,17 @@
 
 .btn-text {
   display: flex;
-  font-family: 'RobotoSemi', sans-serif;
+  font-family: "RobotoSemi", sans-serif;
   align-items: center;
 }
 
 .categoria-grupo {
-  margin-bottom: 80px;
-  padding: 0px;  
+  margin-bottom: 50px;
+  padding: 0px;
 }
 
-.produtos-grid, .carrossel-horizontal {
+.produtos-grid,
+.carrossel-horizontal {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   grid-gap: 10px 20px;
@@ -89,27 +91,27 @@
 }
 
 .categoria-titulo {
-  font-family: 'Neufreit', sans-serif;
+  font-family: "Neufreit", sans-serif;
   gap: 10px;
   display: flex;
   align-items: center;
   font-size: 24px;
   text-transform: uppercase;
   margin-left: 16px;
-  margin-bottom: 30px;
-  color: #A9373E;
-  border-left: 6px solid #EFB42B;
+  margin-bottom: 20px;
+  color: #a9373e;
+  border-left: 6px solid #efb42b;
   padding-left: 12px;
 }
 
 .campo-busca:focus {
-  border-color: #EFB42B;
+  border-color: #efb42b;
 }
 
 .barra-categoria {
   width: 5px;
   height: 30px;
-  background-color: #EFB42B;
+  background-color: #efb42b;
   border-radius: 2px;
 }
 
@@ -131,7 +133,7 @@
   flex-direction: column;
   height: 100%;
   padding: 0;
-  }
+}
 
 .produto-card:hover {
   transform: scale(1.04);
@@ -159,7 +161,7 @@
 }
 
 .produto-nome {
-  font-family: 'RobotoSemi', sans-serif;
+  font-family: "RobotoSemi", sans-serif;
   font-size: 18px;
   font-weight: bolder;
   line-height: 1.2;
@@ -168,7 +170,7 @@
 }
 
 .produto-descricao {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 14px;
   color: #666;
   margin-bottom: 12px;
@@ -180,10 +182,10 @@
 }
 
 .produto-preco {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: bolder;
   font-size: 20px;
-  color: #A9373E;
+  color: #a9373e;
   margin-top: auto;
 }
 
@@ -196,7 +198,7 @@
     padding: 0 16px;
     row-gap: 30px;
   }
-  
+
   .produto-img-container {
     height: 180px;
   }
@@ -206,34 +208,34 @@
   .busca-e-volta {
     flex-direction: column;
     margin-top: 20px;
-    gap: 15px; 
+    gap: 15px;
     align-items: stretch;
   }
-  
+
   .btn-voltar {
     width: auto;
     margin: 0;
   }
-  
+
   .categoria-titulo {
     font-size: 20px;
   }
-  
+
   .produtos-grid,
   .carrossel-horizontal {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     grid-gap: 60px 20px;
     row-gap: 30px;
   }
-  
+
   .produto-img-container {
     height: 100px;
   }
-  
+
   .produto-nome {
     font-size: 16px;
   }
-  
+
   .produto-preco {
     font-size: 18px;
   }
@@ -241,12 +243,13 @@
   .categoria-grupo {
     margin-bottom: 12px;
   }
-  
+
   .categoria-grupo:last-child {
     margin-bottom: 50px;
   }
-  
-  .produtos-grid, .carrossel-horizontal {
+
+  .produtos-grid,
+  .carrossel-horizontal {
     gap: 15px;
     margin-bottom: 15px;
   }
@@ -255,9 +258,9 @@
 @media (max-width: 480px) {
   .produtos-grid {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    grid-gap: 30px 20px; 
+    grid-gap: 30px 20px;
   }
-  
+
   .categoria-titulo-container {
     display: flex;
     align-items: center;
@@ -286,7 +289,7 @@
     display: flex;
     flex-direction: column;
     height: 95%;
-    padding: 0;  
+    padding: 0;
   }
 
   .produto-img {
@@ -300,28 +303,28 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .produto-nome {
-    font-family: 'RobotoSemi', sans-serif;
+    font-family: "RobotoSemi", sans-serif;
     font-size: 16px;
-    font-weight:bolder;
+    font-weight: bolder;
     line-height: 1.2;
     color: #333;
     margin: 0;
   }
-  
+
   .produto-descricao {
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: 10px;
     color: #333;
     margin-top: 4px;
   }
-  
+
   .produto-preco {
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     font-weight: bolder;
     font-size: 16px;
-    color: #A9373E;
+    color: #a9373e;
     margin-top: 4px;
   }
 
@@ -353,20 +356,21 @@
     padding: 8px 12px;
   }
 
-  .busca-e-volta{
+  .busca-e-volta {
     display: flex;
     justify-content: column;
     align-items: center;
     margin-top: 20px;
     gap: 10px;
   }
-  
-  .produtos-grid, .carrossel-horizontal {
+
+  .produtos-grid,
+  .carrossel-horizontal {
     margin-bottom: 0px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
     grid-gap: 10px 8%;
     padding: 0px 0px;
-    row-gap: 12px
+    row-gap: 12px;
   }
 }

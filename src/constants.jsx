@@ -1,5 +1,5 @@
 // Funções para gerar mensagens
-const generateContactMessage = ( ) => {
+const generateContactMessage = () => {
   const hour = new Date().getHours();
   let greeting;
   
@@ -33,27 +33,29 @@ const generatePrivacyMessage = () => {
 export const WHATSAPP_BASE_URL = 'https://wa.me/5562999944838';
 
 // URLs completas com mensagens específicas
-export const WHATSAPP_URL = `${WHATSAPP_BASE_URL}?text=${generateContactMessage( )}`;
+export const WHATSAPP_URL = `${WHATSAPP_BASE_URL}?text=${generateContactMessage()}`;
 export const WHATSAPP_PRIVACY_URL = `${WHATSAPP_BASE_URL}?text=${generatePrivacyMessage()}`;
 
-// Funções atualizadas para imagens
+// Funções atualizadas para imagens do Firebase Storage
 export const getImageUrl = (path) => {
   if (!path) return '/products/default.jpg';
-  if (path.startsWith('http' ) || path.startsWith('/')) return path;
+  if (path.startsWith('http')) return path; // Se já for uma URL completa, use-a diretamente
+  if (path.startsWith('/')) return path; // Se for um caminho local, use-o diretamente
   // Se for uma referência ao Storage, use-a diretamente
   return path;
 };
 
 export const getLocalImageUrl = (imageName) => {
   if (!imageName) return '/categories/default.jpg';
+  if (imageName.startsWith('http')) return imageName; // Se já for uma URL completa, use-a diretamente
   const cleanName = imageName.split('/').pop();
   return `/categories/${cleanName}`;
 };
 
 export const getLocalProductImageUrl = (imageName) => {
   if (!imageName) return '/products/default.jpg';
-  if (imageName && imageName.startsWith('http' )) return imageName;
-  const cleanName = imageName ? imageName.split('/').pop() : 'default.jpg';
+  if (imageName.startsWith('http')) return imageName; // Se já for uma URL completa, use-a diretamente
+  const cleanName = imageName.split('/').pop();
   return `/products/${cleanName}`;
 };
 

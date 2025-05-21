@@ -8,10 +8,18 @@ import { db } from '../firebase.ts';
 function Home({ onCategoriaClick }) {
   const [categoriasData, setCategoriasData] = useState([]);
 
+  // Ordem fixa das categorias conforme especificado
+  const ordemFixaCategorias = [
+    'Batata recheada',
+    'Batata Rosti',
+    'Mandioca Rosti',
+    'Sobremesas',
+    'Bebidas'
+  ];
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        console.log("Buscando categorias do Firestore...");
         const categoriesCollection = collection(db, "categories");
         const categorySnapshot = await getDocs(categoriesCollection);
         
@@ -19,7 +27,7 @@ function Home({ onCategoriaClick }) {
           const data = doc.data();
           return {
             id: doc.id,
-            category: data.name || '',
+            category: data.category || data.name || '',
             description: data.description || '',
             image: data.image || '',
           };
@@ -30,14 +38,30 @@ function Home({ onCategoriaClick }) {
           image: getLocalImageUrl(categoria.image) // Processa a imagem aqui
         }));
         
-        setCategoriasData(processedCategories);
-        console.log("Categorias carregadas do Firestore:", processedCategories);
+        // Ordenar categorias conforme a ordem fixa
+        const sortedCategories = [...processedCategories].sort((a, b) => {
+          const indexA = ordemFixaCategorias.indexOf(a.category);
+          const indexB = ordemFixaCategorias.indexOf(b.category);
+          
+          // Se ambas as categorias estiverem na lista fixa, use a ordem da lista
+          if (indexA !== -1 && indexB !== -1) {
+            return indexA - indexB;
+          }
+          
+          // Se apenas uma estiver na lista fixa, priorize-a
+          if (indexA !== -1) return -1;
+          if (indexB !== -1) return 1;
+          
+          // Se nenhuma estiver na lista fixa, mantenha a ordem original
+          return 0;
+        });
+        
+        setCategoriasData(sortedCategories);
       } catch (err) {
         console.error('Erro ao carregar categorias do Firestore:', err);
         
         // Fallback para categorias do App.jsx se disponíveis
         if (window.appCategories && window.appCategories.length > 0) {
-          console.log("Usando categorias do App.jsx como fallback");
           setCategoriasData(window.appCategories);
         }
       }

@@ -18,7 +18,7 @@ function ProdutoSkeleton() {
   );
 }
 
-function Menu({ categoriaSelecionada, produtos = [], onProdutoClick, categoriasOrdenadas = [], onVoltar }) {
+function Menu({ categoriaSelecionada, produtos = [], onProdutoClick, categoriasFromFirebase = [], categoriasOrdenadas = [], onVoltar }) {
   const [busca, setBusca] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -30,62 +30,127 @@ function Menu({ categoriaSelecionada, produtos = [], onProdutoClick, categoriasO
   // Função para converter URL para WebP
   const getWebPImageUrl = (imagePath) => {
     if (!imagePath) return '/products/default.webp';
+    
+    // Se for uma URL do Firebase Storage, use-a diretamente
+    if (imagePath && imagePath.includes && imagePath.includes('firebasestorage.googleapis.com')) return imagePath;
 
     // Verifica se já é WebP
-    if (imagePath.endsWith('.webp')) return imagePath;
+    if (imagePath && imagePath.endsWith && imagePath.endsWith('.webp')) return imagePath;
 
     // Converte para WebP
-    const baseUrl = imagePath.split('?')[0]; // Remove query params se existirem
-    return baseUrl.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+    const baseUrl = imagePath && imagePath.split ? imagePath.split('?')[0] : imagePath; // Remove query params se existirem
+    return baseUrl && baseUrl.replace ? baseUrl.replace(/\.(jpg|jpeg|png)$/i, '.webp') : '/products/default.webp';
   };
 
-  const processedProducts = produtos.map(produto => ({
-    ...produto,
-    imageUrl: getWebPImageUrl(getLocalProductImageUrl(produto.images))
-  }));
+  // Processa produtos para garantir compatibilidade com Firebase
+  const processedProducts = produtos.map(produto => {
+    // Garantir que sempre tenhamos um nome de produto válido
+    // IMPORTANTE: Verificar todos os possíveis campos de nome, incluindo productName (com N maiúsculo)
+    const nomeProduto = produto.productName || produto.productname || produto.name || produto.nome || "Produto";
+    
+    const processedProduct = {
+      ...produto,
+      id: produto.id || Math.random().toString(36).substring(2),
+      productname: nomeProduto,
+      name: nomeProduto, // Garantir que ambas as propriedades estejam presentes
+      nome: nomeProduto, // Garantir que ambas as propriedades estejam presentes
+      description: produto.description || '',
+      price: produto.price || produto.preco || 0,
+      preco: produto.price || produto.preco || 0, // Garantir que ambas as propriedades estejam presentes
+      category: produto.category || produto.categoria || '',
+      categoria: produto.category || produto.categoria || '',
+      imageUrl: produto.image 
+        ? getWebPImageUrl(produto.image) 
+        : getWebPImageUrl(getLocalProductImageUrl(produto.imagePath || produto.images))
+    };
+    
+    return processedProduct;
+  });
 
-  const categoriasAgrupadas = categoriasOrdenadas.map((catNome) => {
-    const produtosDaCategoria = processedProducts.filter(
-      p => p.category === catNome && p.productname.toLowerCase().includes(busca.toLowerCase())
+  // Ordem fixa das categorias conforme especificado
+  const ordemFixaCategorias = [
+    'Batata recheada',
+    'Batata Rosti',
+    'Mandioca Rosti',
+    'Sobremesas',
+    'Bebidas'
+  ];
+
+  // Usar categorias do Firebase se disponíveis, caso contrário usar as ordenadas
+  let categoriasParaExibir = categoriasFromFirebase.length > 0 
+    ? [...categoriasFromFirebase] 
+    : ordemFixaCategorias.map(cat => ({ category: cat, name: cat }));
+
+  // Ordenar categorias conforme a ordem fixa
+  categoriasParaExibir.sort((a, b) => {
+    const indexA = ordemFixaCategorias.indexOf(a.category);
+    const indexB = ordemFixaCategorias.indexOf(b.category);
+    
+    // Se ambas as categorias estiverem na lista fixa, use a ordem da lista
+    if (indexA !== -1 && indexB !== -1) {
+      return indexA - indexB;
+    }
+    
+    // Se apenas uma estiver na lista fixa, priorize-a
+    if (indexA !== -1) return -1;
+    if (indexB !== -1) return 1;
+    
+    // Se nenhuma estiver na lista fixa, mantenha a ordem original
+    return 0;
+  });
+
+  // Filtrar produtos por busca
+  const produtosFiltradosPorBusca = processedProducts.filter(p => 
+    p.productname.toLowerCase().includes(busca.toLowerCase())
+  );
+
+  // Agrupar produtos por categoria
+  const categoriasAgrupadas = categoriasParaExibir.map((cat) => {
+    const catName = cat.category || cat.name;
+    const produtosDaCategoria = produtosFiltradosPorBusca.filter(
+      p => (p.category === catName || p.categoria === catName)
     );
-    return { nome: catNome, produtos: produtosDaCategoria };
+    return { nome: catName, produtos: produtosDaCategoria };
   }).filter(c => c.produtos.length > 0);
 
+  // Produtos filtrados para quando uma categoria específica é selecionada
   const produtosFiltrados = categoriaSelecionada
-    ? processedProducts.filter(
-      p => p.category === categoriaSelecionada.category &&
-        p.productname.toLowerCase().includes(busca.toLowerCase())
-    )
-    : processedProducts.filter(p => p.productname.toLowerCase().includes(busca.toLowerCase()));
+    ? produtosFiltradosPorBusca.filter(
+        p => (p.category === categoriaSelecionada.category || p.categoria === categoriaSelecionada.category) ||
+             (categoriaSelecionada.id && p.categoryId === categoriaSelecionada.id)
+      )
+    : produtosFiltradosPorBusca;
 
-  const renderProdutoCard = (produto) => (
-    <motion.div
-      key={produto.id}
-      className="produto-card"
-      onClick={() => onProdutoClick(produto)}
-      whileHover={{ scale: 1.03 }}
-    >
-      <div className="produto-img-container">
-        <picture>
-          <source srcSet={produto.imageUrl} type="image/webp" />
-          <img
-            src={produto.imageUrl.replace('.webp', '.jpg')} // Fallback para JPG
-            alt={produto.productname}
-            className="produto-img"
-            loading="lazy"
-            onError={(e) => {
-              e.target.src = '/products/default.webp';
-            }}
-          />
-        </picture>
-      </div>
-      <div className="produto-info">
-        <p className="produto-nome">{produto.productname}</p>
-        <p className="produto-descricao">{produto.description}</p>
-        <p className="produto-preco">R$ {produto.price.toFixed(2)}</p>
-      </div>
-    </motion.div>
-  );
+  const renderProdutoCard = (produto) => {
+    return (
+      <motion.div
+        key={produto.id}
+        className="produto-card"
+        onClick={() => onProdutoClick(produto)}
+        whileHover={{ scale: 1.03 }}
+      >
+        <div className="produto-img-container">
+          <picture>
+            <source srcSet={produto.imageUrl} type="image/webp" />
+            <img
+              src={produto.imageUrl && produto.imageUrl.replace ? produto.imageUrl.replace('.webp', '.jpg') : '/products/default.jpg'} // Fallback para JPG
+              alt={produto.productname}
+              className="produto-img"
+              loading="lazy"
+              onError={(e) => {
+                e.target.src = '/products/default.webp';
+              }}
+            />
+          </picture>
+        </div>
+        <div className="produto-info">
+          <p className="produto-nome">{produto.productname}</p>
+          <p className="produto-descricao">{produto.description}</p>
+          <p className="produto-preco">R$ {typeof produto.price === 'number' ? produto.price.toFixed(2) : parseFloat(produto.price || 0).toFixed(2)}</p>
+        </div>
+      </motion.div>
+    );
+  };
 
   return (
     <motion.section
@@ -112,7 +177,7 @@ function Menu({ categoriaSelecionada, produtos = [], onProdutoClick, categoriasO
       {categoriaSelecionada && (
         <div className="frame-title-area">
           <h2 className="categoria-titulo">
-            <span className="neufreit cor1">{categoriaSelecionada.category}</span>
+            <span className="neufreit cor1">{categoriaSelecionada.category || categoriaSelecionada.name || "Produtos"}</span>
           </h2>
         </div>
       )}
@@ -126,28 +191,35 @@ function Menu({ categoriaSelecionada, produtos = [], onProdutoClick, categoriasO
         >
           {isLoading
             ? Array.from({ length: skeletonCount }).map((_, idx) => <ProdutoSkeleton key={idx} />)
-            : produtosFiltrados.map(renderProdutoCard)}
+            : produtosFiltrados.length > 0 
+              ? produtosFiltrados.map(renderProdutoCard)
+              : <div className="sem-produtos">Nenhum produto encontrado nesta categoria.</div>
+          }
         </motion.div>
       ) : (
-        categoriasAgrupadas.map((grupo, idx) => (
-          <div key={idx} className="categoria-grupo">
-            <div className="categoria-titulo-container">
-              <h2 className="categoria-titulo">
-                <span className="neufreit cor1">{grupo.nome.toUpperCase()}</span>
-              </h2>
+        categoriasAgrupadas.length > 0 ? (
+          categoriasAgrupadas.map((grupo, idx) => (
+            <div key={idx} className="categoria-grupo">
+              <div className="categoria-titulo-container">
+                <h2 className="categoria-titulo">
+                  <span className="neufreit cor1">{grupo.nome.toUpperCase()}</span>
+                </h2>
+              </div>
+              <motion.div
+                className="produtos-carrossel carrossel-horizontal"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 * idx, duration: 0.3 }}
+              >
+                {isLoading
+                  ? Array.from({ length: skeletonCount }).map((_, i) => <ProdutoSkeleton key={i} />)
+                  : grupo.produtos.map(renderProdutoCard)}
+              </motion.div>
             </div>
-            <motion.div
-              className="produtos-carrossel carrossel-horizontal"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * idx, duration: 0.3 }}
-            >
-              {isLoading
-                ? Array.from({ length: skeletonCount }).map((_, i) => <ProdutoSkeleton key={i} />)
-                : grupo.produtos.map(renderProdutoCard)}
-            </motion.div>
-          </div>
-        ))
+          ))
+        ) : (
+          <div className="sem-produtos">Nenhum produto encontrado. Tente outra busca.</div>
+        )
       )}
     </motion.section>
   );

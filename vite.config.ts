@@ -128,6 +128,17 @@ export default defineConfig(({ mode }) => {
         },
       }),
     ],
+    /*css: {
+      postcss: {
+        config: false, // Desativa a busca automática de configuração
+        plugins: [
+          require('@tailwindcss/postcss')({
+            config: './tailwind.config.js'
+          }),
+          require('autoprefixer'),
+        ],
+      },
+    },*/
     server: {
       host: "0.0.0.0",
       port: 5173,
@@ -137,16 +148,17 @@ export default defineConfig(({ mode }) => {
         "Content-Security-Policy": `
           default-src 'self';
           connect-src 'self' 
-            ${isDev ? "ws://localhost:5173 wss://localhost:5173" : ""}
-            https://*.googleapis.com 
-            https://firestore.googleapis.com 
-            https://*.firebaseio.com 
-            https://identitytoolkit.googleapis.com 
-            https://*.cloudfunctions.net
+            ${isDev ? "ws://localhost:* wss://localhost:*" : ""}
             https://www.google-analytics.com 
             https://*.google-analytics.com 
             https://www.googletagmanager.com 
-            https://*.googletagmanager.com;
+            https://*.googletagmanager.com
+            https://*.googleapis.com
+            https://firestore.googleapis.com
+            https://*.firebaseio.com
+            https://identitytoolkit.googleapis.com
+            https://*.cloudfunctions.net
+            https://firebasestorage.googleapis.com;
           img-src 'self' data: blob: 
             https://www.google-analytics.com 
             https://*.google-analytics.com
@@ -154,7 +166,7 @@ export default defineConfig(({ mode }) => {
             https://www.google.com;
           style-src 'self' 'unsafe-inline' 
             https://fonts.googleapis.com;
-          font-src 'self' 
+          font-src 'self' data:
             https://fonts.gstatic.com;
           script-src 'self' 'unsafe-inline' 'unsafe-eval'
             https://www.googletagmanager.com 

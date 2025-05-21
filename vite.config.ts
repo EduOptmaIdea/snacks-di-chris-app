@@ -153,7 +153,7 @@ export default defineConfig(({ mode }) => {
             https://www.google-analytics.com 
             https://*.google-analytics.com
             https://firebasestorage.googleapis.com
-            https://www.google.com;
+            https://www.google.com
             https://*.googleusercontent.com
             https://*.ggpht.com;            
           style-src 'self' 'unsafe-inline' 

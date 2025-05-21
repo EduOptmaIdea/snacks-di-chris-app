@@ -1,0 +1,146 @@
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  gap: 20px;
+}
+
+.titulo {
+  font-size: 20px;
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
+}
+
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #fff;
+  padding: 20px;
+}
+
+.login-form {
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  text-align: center;
+}
+
+.login-form h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  font-family: "Neufreit", sans-serif;
+}
+
+.voltar-ao-site {
+  font-size: 1rem;
+  font-family: "Robotosemi", sans-serif;
+  background-color: #a9373e;
+  width: auto;
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.voltar-ao-site:hover {
+  background-color: #82272d;
+}
+
+.entrar {
+  font-size: 1rem;
+  font-family: "Robotosemi", sans-serif;
+  background-color: #a9373e;
+  width: auto;
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.entrar:hover {
+  background-color: #82272d;
+}
+
+.input-email {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.input-password {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.login-form button[type="submit"] {
+  width: 100%;
+  background-color: #a9373e;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.botoes {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  width: 100%;
+  flex-direction: row-reverse;
+}
+
+.login-form button[type="submit"]:hover {
+  background-color: #912e35;
+}
+
+.login-error {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.login-info {
+  margin-top: 20px;
+  font-size: 10px;
+  font-family: "Roboto", sans-serif;
+  color: #333333;
+  line-height: 1.4;
+  text-align: justify;
+}
+
+.login-info a {
+  color: #a9373e;
+  text-decoration: underline;
+}
+.mailto-link {
+  color: #a9373e;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: "Robotosemi", sans-serif;
+}
+
+.mailto-link:hover {
+  color: #912e35;
+}

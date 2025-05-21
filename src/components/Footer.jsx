@@ -23,6 +23,15 @@ const Footer = () => {
         >
           Política de Privacidade
         </a>
+        
+        {/* Novo link para área administrativa */}
+        <a 
+          href="/admin/login" 
+          className="footer-admin-link"
+          aria-label="Área Administrativa"
+        >
+          Área restrita
+        </a>
       </div>
 
       {/* Seção Central */}

@@ -91,7 +91,7 @@ export default defineConfig(({ mode }) => {
         workbox: {
           runtimeCaching: [
             {
-              urlPattern: /\.(?:js|css|html|png|jpg|jpeg|svg|webp|gif)$/,
+              urlPattern: /\.(?:js|css|html|png|jpg|jpeg|svg|webp|gif)$/i,
               handler: "CacheFirst",
               options: {
                 cacheName: "static-assets",
@@ -128,17 +128,7 @@ export default defineConfig(({ mode }) => {
         },
       }),
     ],
-    /*css: {
-      postcss: {
-        config: false, // Desativa a busca automática de configuração
-        plugins: [
-          require('@tailwindcss/postcss')({
-            config: './tailwind.config.js'
-          }),
-          require('autoprefixer'),
-        ],
-      },
-    },*/
+
     server: {
       host: "0.0.0.0",
       port: 5173,
@@ -164,6 +154,8 @@ export default defineConfig(({ mode }) => {
             https://*.google-analytics.com
             https://firebasestorage.googleapis.com
             https://www.google.com;
+            https://*.googleusercontent.com
+            https://*.ggpht.com;            
           style-src 'self' 'unsafe-inline' 
             https://fonts.googleapis.com;
           font-src 'self' data:
@@ -171,12 +163,15 @@ export default defineConfig(({ mode }) => {
           script-src 'self' 'unsafe-inline' 'unsafe-eval'
             https://www.googletagmanager.com 
             https://*.googletagmanager.com;
-          frame-src 'none';
           worker-src 'self' blob:;
+          frame-src 'self';
+          object-src 'none';
+          media-src 'self';
           manifest-src 'self';
         `
           .replace(/\n/g, "")
-          .replace(/\s{2,}/g, " "),
+          .replace(/\s{2,}/g, " ")
+          .trim(),
       },
     },
     build: {
@@ -195,7 +190,7 @@ export default defineConfig(({ mode }) => {
               return "vendor";
             }
           },
-          assetFileNames: "assets/[name].[hash].[ext]",
+          assetFileNames: "assets/[name].[hash].[extname]",
           chunkFileNames: "assets/[name].[hash].js",
           entryFileNames: "assets/[name].[hash].js",
         },

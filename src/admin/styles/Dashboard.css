@@ -1,3 +1,37 @@
 .dashboard {
+  padding: 20px;
+}
+
+.dashboard h1 {
   text-align: center;
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th,
+table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+table td input[type="checkbox"] {
+  accent-color: #a9373e;
+  width: 18px;
+  height: 18px;
+}
+
+table td input[type="number"] {
+  width: 60px;
+  padding: 5px;
 }

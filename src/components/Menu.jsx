@@ -122,13 +122,24 @@ function Menu({ categoriaSelecionada, produtos = [], onProdutoClick, categoriasF
     : produtosFiltradosPorBusca;
 
   const renderProdutoCard = (produto) => {
+    const isIndisponivel = produto.available === false;
+
     return (
       <motion.div
         key={produto.id}
-        className="produto-card"
-        onClick={() => onProdutoClick(produto)}
-        whileHover={{ scale: 1.03 }}
+        className={`produto-card relative group cursor-pointer ${
+          isIndisponivel ? 'opacity-60' : ''
+        }`}
+        onClick={isIndisponivel ? undefined : () => onProdutoClick(produto)}
+        whileHover={isIndisponivel ? {} : { scale: 1.03 }}
+        style={{ pointerEvents: isIndisponivel ? 'none' : 'auto' }}
       >
+        {isIndisponivel && (
+          <div className="overlay-indisponivel">
+            <span className="label-indisponivel">Indisponível no momento</span>
+          </div>
+        )}
+
         <div className="produto-img-container">
           <picture>
             <source srcSet={produto.imageUrl} type="image/webp" />
@@ -143,6 +154,7 @@ function Menu({ categoriaSelecionada, produtos = [], onProdutoClick, categoriasF
             />
           </picture>
         </div>
+
         <div className="produto-info">
           <p className="produto-nome">{produto.productname}</p>
           <p className="produto-descricao">{produto.description}</p>

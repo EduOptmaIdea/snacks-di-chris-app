@@ -162,6 +162,7 @@ function AppContent() {
             category: categoryName,
             categoryId: categoryId,
             available: data.available !== undefined ? data.available : true,
+            descontinued: data.descontinued !== undefined ? data.descontinued : false,
             ingredientes: data.ingredientRefs || [],
             alergenicos: data.allergenicAgentRefs || []
           };
@@ -172,10 +173,11 @@ function AppContent() {
           return produtoEnriquecido;
         }));
         
-        // Filtrar apenas produtos disponíveis
-        const availableProducts = productList.filter(product => product.available);
-        
-        setProducts(availableProducts);
+        const filteredProducts = productList.filter(
+          product => !product.descontinued // Apenas remove descontinuados
+        );
+
+        setProducts(filteredProducts);
 
       } catch (error) {
         console.error("Erro ao buscar produtos do Firestore: ", error);

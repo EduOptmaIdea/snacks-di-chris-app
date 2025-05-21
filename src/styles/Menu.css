@@ -189,6 +189,29 @@
   margin-top: auto;
 }
 
+/* Overlay para produtos indisponíveis */
+.overlay-indisponivel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8); /* Branco com 60% de opacidade */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.overlay-indisponivel .label-indisponivel {
+  font-family: "RobotoSemi", sans-serif;
+  color: #efb42b;
+  font-size: 1rem;
+  text-align: center;
+  padding: 8px 16px;
+}
+
 /* Responsividade */
 @media (max-width: 1024px) {
   .produtos-grid,

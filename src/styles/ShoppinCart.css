@@ -203,6 +203,7 @@
 .carrinho-vazio {
   text-align: center;
   align-items: center;
+  justify-items: center;
   padding: 2rem;
 }
 

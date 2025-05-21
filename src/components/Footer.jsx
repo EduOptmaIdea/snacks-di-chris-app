@@ -26,7 +26,7 @@ const Footer = () => {
         
         {/* Novo link para área administrativa */}
         <a 
-          href="/admin/login" 
+          href="/admin" 
           className="footer-admin-link"
           aria-label="Área Administrativa"
         >

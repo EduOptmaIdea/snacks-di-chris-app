@@ -39,7 +39,7 @@ function Menu({ categoriaSelecionada, produtos = [], onProdutoClick, categoriasF
 
     // Converte para WebP
     const baseUrl = imagePath && imagePath.split ? imagePath.split('?')[0] : imagePath; // Remove query params se existirem
-    return baseUrl && baseUrl.replace ? baseUrl.replace(/\.(jpg|jpeg|png)$/i, '.webp') : '/products/default.webp';
+    return baseUrl && baseUrl.replace ? baseUrl.replace(/\.(jpg|jpeg|png)$/i, '.webp') : '//default.webp';
   };
 
   // Processa produtos para garantir compatibilidade com Firebase
@@ -149,7 +149,7 @@ function Menu({ categoriaSelecionada, produtos = [], onProdutoClick, categoriasF
               className="produto-img"
               loading="lazy"
               onError={(e) => {
-                e.target.src = '/products/default.webp';
+                e.target.src = '//default.webp';
               }}
             />
           </picture>

@@ -9,17 +9,6 @@
   status = 200
   force = true
 
-[[redirects]]
-  from = "/assets/*"
-  to = "/assets/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/admin/login"
-  to = "/admin/index.html"
-  status = 200
-  force = true
-
 [[headers]]
   for = "/*"
   [headers.values]

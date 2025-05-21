@@ -9,4 +9,4 @@
   X-Content-Type-Options: nosniff;
   X-Frame-Options: DENY;
   Referrer-Policy: no-referrer-when-downgrade;
-  Permissions-Policy: geolocation=(), microphone=(), camera=()*/
+  Permissions-Policy: geolocation=(), microphone=(), camera=()

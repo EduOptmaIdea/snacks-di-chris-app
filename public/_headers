@@ -1,6 +1,6 @@
 /*
   default-src 'self';
-  connect-src 'self' wss://*.firebaseio.com https://*.firebaseio.com https://www.google-analytics.com https://*.google-analytics.com https://www.mockachino.com https://*.googleapis.com https://firestore.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://*.cloudfunctions.net;
+  connect-src 'self' wss://*.firebaseio.com https://*.firebaseio.com https://www.google-analytics.com https://*.google-analytics.com https://*.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://*.cloudfunctions.net;
   script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://*.googletagmanager.com https://apis.google.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src 'self' https://fonts.gstatic.com;
@@ -9,4 +9,4 @@
   X-Content-Type-Options: nosniff;
   X-Frame-Options: DENY;
   Referrer-Policy: no-referrer-when-downgrade;
-  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  Permissions-Policy: geolocation=(), microphone=(), camera=()*/

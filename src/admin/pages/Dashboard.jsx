@@ -6,20 +6,27 @@ import '../styles/Dashboard.css';
 function Dashboard() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const productsCollection = collection(db, 'products');
         const productsSnapshot = await getDocs(productsCollection);
-        const productList = productsSnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setProducts(productList);
+        if (!productsSnapshot.empty) {
+          const productList = productsSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setProducts(productList);
+        } else {
+          setProducts([]);
+        }
         setLoading(false);
       } catch (error) {
         console.error('Erro ao buscar produtos:', error);
+        setError('Falha ao carregar dados dos produtos.');
+        setLoading(false);
       }
     };
 
@@ -28,18 +35,29 @@ function Dashboard() {
 
   // Função para atualizar campos no Firestore
   const handleUpdateProduct = async (productId, field, value) => {
-    const productRef = doc(db, 'products', productId);
-    await updateDoc(productRef, { [field]: value });
-    setProducts(prevProducts =>
-      prevProducts.map(p => (p.id === productId ? { ...p, [field]: value } : p))
-    );
+    try {
+      const productRef = doc(db, 'products', productId);
+      await updateDoc(productRef, { [field]: value });
+      setProducts(prev =>
+        prev.map(p => (p.id === productId ? { ...p, [field]: value } : p))
+      );
+    } catch (err) {
+      console.error('Erro ao atualizar produto:', err);
+      alert('Falha ao atualizar produto!');
+    }
   };
 
   return (
     <div className="dashboard">
       <h1>Dashboard Administrativo</h1>
-      {loading && <div>Carregando...</div>}
-      {!loading && products.length === 0 && <div>Nenhum produto encontrado.</div>}
+
+      {loading && <div>Carregando produtos...</div>}
+      {error && <div className="dashboard-error">{error}</div>}
+
+      {!loading && products.length === 0 && (
+        <div>Nenhum produto encontrado.</div>
+      )}
+
       {!loading && products.length > 0 && (
         <table>
           <thead>
@@ -55,26 +73,36 @@ function Dashboard() {
             {products.map(product => (
               <tr key={product.id}>
                 <td>{product.id}</td>
-                <td>{product.productname || 'Sem Nome'}</td>
+                <td>{product.productname || product.name || 'Sem Nome'}</td>
                 <td>
                   <input
                     type="checkbox"
-                    checked={product.available}
-                    onChange={() => handleUpdateProduct(product.id, 'available', !product.available)}
+                    checked={product.available || false}
+                    onChange={() =>
+                      handleUpdateProduct(
+                        product.id,
+                        'available',
+                        !product.available
+                      )
+                    }
                   />
                 </td>
                 <td>
                   <input
                     type="number"
+                    min="0"
                     value={product.currentStock || 0}
                     onChange={(e) =>
-                      handleUpdateProduct(product.id, 'currentStock', parseInt(e.target.value, 10))
+                      handleUpdateProduct(
+                        product.id,
+                        'currentStock',
+                        parseInt(e.target.value, 10) || 0
+                      )
                     }
                   />
                 </td>
                 <td>
-                  {/* Botões de ação futuros */}
-                  {/* Excluir, editar detalhes, etc. */}
+                  {/* Botões futuros */}
                 </td>
               </tr>
             ))}

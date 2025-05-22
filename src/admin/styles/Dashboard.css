@@ -6,44 +6,49 @@
 
 .dashboard h1 {
   text-align: center;
-  margin-bottom: 30px;
   font-size: 24px;
   color: #a9373e;
+  margin-bottom: 20px;
 }
 
-.dashboard-error {
-  color: red;
-  text-align: center;
-  margin: 20px 0;
-}
-
-table {
+.dashboard-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
 }
 
-table th,
-table td {
+.dashboard-table th,
+.dashboard-table td {
   border: 1px solid #ccc;
   padding: 10px;
   text-align: left;
 }
 
-table th {
+.dashboard-table th {
   background-color: #f4f4f4;
   font-weight: bold;
 }
 
-table td input[type="checkbox"] {
+.dashboard-table input[type="checkbox"] {
   accent-color: #a9373e;
   width: 18px;
   height: 18px;
 }
 
-table td input[type="number"] {
+.dashboard-table input[type="number"] {
   width: 60px;
   padding: 5px;
   border: 1px solid #aaa;
   border-radius: 4px;
+}
+
+.dashboard-empty,
+.dashboard-error {
+  text-align: center;
+  margin-top: 30px;
+  color: #888;
+}
+
+.dashboard-error {
+  color: red;
 }

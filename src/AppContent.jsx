@@ -9,6 +9,7 @@ import { ChevronsUp } from 'lucide-react';
 import { db } from './firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { initializeReferenceMaps, enrichProductWithReferences } from './services/firestore-references';
+import usePageTitle from './hooks/usePageTitle';
 
 // Componentes carregados de forma lazy
 const Home = lazy(() => import('./components/Home'));
@@ -63,6 +64,8 @@ function AppContent() {
     'Sobremesas',
     'Bebidas'
   ];
+
+  usePageTitle();
 
   // Lógica para buscar produtos do Firebase (Firestore)
   useEffect(() => {

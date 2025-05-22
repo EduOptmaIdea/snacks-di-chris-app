@@ -3,7 +3,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
 
-function AdminRoute({ children }) {
+function AdminRoute() {
   const [authorized, setAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -22,7 +22,7 @@ function AdminRoute({ children }) {
 
   if (loading) return <div>Carregando...</div>;
 
-  return authorized ? children : <Navigate to="/admin/login" />;
+  return authorized ? <Outlet /> : <Navigate to="/admin/login" />;
 }
 
 export default AdminRoute;

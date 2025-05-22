@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import '../styles/Dashboard.css';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 function Dashboard() {
+  usePageTitle();
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -21,11 +24,12 @@ function Dashboard() {
           setProducts(productList);
         } else {
           setProducts([]);
+          setError('Nenhum produto encontrado.');
         }
-        setLoading(false);
-      } catch (error) {
-        console.error('Erro ao buscar produtos:', error);
+      } catch (err) {
+        console.error('Erro ao buscar produtos:', err);
         setError('Falha ao carregar dados dos produtos.');
+      } finally {
         setLoading(false);
       }
     };
@@ -51,15 +55,15 @@ function Dashboard() {
     <div className="dashboard">
       <h1>Dashboard Administrativo</h1>
 
-      {loading && <div>Carregando produtos...</div>}
+      {loading && <div className="dashboard-loading">Carregando produtos...</div>}
       {error && <div className="dashboard-error">{error}</div>}
 
-      {!loading && products.length === 0 && (
-        <div>Nenhum produto encontrado.</div>
+      {!loading && products.length === 0 && !error && (
+        <div className="dashboard-empty">Nenhum produto disponível.</div>
       )}
 
       {!loading && products.length > 0 && (
-        <table>
+        <table className="dashboard-table">
           <thead>
             <tr>
               <th>ID</th>
@@ -73,7 +77,7 @@ function Dashboard() {
             {products.map(product => (
               <tr key={product.id}>
                 <td>{product.id}</td>
-                <td>{product.productname || product.name || 'Sem Nome'}</td>
+                <td>{product.productname || product.name || 'Sem nome'}</td>
                 <td>
                   <input
                     type="checkbox"

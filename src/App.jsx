@@ -14,6 +14,7 @@ import AdminRoute from './admin/AdminRoute';
 import { db } from './firebase.ts';
 import { collection, getDocs } from "firebase/firestore";
 import { initializeReferenceMaps, enrichProductWithReferences } from './services/firestore-references';
+import { usePageTitle } from './hooks/usePageTitle';
 
 // Componentes carregados de forma lazy
 const Home = lazy(() => import('./components/Home'));
@@ -74,6 +75,18 @@ function AppContent() {
     'Sobremesas',
     'Bebidas'
   ];
+
+  usePageTitle();
+
+  // Adicione este useEffect no componente AppContent
+  useEffect(() => {
+    const path = location.pathname;
+    if (path.startsWith('/admin')) {
+      document.title = 'SNACKS di Chris | Área Administrativa';
+    } else {
+      document.title = 'SNACKS di Chris | Loja Gostosuras';
+    }
+  }, [location.pathname]);
 
   // Lógica para buscar produtos do Firebase (Firestore)
   useEffect(() => {

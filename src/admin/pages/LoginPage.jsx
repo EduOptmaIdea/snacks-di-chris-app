@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase';
 import '../styles/LoginPage.css';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 function LoginPage() {
+  usePageTitle();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');

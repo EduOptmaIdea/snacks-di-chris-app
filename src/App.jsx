@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import './styles/App.css';
 import './styles/fonts.css';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -10,12 +10,8 @@ import { ChevronsUp } from 'lucide-react';
 import LoginPage from './admin/pages/LoginPage';
 import Dashboard from './admin/pages/Dashboard';
 import Products from './admin/pages/Products';
-import AdminRoute from './admin/AdminRoute';
-import { db } from './firebase.ts';
-import { collection, getDocs } from "firebase/firestore";
-import { initializeReferenceMaps, enrichProductWithReferences } from './services/firestore-references';
 
-// Componentes carregados de forma lazy
+// Importação dos componentes carregados de forma lazy
 const Home = lazy(() => import('./components/Home'));
 const Menu = lazy(() => import('./components/Menu'));
 const ProductsDetails = lazy(() => import('./components/ProductsDetails'));
@@ -52,9 +48,8 @@ function throttle(func, limit) {
   };
 }
 
-// Componente principal com lógica do App
 function AppContent() {
-  const location = useLocation(); // ← Detecta mudança de rota
+  const location = useLocation();
   const [frame, setFrame] = useState(1);
   const [categorias, setCategorias] = useState([]);
   const [products, setProducts] = useState([]);
@@ -102,7 +97,9 @@ function AppContent() {
         categoriesList.sort((a, b) => {
           const indexA = ordemFixaCategorias.indexOf(a.category);
           const indexB = ordemFixaCategorias.indexOf(b.category);
-          if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+          if (indexA !== -1 && indexB !== -1) {
+            return indexA - indexB;
+          }
           if (indexA !== -1) return -1;
           if (indexB !== -1) return 1;
           return a.order - b.order;
@@ -150,7 +147,9 @@ function AppContent() {
           return enrichProductWithReferences(produto);
         }));
 
-        const filteredProducts = productList.filter(product => !product.descontinued);
+        const filteredProducts = productList.filter(
+          product => !product.descontinued
+        );
         setProducts(filteredProducts);
       } catch (error) {
         console.error("Erro ao buscar produtos do Firestore: ", error);
@@ -159,12 +158,10 @@ function AppContent() {
     fetchFirebaseProducts();
   }, []);
 
-  // Scroll to top
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [frame]);
 
-  // Scroll button
   useEffect(() => {
     const handleScroll = throttle(() => {
       setShowScrollButton(window.scrollY > 300);
@@ -173,19 +170,16 @@ function AppContent() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Atualiza frame conforme URL
   useEffect(() => {
-    const path = location.pathname;
+    const path = window.location.pathname;
     if (path === '/politica-de-privacidade') {
       setFrame('privacy');
     } else if (path === '/cardapio') {
       setFrame(3);
-    } else if (path.startsWith('/admin')) {
-      setFrame('admin');
     } else {
       setFrame(1);
     }
-  }, [location.pathname]);
+  }, []);
 
   const handleMenuClick = (targetFrame) => {
     setCategoriaSelecionada(null);
@@ -234,8 +228,8 @@ function AppContent() {
     const itemComNome = {
       ...novoItem,
       productname: novoItem.productname || novoItem.name || novoItem.nome || "Produto",
-      name: novoItem.productname || novoItem.name || novoItem.nome || "Produto",
-      nome: novoItem.productname || novoItem.name || novoItem.nome || "Produto"
+      name: itemComNome.productname,
+      nome: itemComNome.productname
     };
 
     setCarrinho((carrinhoAtual) => {
@@ -307,11 +301,14 @@ function AppContent() {
         <Suspense fallback={<Loading />}>
           {frame === 1 && (
             <motion.div key="frame1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <Home onCategoriaClick={(categoria) => {
-                setCategoriaSelecionada(categoria);
-                setFrame(3);
-                navigate('/cardapio');
-              }} categorias={categorias} />
+              <Home
+                onCategoriaClick={(categoria) => {
+                  setCategoriaSelecionada(categoria);
+                  setFrame(3);
+                  navigate('/cardapio');
+                }}
+                categorias={categorias}
+              />
             </motion.div>
           )}
           {frame === 3 && (
@@ -390,47 +387,10 @@ function AppContent() {
   );
 }
 
-// Rotas protegidas com autenticação
-function AppRouter() {
+export default function App() {
   return (
     <Router>
-      <Routes>
-        {/* Rotas Públicas */}
-        <Route path="/" element={<AppContent />} />
-        <Route path="/cardapio" element={<AppContent />} />
-        <Route path="/produto/:id" element={<AppContent />} />
-        <Route path="/politica-de-privacidade" element={<AppContent />} />
-        <Route path="/carrinho" element={<AppContent />} />
-        <Route path="/finalizar-pedido" element={<AppContent />} />
-
-        {/* Rota de Login do Admin */}
-        <Route path="/admin/login" element={
-          <React.Suspense fallback={<div>Carregando...</div>}>
-            <LoginPage />
-          </React.Suspense>
-        } />
-
-        {/* Rotas Protegidas do Admin */}
-        <Route element={<AdminRoute />}>
-          <Route path="/admin" element={
-            <React.Suspense fallback={<div>Carregando...</div>}>
-              <Dashboard />
-            </React.Suspense>
-          } />
-          <Route path="/admin/dashboard" element={
-            <React.Suspense fallback={<div>Carregando...</div>}>
-              <Dashboard />
-            </React.Suspense>
-          } />
-          <Route path="/admin/products" element={
-            <React.Suspense fallback={<div>Carregando...</div>}>
-              <Products />
-            </React.Suspense>
-          } />
-        </Route>
-      </Routes>
+      <AppContent />
     </Router>
   );
 }
-
-export default AppRouter;

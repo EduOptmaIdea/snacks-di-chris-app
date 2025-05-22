@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => {
   const isDev = !isProd;
 
   return {
-    base: "./",
+    base: "/",
     resolve: {
       alias: {
         "@": resolve(__dirname, "src"),

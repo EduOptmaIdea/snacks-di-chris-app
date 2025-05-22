@@ -25,13 +25,13 @@ const Footer = () => {
         </a>
         
         {/* Novo link para área administrativa */}
-        <Link 
-          to="/admin" 
+        <a 
+          href="/admin" 
           className="footer-admin-link"
           aria-label="Área Administrativa"
         >
           Área restrita
-        </Link>
+        </a>
       </div>
 
       {/* Seção Central */}

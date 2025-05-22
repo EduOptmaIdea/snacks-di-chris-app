@@ -6,6 +6,10 @@
   background-color: #a9373e;
   color: white;
   font-family: "Roboto", sans-serif;
+  list-style: none;
+  display: flex;
+  bottom: 0;
+  width: 100%;
 }
 
 .footer-left {

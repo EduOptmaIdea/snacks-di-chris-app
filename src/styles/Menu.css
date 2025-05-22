@@ -90,6 +90,13 @@
   align-items: stretch;
 }
 
+.sem-produtos {
+  font-family: "RobotoSemi", sans-serif;
+  font-size: 16px;
+  color: #333;
+  width: 100%;
+}
+
 .categoria-titulo {
   font-family: "Neufreit", sans-serif;
   gap: 10px;

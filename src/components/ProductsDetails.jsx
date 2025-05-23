@@ -19,21 +19,21 @@ const ProductsDetails = ({
 
   // Garantir que sempre tenhamos um nome de produto válido
   const nomeProduto = produto.productname || produto.name || produto.nome || "Produto";
-  
+
   const incrementar = () => setQuantidade(q => q + 1);
   const decrementar = () => setQuantidade(q => (q > 1 ? q - 1 : 1));
   const precoTotal = ((produto.price || produto.preco || 0) * quantidade).toFixed(2);
 
   // Usar ingredientesDetalhados do produto se disponível, ou fazer fallback para outros formatos
-  const ingredientesDetalhados = produto.ingredientesDetalhados || 
-    (produto.ingredientes ? 
-      (Array.isArray(produto.ingredientes) ? produto.ingredientes : produto.ingredientes.split(',').map(ing => ing.trim())) : 
+  const ingredientesDetalhados = produto.ingredientesDetalhados ||
+    (produto.ingredientes ?
+      (Array.isArray(produto.ingredientes) ? produto.ingredientes : produto.ingredientes.split(',').map(ing => ing.trim())) :
       (produto.ingredients ? produto.ingredients.split(',').map(ing => ing.trim()) : []));
 
   // Usar alergenicosDetalhados do produto se disponível, ou fazer fallback para outros formatos
-  const alergicosDetalhados = produto.alergenicosDetalhados || 
-    (produto.alergenicos ? 
-      (Array.isArray(produto.alergenicos) ? produto.alergenicos : produto.alergenicos.split(',').map(al => al.trim())) : 
+  const alergicosDetalhados = produto.alergenicosDetalhados ||
+    (produto.alergenicos ?
+      (Array.isArray(produto.alergenicos) ? produto.alergenicos : produto.alergenicos.split(',').map(al => al.trim())) :
       (produto['allergenic-agents'] ? produto['allergenic-agents'].split(',').map(al => al.trim()) : []));
 
   const comentarioValido = comentario && comentario.trim().length >= 5;
@@ -86,7 +86,7 @@ const ProductsDetails = ({
               className="produto-img-modal"
             />
             <div className="produto-header">
-              <h3>{nomeProduto}</h3>
+              <h3 className='produto-header-h3'>{nomeProduto}</h3>
               {produto.available === false && (
                 <div className="produto-indisponivel">Produto Indisponível</div>
               )}

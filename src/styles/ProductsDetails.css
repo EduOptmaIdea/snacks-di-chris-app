@@ -77,11 +77,13 @@
 }
 
 .produto-header {
-  font-size: 1.5rem;
-  font-family: "Robotosemi", sans-serif;
-  text-align: justify;
-  text-wrap: balance;
   color: #000;
+}
+
+.produto-header-h3 {
+  font-size: 1.3rem;
+  font-family: "Robotosemi", sans-serif;
+  color: #333;
 }
 
 .modal-header-right {
@@ -375,6 +377,12 @@
     width: 100%;
     padding: 12px;
   }
+
+  .produto-header-h3 {
+  font-size: 1rem;
+  font-family: "Robotosemi", sans-serif;
+  color: #333;
+}
 
   .modal-header-right {
     flex: 2;

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, useParams } from 'react-router-dom';
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import './styles/App.css';
 import './styles/fonts.css';
@@ -15,6 +15,11 @@ import { db } from './firebase.ts';
 import { collection, getDocs } from "firebase/firestore";
 import { initializeReferenceMaps, enrichProductWithReferences } from './services/firestore-references';
 import { usePageTitle } from './hooks/usePageTitle';
+
+// Importação dos novos componentes do dashboard administrativo
+import Layout from '../admin-dashboard/src/components/layout/Layout.tsx';
+import UserList from '../admin-dashboard/src/components/users/UserList.tsx';
+import UserForm from '../admin-dashboard/src/components/users/UserForm.tsx';
 
 // Componentes carregados de forma lazy
 const Home = lazy(() => import('./components/Home'));
@@ -228,17 +233,17 @@ function AppContent() {
   }, []);
 
   const produtosFiltrados = categoriaSelecionada
-    ? categoriaSelecionada.category 
+    ? categoriaSelecionada.category
       ? products.filter(p => p.categoria === categoriaSelecionada.category || p.category === categoriaSelecionada.category)
       : products.filter(p => p.categoryId === categoriaSelecionada.id)
     : products;
 
   const produtoDetalhado = produtoSelecionado
     ? {
-        ...produtoSelecionado,
-        ingredientesDetalhados: produtoSelecionado.ingredientesNomes || [],
-        alergenicosDetalhados: produtoSelecionado.alergenicosNomes || []
-      }
+      ...produtoSelecionado,
+      ingredientesDetalhados: produtoSelecionado.ingredientesNomes || [],
+      alergenicosDetalhados: produtoSelecionado.alergenicosNomes || []
+    }
     : null;
 
   const adicionarAoCarrinho = (novoItem) => {
@@ -403,6 +408,49 @@ function AppContent() {
   );
 }
 
+// Componentes para as rotas de usuários administrativos
+const UserListPage = () => {
+  const navigate = useNavigate();
+  return (
+    <Layout>
+      <UserList
+        onEdit={(id) => navigate(`/admin/users/${id}`)}
+        onView={(id) => { }}
+        onDelete={(id) => { }}
+      />
+    </Layout>
+  );
+};
+
+const UserFormPage = () => {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  return (
+    <Layout>
+      <UserForm
+        userId={id}
+        onClose={() => navigate('/admin/users')}
+        onSave={(data) => {
+          // Lógica para salvar usuário
+          navigate('/admin/users');
+        }}
+      />
+    </Layout>
+  );
+};
+
+const DashboardPage = () => (
+  <Layout>
+    <Dashboard />
+  </Layout>
+);
+
+const ProductsPage = () => (
+  <Layout>
+    <Products />
+  </Layout>
+);
+
 // Rotas protegidas com autenticação
 function AppRouter() {
   return (
@@ -427,17 +475,27 @@ function AppRouter() {
         <Route element={<AdminRoute />}>
           <Route path="/admin" element={
             <React.Suspense fallback={<div>Carregando...</div>}>
-              <Dashboard />
+              <DashboardPage />
             </React.Suspense>
           } />
           <Route path="/admin/dashboard" element={
             <React.Suspense fallback={<div>Carregando...</div>}>
-              <Dashboard />
+              <DashboardPage />
+            </React.Suspense>
+          } />
+          <Route path="/admin/users" element={
+            <React.Suspense fallback={<div>Carregando...</div>}>
+              <UserListPage />
+            </React.Suspense>
+          } />
+          <Route path="/admin/users/:id" element={
+            <React.Suspense fallback={<div>Carregando...</div>}>
+              <UserFormPage />
             </React.Suspense>
           } />
           <Route path="/admin/products" element={
             <React.Suspense fallback={<div>Carregando...</div>}>
-              <Products />
+              <ProductsPage />
             </React.Suspense>
           } />
         </Route>

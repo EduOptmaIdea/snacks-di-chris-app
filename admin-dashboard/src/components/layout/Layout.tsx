@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react'; // Import useContext
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import Sidebar from './Sidebar';
-// Importar a imagem de fallback
 import defaultAvatar from '../../assets/default-avatar.png';
+import { AuthContext } from '../../context/AuthContext'; // Import AuthContext
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -11,21 +11,21 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const userAvatar = null; // Simular que não há avatar do usuário para testar o fallback
-    const userName = 'EduSouza'; // Placeholder para o nome do usuário
+    const authContext = useContext(AuthContext); // Usar useContext
+
+    // Verificar se o contexto foi carregado antes de acessar adminUser
+    const adminUser = authContext?.adminUser;
+
+    // Extrair nome e avatar do adminUser, com fallbacks
+    const userName = adminUser?.userName || 'Usuário'; // Usa userName do adminUser ou 'Usuário'
+    const userAvatar = adminUser?.avatar; // Usa avatar do adminUser
 
     useEffect(() => {
         const checkIfMobile = () => {
             setIsMobile(window.innerWidth < 768);
         };
-
-        // Verificar inicialmente
         checkIfMobile();
-
-        // Adicionar listener para redimensionamento
         window.addEventListener('resize', checkIfMobile);
-
-        // Limpar listener
         return () => window.removeEventListener('resize', checkIfMobile);
     }, []);
 
@@ -62,21 +62,19 @@ const Layout = ({ children }: LayoutProps) => {
                             </button>
                         )}
                         <div className="flex-1 flex justify-between items-center">
-                            {/* Título com fontes e cores personalizadas */}
+                            {/* Título */}
                             <h1 className="text-xl font-semibold text-gray-800">
                                 <span style={{ fontFamily: 'Neufreit, sans-serif', color: '#a9373e', fontSize: '22px' }}>SNACKS</span>
                                 <span style={{ fontFamily: 'Plau, sans-serif', color: '#a9373e', fontSize: '22px' }}> di Chris</span>
                                 <span style={{ fontFamily: 'Roboto, sans-serif', color: '#a9373e', fontWeight: 'normal' }}> | Área Administrativa</span>
                             </h1>
+                            {/* Informações do Usuário */}
                             <div className="ml-4 flex items-center gap-3">
-                                {/* Nome do usuário */}
                                 <span style={{ fontFamily: 'Robotosemi, sans-serif', color: '#333', fontSize: '18px' }}>{userName}</span>
-                                {/* Avatar do usuário com fallback */}
                                 <img
-                                    className="h-12 w-12 rounded-full object-cover bg-[#a9373e]" // Adicionado object-cover
-                                    src={userAvatar || defaultAvatar} // Usa avatar do usuário ou fallback
+                                    className="h-12 w-12 rounded-full object-cover bg-[#a9373e]"
+                                    src={userAvatar || defaultAvatar} // Usa avatar do adminUser ou fallback
                                     alt="Avatar do usuário"
-                                    // onError é um fallback adicional caso a imagem principal falhe
                                     onError={(e) => { (e.target as HTMLImageElement).src = defaultAvatar; }}
                                 />
                             </div>

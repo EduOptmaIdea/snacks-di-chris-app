@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/layout/Layout';
-import Dashboard from '../../src/admin/pages/Dashboard.jsx'; // Dashboard component
-import LoginPage from '../../src/admin/pages/LoginPage.jsx'; // Actual Login page
+import Dashboard from './components/dashboard/Dashboard';
+import LoginPage from './components/auth/LoginPage';
 import AuthGuard from './components/auth/AuthGuard'; // Import AuthGuard
 import './App.css';
 

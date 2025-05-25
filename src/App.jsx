@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, useParams, Navigate } from 'react-router-dom';
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import './styles/App.css';
 import './styles/fonts.css';
@@ -7,21 +7,23 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { WHATSAPP_URL } from './constants';
 import { ChevronsUp } from 'lucide-react';
-import LoginPage from './admin/pages/LoginPage';
-import Dashboard from './admin/pages/Dashboard';
-import Products from './admin/pages/Products';
-import AdminRoute from './admin/AdminRoute';
 import { db } from './firebase.ts';
 import { collection, getDocs } from "firebase/firestore";
 import { initializeReferenceMaps, enrichProductWithReferences } from './services/firestore-references';
 import { usePageTitle } from './hooks/usePageTitle';
 
-// Importação dos novos componentes do dashboard administrativo
-import Layout from '../admin-dashboard/src/components/layout/Layout.tsx';
+// --- Importações do Admin Dashboard ---
+import { AuthProvider } from '../admin-dashboard/src/context/AuthProvider.tsx';
+import AuthGuard from '../admin-dashboard/src/components/auth/AuthGuard.tsx';
+import AdminLayout from '../admin-dashboard/src/components/layout/Layout.tsx';
+import AdminLoginPage from '../admin-dashboard/src/components/auth/LoginPage.tsx';
+import AdminDashboard from '../admin-dashboard/src/components/dashboard/Dashboard.tsx';
 import UserList from '../admin-dashboard/src/components/users/UserList.tsx';
 import UserForm from '../admin-dashboard/src/components/users/UserForm.tsx';
+import AdminProductsPage from '../admin-dashboard/src/components/products/Products.tsx'; // Importar o novo componente de produtos
+// --- Fim das Importações do Admin Dashboard ---
 
-// Componentes carregados de forma lazy
+// Componentes carregados de forma lazy (Cliente)
 const Home = lazy(() => import('./components/Home'));
 const Menu = lazy(() => import('./components/Menu'));
 const ProductsDetails = lazy(() => import('./components/ProductsDetails'));
@@ -58,9 +60,9 @@ function throttle(func, limit) {
   };
 }
 
-// Componente principal com lógica do App
+// Componente principal com lógica do App Cliente
 function AppContent() {
-  const location = useLocation(); // ← Detecta mudança de rota
+  const location = useLocation();
   const [frame, setFrame] = useState(1);
   const [categorias, setCategorias] = useState([]);
   const [products, setProducts] = useState([]);
@@ -72,7 +74,6 @@ function AppContent() {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const navigate = useNavigate();
 
-  // Ordem fixa das categorias
   const ordemFixaCategorias = [
     'Batata recheada',
     'Batata Rosti',
@@ -83,17 +84,11 @@ function AppContent() {
 
   usePageTitle();
 
-  // Adicione este useEffect no componente AppContent
   useEffect(() => {
     const path = location.pathname;
-    if (path.startsWith('/admin')) {
-      document.title = 'SNACKS di Chris | Área Administrativa';
-    } else {
-      document.title = 'SNACKS di Chris | Loja Gostosuras';
-    }
+    // Título dinâmico agora é tratado pelo usePageTitle e rotas admin
   }, [location.pathname]);
 
-  // Lógica para buscar produtos do Firebase (Firestore)
   useEffect(() => {
     const fetchFirebaseProducts = async () => {
       try {
@@ -177,12 +172,10 @@ function AppContent() {
     fetchFirebaseProducts();
   }, []);
 
-  // Scroll to top
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [frame]);
 
-  // Scroll button
   useEffect(() => {
     const handleScroll = throttle(() => {
       setShowScrollButton(window.scrollY > 300);
@@ -191,19 +184,22 @@ function AppContent() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Atualiza frame conforme URL
   useEffect(() => {
     const path = location.pathname;
     if (path === '/politica-de-privacidade') {
       setFrame('privacy');
     } else if (path === '/cardapio') {
       setFrame(3);
-    } else if (path.startsWith('/admin')) {
-      setFrame('admin');
-    } else {
+    } else if (path.startsWith('/produto/')) {
+      setFrame(5); // Assume frame 5 for product details
+      const productId = path.split('/').pop();
+      const product = products.find(p => p.id === productId);
+      setProdutoSelecionado(product || null);
+    } else if (path === '/') {
       setFrame(1);
     }
-  }, [location.pathname]);
+    // Não definir frame para '/admin' aqui, pois AppContent não deve controlar o admin
+  }, [location.pathname, products]);
 
   const handleMenuClick = (targetFrame) => {
     setCategoriaSelecionada(null);
@@ -216,6 +212,7 @@ function AppContent() {
   const handleProdutoClick = (produto) => {
     setProdutoSelecionado(produto);
     setFrame(5);
+    navigate(`/produto/${produto.id}`); // Navega para a URL do produto
   };
 
   const closeProdutoDetalhes = () => {
@@ -276,6 +273,7 @@ function AppContent() {
   const abrirFinalizacao = () => {
     setShowCarrinho(false);
     setShowFinalizacao(true);
+    navigate('/finalizar-pedido');
   };
 
   const fecharFinalizacao = () => {
@@ -284,7 +282,10 @@ function AppContent() {
     navigate('/cardapio');
   };
 
-  const irParaCarrinho = () => setShowCarrinho(true);
+  const irParaCarrinho = () => {
+    setShowCarrinho(true);
+    // Não navegar para /carrinho, pois é um modal/overlay
+  };
   const fecharCarrinho = () => setShowCarrinho(false);
   const limparCarrinho = () => setCarrinho([]);
   const removerItem = (id) => setCarrinho(prev => prev.filter(item => item.id !== id));
@@ -308,18 +309,16 @@ function AppContent() {
     );
   };
 
+  // Renderiza apenas a parte do cliente
   return (
     <div className="App">
-      {/* Ocultar Header se estiver em /admin */}
-      {!location.pathname.startsWith('/admin') && (
-        <Header
-          frame={frame}
-          handleMenuClick={handleMenuClick}
-          openWhatsApp={openWhatsApp}
-          irParaCarrinho={irParaCarrinho}
-          carrinho={carrinho}
-        />
-      )}
+      <Header
+        frame={frame}
+        handleMenuClick={handleMenuClick}
+        openWhatsApp={openWhatsApp}
+        irParaCarrinho={irParaCarrinho}
+        carrinho={carrinho}
+      />
 
       <AnimatePresence mode="wait">
         <Suspense fallback={<Loading />}>
@@ -353,7 +352,7 @@ function AppContent() {
               <PrivacyPolicy />
             </motion.div>
           )}
-          {frame === 5 && produtoSelecionado && (
+          {frame === 5 && produtoDetalhado && (
             <ProductsDetails
               produto={produtoDetalhado}
               onClose={closeProdutoDetalhes}
@@ -395,111 +394,149 @@ function AppContent() {
         </button>
       )}
 
-      {/* Ocultar Footer se estiver em /admin */}
-      {!location.pathname.startsWith('/admin') && (
-        <>
-          <Suspense fallback={null}>
-            <Footer />
-            <CookieConsent />
-          </Suspense>
-        </>
-      )}
+      <Suspense fallback={null}>
+        <Footer />
+        <CookieConsent />
+      </Suspense>
     </div>
   );
 }
 
-// Componentes para as rotas de usuários administrativos
-const UserListPage = () => {
+// --- Componentes Placeholder para Rotas Admin --- (Removidos ou substituídos)
+const AdminUsers = () => {
   const navigate = useNavigate();
   return (
-    <Layout>
+    <AdminLayout>
       <UserList
         onEdit={(id) => navigate(`/admin/users/${id}`)}
-        onView={(id) => { }}
-        onDelete={(id) => { }}
+        onView={(id) => { /* Implementar visualização se necessário */ }}
+        onDelete={(id) => { /* Implementar deleção se necessário */ }}
       />
-    </Layout>
+    </AdminLayout>
   );
 };
-
-const UserFormPage = () => {
+const AdminUserForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   return (
-    <Layout>
+    <AdminLayout>
       <UserForm
-        userId={id}
+        userId={id} // Passa o ID para edição ou undefined para criação
         onClose={() => navigate('/admin/users')}
         onSave={(data) => {
-          // Lógica para salvar usuário
+          console.log('Salvar usuário:', data);
+          // Lógica para salvar usuário (criar ou atualizar)
           navigate('/admin/users');
         }}
       />
-    </Layout>
+    </AdminLayout>
   );
 };
+const AdminCategories = () => <AdminLayout><div>Página de Categorias (Admin)</div></AdminLayout>;
+// const AdminProducts = () => <AdminLayout><div>Página de Produtos (Admin)</div></AdminLayout>; // Placeholder removido
+const AdminPermissions = () => <AdminLayout><div>Página de Permissões (Admin)</div></AdminLayout>;
+const AdminSettings = () => <AdminLayout><div>Página de Configurações (Admin)</div></AdminLayout>;
+// --- Fim dos Componentes Placeholder --- 
 
-const DashboardPage = () => (
-  <Layout>
-    <Dashboard />
-  </Layout>
-);
-
-const ProductsPage = () => (
-  <Layout>
-    <Products />
-  </Layout>
-);
-
-// Rotas protegidas com autenticação
+// Roteador Principal Unificado
 function AppRouter() {
   return (
     <Router>
-      <Routes>
-        {/* Rotas Públicas */}
-        <Route path="/" element={<AppContent />} />
-        <Route path="/cardapio" element={<AppContent />} />
-        <Route path="/produto/:id" element={<AppContent />} />
-        <Route path="/politica-de-privacidade" element={<AppContent />} />
-        <Route path="/carrinho" element={<AppContent />} />
-        <Route path="/finalizar-pedido" element={<AppContent />} />
+      {/* AuthProvider envolve TODAS as rotas para que o contexto esteja disponível */}
+      <AuthProvider>
+        <Routes>
+          {/* Rotas Públicas (Cliente) */}
+          <Route path="/" element={<AppContent />} />
+          <Route path="/cardapio" element={<AppContent />} />
+          <Route path="/produto/:id" element={<AppContent />} />
+          <Route path="/politica-de-privacidade" element={<AppContent />} />
+          {/* Rotas de Carrinho e Checkout são gerenciadas internamente por AppContent como modais/overlays */}
 
-        {/* Rota de Login do Admin */}
-        <Route path="/admin/login" element={
-          <React.Suspense fallback={<div>Carregando...</div>}>
-            <LoginPage />
-          </React.Suspense>
-        } />
+          {/* --- Rotas Administrativas --- */}
+          {/* Rota de Login do Admin - Não protegida */}
+          <Route path="/admin/login" element={<AdminLoginPage />} />
 
-        {/* Rotas Protegidas do Admin */}
-        <Route element={<AdminRoute />}>
-          <Route path="/admin" element={
-            <React.Suspense fallback={<div>Carregando...</div>}>
-              <DashboardPage />
-            </React.Suspense>
-          } />
-          <Route path="/admin/dashboard" element={
-            <React.Suspense fallback={<div>Carregando...</div>}>
-              <DashboardPage />
-            </React.Suspense>
-          } />
-          <Route path="/admin/users" element={
-            <React.Suspense fallback={<div>Carregando...</div>}>
-              <UserListPage />
-            </React.Suspense>
-          } />
-          <Route path="/admin/users/:id" element={
-            <React.Suspense fallback={<div>Carregando...</div>}>
-              <UserFormPage />
-            </React.Suspense>
-          } />
-          <Route path="/admin/products" element={
-            <React.Suspense fallback={<div>Carregando...</div>}>
-              <ProductsPage />
-            </React.Suspense>
-          } />
-        </Route>
-      </Routes>
+          {/* Rotas Administrativas Protegidas */}
+          <Route
+            path="/admin"
+            element={
+              <AuthGuard>
+                {/* Redireciona /admin para /admin/dashboard */}
+                <Navigate to="/admin/dashboard" replace />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <AuthGuard>
+                <AdminLayout><AdminDashboard /></AdminLayout>
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <AuthGuard>
+                <AdminUsers />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/admin/users/new" // Rota para criar novo usuário
+            element={
+              <AuthGuard>
+                <AdminUserForm />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/admin/users/:id" // Rota para editar usuário existente
+            element={
+              <AuthGuard>
+                <AdminUserForm />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/admin/categories"
+            element={
+              <AuthGuard>
+                <AdminCategories />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/admin/products" // Rota para a nova página de produtos
+            element={
+              <AuthGuard>
+                <AdminLayout><AdminProductsPage /></AdminLayout> {/* Usar o componente importado */}
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/admin/permissions"
+            element={
+              <AuthGuard>
+                <AdminPermissions />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/admin/settings"
+            element={
+              <AuthGuard>
+                <AdminSettings />
+              </AuthGuard>
+            }
+          />
+          {/* --- Fim das Rotas Administrativas --- */}
+
+          {/* Rota Catch-all */}
+          <Route path="*" element={<div>Página não encontrada (404)</div>} />
+
+        </Routes>
+      </AuthProvider>
     </Router>
   );
 }

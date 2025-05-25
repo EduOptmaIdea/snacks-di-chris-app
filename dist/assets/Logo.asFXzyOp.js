@@ -1,0 +1,1 @@
+import{j as s}from"./vendor.D0HLXYg7.js";const a=()=>s.jsx("img",{src:"/assets/logo.min.DNDJFi1n..svg",alt:"Snacks di Chris",className:"logo",width:"120",height:"60",loading:"lazy"});export{a as default};

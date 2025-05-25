@@ -22,7 +22,7 @@ function LoginPage() {
     }
   };
 
-    // Função para montar o mailto com assunto e corpo
+  // Função para montar o mailto com assunto e corpo
   const handleEmailClick = () => {
     const subject = 'Solicitação de acesso';
     const body = `Olá.\n\n
@@ -32,7 +32,7 @@ function LoginPage() {
     Declaro desde já que assumo todas as responsabilidades sobre minhas atividades, enquanto logado, entendendo que não posso contribuir de forma alguma para o mal funcionamento do aplicativo ou expor os dados que são confidenciais.\n
     Todas as dúvidas que surgirem serão sanadas por esse canal ou outro que a SNACKS di Chris determinar.\n
     \nAtenciosamente,\n\n[NOME COMPLETO]`;
-    
+
     const mailtoLink = `mailto:snacksdichris@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailtoLink;
   };
@@ -51,7 +51,7 @@ function LoginPage() {
           required
         />
         <input
-          className='input-password'  
+          className='input-password'
           type="password"
           placeholder="Senha"
           value={password}
@@ -59,14 +59,14 @@ function LoginPage() {
           required
         />
         <div className="botoes">
-            <button className="entrar" type="submit">Entrar</button>
-            <button className="voltar-ao-site" type="button" onClick={() => window.location.href = '/'}>
+          <button className="entrar" type="submit">Entrar</button>
+          <button className="voltar-ao-site" type="button" onClick={() => window.location.href = '/'}>
             ← Voltar ao site
-            </button>
+          </button>
         </div>
         <p className="login-info">
-          Você está tentando acessar uma área restrita da empresa. 
-          Entre com seus dados de login ou clique em Voltar ao site. 
+          Você está tentando acessar uma área restrita da empresa.
+          Entre com seus dados de login ou clique em Voltar ao site.
           Se for colaborador da empresa e não tiver os dados de acesso solicite através do e-mail {' '}
           <span className="mailto-link" onClick={handleEmailClick}>
             snacksdichris@gmail.com

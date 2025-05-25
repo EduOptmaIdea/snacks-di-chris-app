@@ -1,35 +1,92 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Layout from './components/layout/Layout';
+import Dashboard from '../../src/admin/pages/Dashboard.jsx'; // Dashboard component
+import LoginPage from '../../src/admin/pages/LoginPage.jsx'; // Actual Login page
+import AuthGuard from './components/auth/AuthGuard'; // Import AuthGuard
+import './App.css';
+
+// Placeholder components for other routes (replace with actual components later)
+const Users = () => <div>Página de Usuários</div>;
+const Categories = () => <div>Página de Categorias</div>;
+const Products = () => <div>Página de Produtos</div>;
+const Permissions = () => <div>Página de Permissões</div>;
+const Settings = () => <div>Página de Configurações</div>;
 
 function App() {
-    const [count, setCount] = useState(0)
-
     return (
-        <>
-            <div>
-                <a href="https://vite.dev" target="_blank">
-                    <img src={viteLogo} className="logo" alt="Vite logo" />
-                </a>
-                <a href="https://react.dev" target="_blank">
-                    <img src={reactLogo} className="logo react" alt="React logo" />
-                </a>
-            </div>
-            <h1>Vite + React</h1>
-            <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>
-                    count is {count}
-                </button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
-        </>
-    )
+        <Router>
+            <Routes>
+                {/* Rota de Login - Não protegida */}
+                <Route path="/admin/login" element={<LoginPage />} />
+
+                {/* Rotas Administrativas - Protegidas pelo AuthGuard */}
+                <Route
+                    path="/admin"
+                    element={
+                        <AuthGuard>
+                            {/* Redireciona /admin para /admin/dashboard */}
+                            <Navigate to="/admin/dashboard" replace />
+                        </AuthGuard>
+                    }
+                />
+                <Route
+                    path="/admin/dashboard"
+                    element={
+                        <AuthGuard>
+                            <Layout><Dashboard /></Layout>
+                        </AuthGuard>
+                    }
+                />
+                <Route
+                    path="/admin/users"
+                    element={
+                        <AuthGuard>
+                            <Layout><Users /></Layout>
+                        </AuthGuard>
+                    }
+                />
+                <Route
+                    path="/admin/categories"
+                    element={
+                        <AuthGuard>
+                            <Layout><Categories /></Layout>
+                        </AuthGuard>
+                    }
+                />
+                <Route
+                    path="/admin/products"
+                    element={
+                        <AuthGuard>
+                            <Layout><Products /></Layout>
+                        </AuthGuard>
+                    }
+                />
+                <Route
+                    path="/admin/permissions"
+                    element={
+                        <AuthGuard>
+                            <Layout><Permissions /></Layout>
+                        </AuthGuard>
+                    }
+                />
+                <Route
+                    path="/admin/settings"
+                    element={
+                        <AuthGuard>
+                            <Layout><Settings /></Layout>
+                        </AuthGuard>
+                    }
+                />
+
+                {/* Rota padrão - Redireciona para /login se não autenticado, ou /admin/dashboard se autenticado */}
+                {/* O AuthGuard dentro da rota /admin/dashboard cuidará do redirecionamento se autenticado */}
+                <Route
+                    path="*"
+                    element={<Navigate to="/login" replace />} // Redireciona qualquer outra rota para login por padrão
+                />
+            </Routes>
+        </Router>
+    );
 }
 
-export default App
+export default App;

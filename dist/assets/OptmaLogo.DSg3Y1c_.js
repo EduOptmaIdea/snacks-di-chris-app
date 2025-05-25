@@ -1,1 +1,0 @@
-import{j as a}from"./vendor.BQww2Va2.js";const s=()=>a.jsx("img",{src:"/assets/optma-idea.D6glAAQO..svg",alt:"Optma Idea",className:"footer-logo",width:"80",height:"40",loading:"lazy"});export{s as default};

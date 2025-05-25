@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import Sidebar from './Sidebar';
+// Importar a imagem de fallback
+import defaultAvatar from '../../assets/default-avatar.png';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -9,6 +11,8 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const userAvatar = null; // Simular que não há avatar do usuário para testar o fallback
+    const userName = 'EduSouza'; // Placeholder para o nome do usuário
 
     useEffect(() => {
         const checkIfMobile = () => {
@@ -58,12 +62,22 @@ const Layout = ({ children }: LayoutProps) => {
                             </button>
                         )}
                         <div className="flex-1 flex justify-between items-center">
-                            <h1 className="text-xl font-semibold text-gray-800">SNACKS di Chris | Área Administrativa</h1>
-                            <div className="ml-4 flex items-center">
+                            {/* Título com fontes e cores personalizadas */}
+                            <h1 className="text-xl font-semibold text-gray-800">
+                                <span style={{ fontFamily: 'Neufreit, sans-serif', color: '#a9373e', fontSize: '22px' }}>SNACKS</span>
+                                <span style={{ fontFamily: 'Plau, sans-serif', color: '#a9373e', fontSize: '22px' }}> di Chris</span>
+                                <span style={{ fontFamily: 'Roboto, sans-serif', color: '#a9373e', fontWeight: 'normal' }}> | Área Administrativa</span>
+                            </h1>
+                            <div className="ml-4 flex items-center gap-3">
+                                {/* Nome do usuário */}
+                                <span style={{ fontFamily: 'Robotosemi, sans-serif', color: '#333', fontSize: '18px' }}>{userName}</span>
+                                {/* Avatar do usuário com fallback */}
                                 <img
-                                    className="h-8 w-8 rounded-full"
-                                    src="https://via.placeholder.com/40"
+                                    className="h-12 w-12 rounded-full object-cover bg-[#a9373e]" // Adicionado object-cover
+                                    src={userAvatar || defaultAvatar} // Usa avatar do usuário ou fallback
                                     alt="Avatar do usuário"
+                                    // onError é um fallback adicional caso a imagem principal falhe
+                                    onError={(e) => { (e.target as HTMLImageElement).src = defaultAvatar; }}
                                 />
                             </div>
                         </div>

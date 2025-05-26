@@ -21,6 +21,7 @@ import AdminDashboard from '../admin-dashboard/src/components/dashboard/Dashboar
 import UserList from '../admin-dashboard/src/components/users/UserList.tsx';
 import UserForm from '../admin-dashboard/src/components/users/UserForm.tsx';
 import AdminProductsPage from '../admin-dashboard/src/components/products/Products.tsx'; // Importar o novo componente de produtos
+import AdminCategoriesPage from '../admin-dashboard/src/components/categories/Categories.tsx'; // Importar o novo componente de produtos
 // --- Fim das Importações do Admin Dashboard ---
 
 // Componentes carregados de forma lazy (Cliente)
@@ -436,6 +437,8 @@ const AdminCategories = () => <AdminLayout><div>Página de Categorias (Admin)</d
 // const AdminProducts = () => <AdminLayout><div>Página de Produtos (Admin)</div></AdminLayout>; // Placeholder removido
 const AdminPermissions = () => <AdminLayout><div>Página de Permissões (Admin)</div></AdminLayout>;
 const AdminSettings = () => <AdminLayout><div>Página de Configurações (Admin)</div></AdminLayout>;
+const AdminIngredients = () => <AdminLayout><div>Página de Ingredientes utilizados (Admin)</div></AdminLayout>;
+const AdminAlergenics = () => <AdminLayout><div>Página dos alergenos que podem conter (Admin)</div></AdminLayout>;
 // --- Fim dos Componentes Placeholder --- 
 
 // Roteador Principal Unificado
@@ -502,7 +505,7 @@ function AppRouter() {
             path="/admin/categories"
             element={
               <AuthGuard>
-                <AdminCategories />
+                <AdminLayout><AdminCategoriesPage /></AdminLayout> {/* Usar o componente importado */}
               </AuthGuard>
             }
           />
@@ -527,6 +530,22 @@ function AppRouter() {
             element={
               <AuthGuard>
                 <AdminSettings />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/admin/ingredients"
+            element={
+              <AuthGuard>
+                <AdminIngredients />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/admin/alergenics"
+            element={
+              <AuthGuard>
+                <AdminAlergenics />
               </AuthGuard>
             }
           />

@@ -47,8 +47,10 @@ const Sidebar = ({ isMobile, toggleSidebar }: SidebarProps) => {
     const navItems = [
         { name: 'Dashboard', path: '/admin/dashboard', icon: HomeIcon },
         { name: 'Usuários', path: '/admin/users', icon: UsersIcon },
-        { name: 'Categorias', path: '/admin/categories', icon: DocumentTextIcon },
         { name: 'Produtos', path: '/admin/products', icon: ChartBarIcon },
+        { name: 'Categorias', path: '/admin/categories', icon: DocumentTextIcon },
+        { name: 'Ingredientes', path: '/admin/ingredients', icon: DocumentTextIcon },
+        { name: 'Alérgicos', path: '/admin/alergenics', icon: DocumentTextIcon },
         { name: 'Permissões', path: '/admin/permissions', icon: ShieldCheckIcon },
         { name: 'Configurações', path: '/admin/settings', icon: Cog6ToothIcon },
     ];

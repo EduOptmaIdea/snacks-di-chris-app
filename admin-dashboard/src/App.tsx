@@ -5,12 +5,18 @@ import LoginPage from './components/auth/LoginPage';
 import AuthGuard from './components/auth/AuthGuard'; // Import AuthGuard
 import './App.css';
 
+// Importar componentes reais
+import Categories from './components/categories/Categories'; // Importar o componente real
+import Products from './components/products/Products'; // Importar o componente real
+
 // Placeholder components for other routes (replace with actual components later)
 const Users = () => <div>Página de Usuários</div>;
-const Categories = () => <div>Página de Categorias</div>;
-const Products = () => <div>Página de Produtos</div>;
+// const Categories = () => <div>Página de Categorias</div>; // Remover placeholder
+// const Products = () => <div>Página de Produtos</div>; // Remover placeholder
 const Permissions = () => <div>Página de Permissões</div>;
 const Settings = () => <div>Página de Configurações</div>;
+const Ingredients = () => <div>Página de Ingredientes utilizados</div>;
+const Alergenics = () => <div>Página dos alergenos que podem conter (Admin)</div>;
 
 function App() {
     return (
@@ -49,6 +55,7 @@ function App() {
                     path="/admin/categories"
                     element={
                         <AuthGuard>
+                            {/* Usar o componente Categories real */}
                             <Layout><Categories /></Layout>
                         </AuthGuard>
                     }
@@ -57,6 +64,7 @@ function App() {
                     path="/admin/products"
                     element={
                         <AuthGuard>
+                            {/* Usar o componente Products real */}
                             <Layout><Products /></Layout>
                         </AuthGuard>
                     }
@@ -77,12 +85,28 @@ function App() {
                         </AuthGuard>
                     }
                 />
+                <Route
+                    path="/admin/ingredients"
+                    element={
+                        <AuthGuard>
+                            <Layout><Ingredients /></Layout>
+                        </AuthGuard>
+                    }
+                />
+                <Route
+                    path="/admin/alergenics"
+                    element={
+                        <AuthGuard>
+                            <Layout><Alergenics /></Layout>
+                        </AuthGuard>
+                    }
+                />
 
                 {/* Rota padrão - Redireciona para /login se não autenticado, ou /admin/dashboard se autenticado */}
                 {/* O AuthGuard dentro da rota /admin/dashboard cuidará do redirecionamento se autenticado */}
                 <Route
                     path="*"
-                    element={<Navigate to="/login" replace />} // Redireciona qualquer outra rota para login por padrão
+                    element={<Navigate to="/admin/login" replace />} // Redireciona qualquer outra rota para login por padrão
                 />
             </Routes>
         </Router>
@@ -90,3 +114,4 @@ function App() {
 }
 
 export default App;
+

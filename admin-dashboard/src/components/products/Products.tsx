@@ -201,7 +201,7 @@ const Products: React.FC = () => {
 
   const handleFormSubmit = async (formData: ProductFormData, imageFile?: File | null) => {
     if (!permissions.canWrite || !adminUser) { // Verificar adminUser e permissão
-      throw new Error("Permissão negada ou dados de usuário indisponíveis.");
+      throw new Error("Permissão negada ou usuário não autenticado.");
     }
 
     // Usar adminUser.uid ou currentUser.uid dependendo do que faz sentido para 'lastUpdatedBy'

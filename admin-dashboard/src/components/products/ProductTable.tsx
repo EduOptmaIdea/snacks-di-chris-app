@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import {
   EyeIcon,
@@ -69,7 +67,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
   };
 
   return (
-    <div className="overflow-x-auto"> 
+    <div className="overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr className="bg-gray-100 border-b">
@@ -103,17 +101,17 @@ const ProductTable: React.FC<ProductTableProps> = ({
                 {(permissions.canRead || permissions.canWrite || permissions.canDelete) && (
                   <td className="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
                     {permissions.canRead && (
-                      <button 
-                        onClick={() => onView(p)} 
-                        className="text-gray-600 hover:text-blue-600 mr-3 p-1" 
+                      <button
+                        onClick={() => onView(p)}
+                        className="text-gray-600 hover:text-blue-600 mr-3 p-1"
                         title="Visualizar"
                       >
                         <EyeIcon className="h-5 w-5" />
                       </button>
                     )}
                     {permissions.canWrite && (
-                      <button 
-                        onClick={() => onEdit(p)} 
+                      <button
+                        onClick={() => onEdit(p)}
                         className="text-gray-600 hover:text-green-600 mr-3 p-1"
                         title="Editar"
                       >
@@ -121,8 +119,8 @@ const ProductTable: React.FC<ProductTableProps> = ({
                       </button>
                     )}
                     {permissions.canDelete && (
-                      <button 
-                        onClick={() => onDelete(p)} 
+                      <button
+                        onClick={() => onDelete(p)}
                         className="text-gray-600 hover:text-red-600 p-1"
                         title="Excluir"
                       >

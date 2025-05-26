@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/PrivacyPolicy.css';
 import { WHATSAPP_PRIVACY_URL } from '../constants';
-import zap from '../assets/imgs/icons/whatsapp-logo-branca.png';
+import zap from '../assets/imgs/icons/whatsapp-logo-branca.webp';
 
 const PrivacyPolicy = () => {
   return (
@@ -9,7 +9,7 @@ const PrivacyPolicy = () => {
       <div className="privacy-policy-content">
         <h1>Política de Privacidade</h1>
         <p className="last-updated">Última atualização: {new Date().toLocaleDateString()}</p>
-        
+
         <section>
           <h2>1. Informações que Coletamos</h2>
           <p>Nós coletamos informações que você nos fornece diretamente quando:</p>
@@ -83,18 +83,18 @@ const PrivacyPolicy = () => {
           <p>Email: snacksdichris@gmail.com</p>
           <p>
             WhatsApp: {' '}
-            <a 
-              href={WHATSAPP_PRIVACY_URL} 
-              target="_blank" 
+            <a
+              href={WHATSAPP_PRIVACY_URL}
+              target="_blank"
               rel="noopener noreferrer"
               className="whatsapp-contact-link"
             >
-              <img 
+              <img
                 src={zap}
-                alt="WhatsApp" 
-                className="zap-icon" 
+                alt="WhatsApp"
+                className="zap-icon"
               />
-                Enviar mensagem sobre Privacidade
+              Enviar mensagem sobre Privacidade
             </a>
           </p>
         </section>

@@ -1,54 +1,184 @@
-import { useState, useEffect } from 'react';
-import { initializeApp } from 'firebase/app';
-import { 
+import { useState, useEffect, useCallback, useContext } from 'react';
+import { initializeApp, FirebaseApp } from 'firebase/app';
+import {
   getAuth, 
   signInWithEmailAndPassword, 
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
+  User as FirebaseAuthUser // Renomear para evitar conflito
 } from 'firebase/auth';
-import { 
+import {
+  getFirestore, 
+  doc, 
+  Timestamp,
+  getDoc,
+} from 'firebase/firestore';
+import {
   getFunctions, 
-  httpsCallable 
+  httpsCallable, 
+  Functions 
 } from 'firebase/functions';
 
-// Configuração do Firebase
+// --- Interfaces --- 
+// Importar ou definir as interfaces conforme o AuthContext.tsx
+// Assumindo que AuthContext.tsx exporta AuthContextType e AdminUserData
+import { AuthContextType, AdminUserData } from '../context/AuthContext'; // Ajuste o caminho conforme necessário
+
+// --- Configuração do Firebase --- 
 const firebaseConfig = {
-  apiKey: "AIzaSyDQqcLpqTI-DxfxL1NMH9Mh1x-gnbV_IeQ",
-  authDomain: "snack-di-chris-app.firebaseapp.com",
-  projectId: "snack-di-chris-app",
-  storageBucket: "snack-di-chris-app.appspot.com",
-  messagingSenderId: "1234567890",
-  appId: "1:1234567890:web:abcdef1234567890"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY, 
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 // Inicializar Firebase
-const app = initializeApp(firebaseConfig);
+const app: FirebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const functions = getFunctions(app);
+const db = getFirestore(app); 
+const functions: Functions = getFunctions(app, 'southamerica-east1');
 
-// Hook para autenticação
-export function useAuth() {
-  const [currentUser, setCurrentUser] = useState<any>(null);
+// --- Contexto de Autenticação --- 
+// Usar o contexto exportado pelo AuthContext.tsx
+import { AuthContext } from '../context/AuthContext'; // Ajuste o caminho
+
+// --- AuthProvider --- 
+// O Provider deve ser implementado em um arquivo separado (ex: AuthProvider.tsx)
+// que usa o hook useFirebaseAuth internamente.
+// Este arquivo (useFirebase.ts) deve exportar apenas os hooks.
+
+// --- Hook Interno de Autenticação (Lógica Principal) ---
+// Este hook agora retorna os valores esperados pelo AuthContextType
+
+// @ts-expect-error // Suprime TypeScript
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ function useFirebaseAuthInternal(): Omit<AuthContextType, 'login' | 'logout'> & { 
+     setAdminUserDirectly: (data: AdminUserData | null) => void // Helper para testes ou casos específicos
+ } {
+  const [currentUser, setCurrentUser] = useState<FirebaseAuthUser | null>(null);
+  const [adminUserData, setAdminUserData] = useState<AdminUserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
+    const unsubscribe = onAuthStateChanged(auth, async (userAuth) => {
+      setLoading(true);
+      setError(null);
+      setCurrentUser(userAuth); // Define o usuário do Firebase Auth
+
+      if (userAuth) {
+        // Se autenticado, busca dados do Firestore
+        try {
+          const userDocRef = doc(db, "adminUser", userAuth.uid);
+          const userDocSnap = await getDoc(userDocRef);
+
+          if (userDocSnap.exists()) {
+            const firestoreData = userDocSnap.data();
+            // Mapeia os dados do Firestore para a interface AdminUserData
+            const adminData: AdminUserData = {
+              uid: userAuth.uid, // Garante que o uid está presente
+              email: userAuth.email, // Pega do Auth ou Firestore?
+              role: firestoreData.role,
+              available: firestoreData.available,
+              permissions: firestoreData.permissions,
+              fullName: firestoreData.fullName,
+              userName: firestoreData.userName,
+              avatar: firestoreData.avatar,
+              // Adicione outros campos mapeados aqui
+            };
+            setAdminUserData(adminData);
+          } else {
+            console.error("Usuário autenticado não encontrado na coleção adminUser.");
+            setError("Dados de usuário administrativo não encontrados.");
+            setAdminUserData(null); 
+            // Considerar logout se dados admin são essenciais?
+            // await signOut(auth);
+          }
+        } catch (err: unknown) {
+          console.error("Erro ao buscar dados do adminUser:", err);
+          setError("Erro ao carregar dados do usuário administrativo.");
+          setAdminUserData(null); 
+        }
+      } else {
+        // Se não autenticado, limpa os dados admin também
+        setAdminUserData(null);
+      }
       setLoading(false);
     });
 
     return unsubscribe;
   }, []);
 
-  const login = async (email: string, password: string) => {
-    setError(null);
+  return {
+    currentUser, // Objeto do Firebase Auth
+    adminUser: adminUserData, // Objeto com dados do Firestore
+    loading,
+    error,
+    setAdminUserDirectly: setAdminUserData // Expor setter para casos específicos
+  };
+}
+
+// --- AuthProvider Component (Deve ficar em seu próprio arquivo, ex: src/context/AuthProvider.tsx) ---
+// Este é um exemplo de como o AuthProvider usaria os hooks
+/*
+import React, { ReactNode } from 'react';
+import { AuthContext, AuthContextType } from './AuthContext';
+import { useFirebaseAuthInternal, useAuthActions } from '../hooks/useFirebase'; // Ajuste o caminho
+
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { currentUser, adminUser, loading, error } = useFirebaseAuthInternal();
+  const { login, logout } = useAuthActions(); // Ações separadas
+
+  const contextValue: AuthContextType = {
+    currentUser,
+    adminUser,
+    loading,
+    error,
+    login,
+    logout
+  };
+
+  return (
+    <AuthContext.Provider value={contextValue}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+*/
+
+// --- Hook de Ações de Autenticação (Separado para melhor organização) ---
+// Interface para dados de atividade (exemplo)
+interface ActivityLogData {
+  action: string;
+  resource: string;
+  resourceId?: string;
+  details?: Record<string, unknown>;
+  success: boolean;
+}
+
+export function useAuthActions() {
+  const [actionLoading, setActionLoading] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+  // Pegar currentUser de dentro se precisar logar quem fez logout
+  // const { currentUser } = useFirebaseAuthInternal(); // Cuidado com dependência circular se não estruturar bem
+
+  const logActivity = useCallback(async (data: ActivityLogData) => {
     try {
-      setLoading(true);
+      const logFunction = httpsCallable<ActivityLogData, void>(functions, 'logActivity');
+      await logFunction(data);
+    } catch (err) {
+      console.error("Erro ao registrar atividade:", err);
+    }
+  }, []); // Removido 'functions' da dependência
+
+  const login = async (email: string, password: string): Promise<FirebaseAuthUser | null> => {
+    setActionError(null);
+    setActionLoading(true);
+    try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      
-      // Registrar atividade de login
-      const logActivity = httpsCallable(functions, 'logActivity');
+      // O listener onAuthStateChanged no useFirebaseAuthInternal cuidará de atualizar os estados
       await logActivity({
         action: 'login',
         resource: 'adminUser',
@@ -56,219 +186,200 @@ export function useAuth() {
         details: { method: 'email' },
         success: true
       });
-      
       return userCredential.user;
-    } catch (err: any) {
-      setError(err.message);
-      
-      // Registrar tentativa de login falha
-      const logActivity = httpsCallable(functions, 'logActivity');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Erro desconhecido no login";
+      setActionError(errorMessage);
       await logActivity({
         action: 'login',
         resource: 'adminUser',
-        details: { method: 'email', error: err.message },
+        details: { method: 'email', error: errorMessage },
         success: false
       });
-      
-      throw err;
+      return null; 
     } finally {
-      setLoading(false);
+      setActionLoading(false);
     }
   };
 
-  const logout = async () => {
-    setError(null);
+  const logout = async (userIdToLog?: string): Promise<void> => {
+    setActionError(null);
+    setActionLoading(true);
     try {
-      setLoading(true);
-      
-      // Registrar atividade de logout
-      if (currentUser) {
-        const logActivity = httpsCallable(functions, 'logActivity');
+      if (userIdToLog) { // Passar o UID do usuário que está deslogando
         await logActivity({
           action: 'logout',
           resource: 'adminUser',
-          resourceId: currentUser.uid,
+          resourceId: userIdToLog,
           success: true
         });
       }
-      
       await signOut(auth);
-    } catch (err: any) {
-      setError(err.message);
-      throw err;
+      // O listener onAuthStateChanged cuidará de limpar os estados
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Erro desconhecido no logout";
+      setActionError(errorMessage);
     } finally {
-      setLoading(false);
+      setActionLoading(false);
     }
   };
 
   return {
-    currentUser,
-    loading,
-    error,
     login,
-    logout
+    logout,
+    loading: actionLoading,
+    error: actionError
   };
 }
 
-// Hook para verificação de permissões
-export function usePermissions() {
-  const [permissions, setPermissions] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { currentUser } = useAuth();
+// --- Hook useAuth (Exportado para uso nos componentes) ---
+// Este hook simplesmente consome o contexto
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
 
-  useEffect(() => {
-    const fetchPermissions = async () => {
-      if (!currentUser) {
-        setPermissions(null);
-        setLoading(false);
-        return;
-      }
 
-      try {
-        setLoading(true);
-        const checkPermission = httpsCallable(functions, 'checkPermission');
-        const result = await checkPermission({});
-        setPermissions(result.data);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+// --- Outros Hooks (usePermissionsCheck, useUserManagement) --- 
+// Manter como antes, mas ajustar para usar `adminUser` do `useAuth` se necessário
 
-    fetchPermissions();
-  }, [currentUser]);
+export function usePermissionsCheck() {
+  const { adminUser } = useAuth(); // Usar adminUser do contexto
 
-  const hasPermission = (resource: string, operation: 'read' | 'write' | 'delete') => {
-    if (!permissions) return false;
-    return permissions[resource]?.[operation] === true;
-  };
+  const hasPermission = useCallback((resource: keyof AdminUserData['permissions'], operation: 'read' | 'write' | 'delete'): boolean => {
+    // Ajustar a chave do recurso se necessário (ex: 'adminUser' vs 'users')
+    const resourceKey = resource as keyof NonNullable<AdminUserData['permissions']>; 
 
-  return {
-    permissions,
-    loading,
-    error,
-    hasPermission
-  };
+    if (!adminUser || !adminUser.available) return false;
+    if (adminUser.role === 'master') return true;
+    
+    const resourcePermissions = adminUser.permissions?.[resourceKey] || [];
+    return resourcePermissions.includes(operation);
+
+  }, [adminUser]);
+
+  return { hasPermission };
 }
 
-// Hook para gerenciamento de usuários
+// Interface para dados de usuário gerenciados (exemplo)
+interface ManagedUserData {
+  id: string;
+  fullName?: string;
+  userName?: string;
+  email?: string;
+  role?: string;
+  available?: boolean;
+  lastLogin?: string | Timestamp; // Ajustar tipo conforme necessário
+  createdAt?: string | Timestamp;
+  // Adicione outros campos conforme necessário
+}
+
 export function useUserManagement() {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<ManagedUserData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // const { adminUser } = useAuth(); // Para logar quem fez a ação, se necessário
 
-  const fetchUsers = async () => {
+  const logActivity = useCallback(async (data: Omit<ActivityLogData, 'success'> & { success?: boolean }) => {
+      try {
+          const logFunction = httpsCallable<ActivityLogData, void>(functions, 'logActivity');
+          await logFunction({ ...data, success: data.success ?? true });
+      } catch (err) {
+          console.error("Erro ao registrar atividade (UserManagement):", err);
+      }
+  }, []); // Removido 'functions' da dependência
+
+  const fetchUsers = useCallback(async (): Promise<ManagedUserData[]> => {
     setError(null);
+    setLoading(true);
     try {
-      setLoading(true);
-      // Implementar chamada para função Cloud que busca usuários
-      // Esta é uma simulação
-      const mockUsers = [
-        {
-          id: '1',
-          fullName: 'Carlos Eduardo de Souza',
-          userName: 'EduSouza',
-          email: 'edu.souza@example.com',
-          role: 'master',
-          available: true,
-          lastLogin: '22 de maio de 2025 às 12:36:30 UTC-3',
-          createdAt: '22 de maio de 2025 às 12:34:16 UTC-3'
-        },
-        {
-          id: '2',
-          fullName: 'Maria Silva',
-          userName: 'MariaS',
-          email: 'maria.silva@example.com',
-          role: 'admin',
-          available: true,
-          lastLogin: '21 de maio de 2025 às 10:15:22 UTC-3',
-          createdAt: '15 de maio de 2025 às 09:30:00 UTC-3'
-        },
-        {
-          id: '3',
-          fullName: 'João Pereira',
-          userName: 'JoaoP',
-          email: 'joao.pereira@example.com',
-          role: 'editor',
-          available: false,
-          createdAt: '10 de maio de 2025 às 14:22:45 UTC-3'
-        }
+      console.warn("fetchUsers: Usando dados mockados!");
+      const mockUsers: ManagedUserData[] = [
+        { id: '1', fullName: 'Carlos Eduardo de Souza', userName: 'EduSouza', email: 'edu.souza@example.com', role: 'master', available: true, lastLogin: '22 de maio de 2025 às 12:36:30 UTC-3', createdAt: '22 de maio de 2025 às 12:34:16 UTC-3' },
+        { id: '2', fullName: 'Maria Silva', userName: 'MariaS', email: 'maria.silva@example.com', role: 'admin', available: true, lastLogin: '21 de maio de 2025 às 10:15:22 UTC-3', createdAt: '15 de maio de 2025 às 09:30:00 UTC-3' },
+        { id: '3', fullName: 'João Pereira', userName: 'JoaoP', email: 'joao.pereira@example.com', role: 'editor', available: false, createdAt: '10 de maio de 2025 às 14:22:45 UTC-3' }
       ];
-      
       setUsers(mockUsers);
       return mockUsers;
-    } catch (err: any) {
-      setError(err.message);
-      throw err;
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Erro desconhecido ao buscar usuários";
+      setError(errorMessage);
+      throw new Error(errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const getUser = async (userId: string) => {
+  const getUser = useCallback(async (userId: string): Promise<ManagedUserData | null> => {
     setError(null);
+    setLoading(true);
     try {
-      setLoading(true);
-      // Implementar chamada para função Cloud que busca um usuário específico
-      // Esta é uma simulação
+      console.warn(`getUser (${userId}): Usando dados mockados!`);
       const user = users.find(u => u.id === userId);
       return user || null;
-    } catch (err: any) {
-      setError(err.message);
-      throw err;
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Erro desconhecido ao buscar usuário";
+      setError(errorMessage);
+      throw new Error(errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, [users]); 
 
-  const createUser = async (userData: any) => {
+  interface UserInputData {
+      fullName?: string;
+      userName?: string;
+      email?: string;
+      role?: string;
+      available?: boolean;
+      permissions?: AdminUserData['permissions']; // Usar tipo de permissão definido
+      password?: string; 
+  }
+
+  const createUser = async (userData: UserInputData): Promise<ManagedUserData> => {
     setError(null);
+    setLoading(true);
+    const detailsToLog = { ...userData };
+    if (detailsToLog.password) detailsToLog.password = '[REDACTED]';
+
     try {
-      setLoading(true);
-      // Implementar chamada para função Cloud que cria um usuário
-      // Esta é uma simulação
-      console.log('Criando usuário:', userData);
+      console.warn('createUser: Chamada simulada!');
+      const newUser = { id: `new-${Date.now()}`, ...userData };
+      delete newUser.password;
       
-      // Registrar atividade
-      const logActivity = httpsCallable(functions, 'logActivity');
       await logActivity({
         action: 'create',
         resource: 'adminUser',
-        details: { userData: { ...userData, password: '[REDACTED]' } },
+        details: { userData: detailsToLog },
         success: true
       });
-      
-      return { id: 'new-user-id', ...userData };
-    } catch (err: any) {
-      setError(err.message);
-      
-      // Registrar erro
-      const logActivity = httpsCallable(functions, 'logActivity');
+      setUsers(prev => [...prev, newUser as ManagedUserData]);
+      return newUser as ManagedUserData;
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Erro desconhecido ao criar usuário";
+      setError(errorMessage);
       await logActivity({
         action: 'create',
         resource: 'adminUser',
-        details: { error: err.message },
+        details: { error: errorMessage, inputData: detailsToLog },
         success: false
       });
-      
-      throw err;
+      throw new Error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  const updateUser = async (userId: string, userData: any) => {
+  const updateUser = async (userId: string, userData: Partial<UserInputData>): Promise<ManagedUserData> => {
     setError(null);
+    setLoading(true);
     try {
-      setLoading(true);
-      // Implementar chamada para função Cloud que atualiza um usuário
-      // Esta é uma simulação
-      console.log('Atualizando usuário:', userId, userData);
+      console.warn(`updateUser (${userId}): Chamada simulada!`);
+      const updatedUser = { id: userId, ...userData };
       
-      // Registrar atividade
-      const logActivity = httpsCallable(functions, 'logActivity');
       await logActivity({
         action: 'update',
         resource: 'adminUser',
@@ -276,59 +387,49 @@ export function useUserManagement() {
         details: { changes: userData },
         success: true
       });
-      
-      return { id: userId, ...userData };
-    } catch (err: any) {
-      setError(err.message);
-      
-      // Registrar erro
-      const logActivity = httpsCallable(functions, 'logActivity');
+      setUsers(prev => prev.map(u => u.id === userId ? { ...u, ...updatedUser } : u));
+      return updatedUser as ManagedUserData;
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Erro desconhecido ao atualizar usuário";
+      setError(errorMessage);
       await logActivity({
         action: 'update',
         resource: 'adminUser',
         resourceId: userId,
-        details: { error: err.message },
+        details: { error: errorMessage, changes: userData },
         success: false
       });
-      
-      throw err;
+      throw new Error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  const deleteUser = async (userId: string) => {
+  const deleteUser = async (userId: string): Promise<boolean> => {
     setError(null);
+    setLoading(true);
     try {
-      setLoading(true);
-      // Implementar chamada para função Cloud que exclui um usuário
-      // Esta é uma simulação
-      console.log('Excluindo usuário:', userId);
+      console.warn(`deleteUser (${userId}): Chamada simulada!`);
       
-      // Registrar atividade
-      const logActivity = httpsCallable(functions, 'logActivity');
       await logActivity({
         action: 'delete',
         resource: 'adminUser',
         resourceId: userId,
         success: true
       });
-      
+      setUsers(prev => prev.filter(u => u.id !== userId));
       return true;
-    } catch (err: any) {
-      setError(err.message);
-      
-      // Registrar erro
-      const logActivity = httpsCallable(functions, 'logActivity');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Erro desconhecido ao excluir usuário";
+      setError(errorMessage);
       await logActivity({
         action: 'delete',
         resource: 'adminUser',
         resourceId: userId,
-        details: { error: err.message },
+        details: { error: errorMessage },
         success: false
       });
-      
-      throw err;
+      throw new Error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -346,8 +447,3 @@ export function useUserManagement() {
   };
 }
 
-export default {
-  useAuth,
-  usePermissions,
-  useUserManagement
-};

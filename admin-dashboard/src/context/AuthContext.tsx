@@ -4,6 +4,7 @@ import { User } from 'firebase/auth'; // Firebase Auth User type
 // Define the shape of the user data we'll store from adminUser collection
 interface AdminUserData {
     uid: string;
+    available: boolean;
     email: string | null;
     fullName?: string;
     userName?: string;

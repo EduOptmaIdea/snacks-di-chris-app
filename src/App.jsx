@@ -22,6 +22,8 @@ import UserList from '../admin-dashboard/src/components/users/UserList.tsx';
 import UserForm from '../admin-dashboard/src/components/users/UserForm.tsx';
 import AdminProductsPage from '../admin-dashboard/src/components/products/Products.tsx'; // Importar o novo componente de produtos
 import AdminCategoriesPage from '../admin-dashboard/src/components/categories/Categories.tsx'; // Importar o novo componente de produtos
+import AdminIngredientsPage from '../admin-dashboard/src/components/ingredients/Ingredients.tsx'; // Importar o novo componente de ingredientes
+import AdminAlergenicsPage from '../admin-dashboard/src/components/alergenics/Alergenics.tsx'; // Importar o novo componente de ingredientes
 // --- Fim das Importações do Admin Dashboard ---
 
 // Componentes carregados de forma lazy (Cliente)
@@ -510,6 +512,15 @@ function AppRouter() {
             }
           />
           <Route
+            path="/admin/ingredients"
+            element={
+              <AuthGuard>
+                <AdminLayout><AdminIngredientsPage /></AdminLayout> {/* Usar o componente importado */}
+              </AuthGuard>
+            }
+          />
+
+          <Route
             path="/admin/products" // Rota para a nova página de produtos
             element={
               <AuthGuard>
@@ -534,18 +545,10 @@ function AppRouter() {
             }
           />
           <Route
-            path="/admin/ingredients"
-            element={
-              <AuthGuard>
-                <AdminIngredients />
-              </AuthGuard>
-            }
-          />
-          <Route
             path="/admin/alergenics"
             element={
               <AuthGuard>
-                <AdminAlergenics />
+                <AdminLayout><AdminAlergenicsPage /></AdminLayout> {/* Usar o componente importado */}
               </AuthGuard>
             }
           />

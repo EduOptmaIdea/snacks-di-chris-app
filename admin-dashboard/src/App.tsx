@@ -8,15 +8,13 @@ import './App.css';
 // Importar componentes reais
 import Categories from './components/categories/Categories'; // Importar o componente real
 import Products from './components/products/Products'; // Importar o componente real
+import Ingredients from './components/ingredients/Ingredients';
+import Alergenics from './components/alergenics/Alergenics'; // Importar o componente real
 
 // Placeholder components for other routes (replace with actual components later)
 const Users = () => <div>Página de Usuários</div>;
-// const Categories = () => <div>Página de Categorias</div>; // Remover placeholder
-// const Products = () => <div>Página de Produtos</div>; // Remover placeholder
 const Permissions = () => <div>Página de Permissões</div>;
 const Settings = () => <div>Página de Configurações</div>;
-const Ingredients = () => <div>Página de Ingredientes utilizados</div>;
-const Alergenics = () => <div>Página dos alergenos que podem conter (Admin)</div>;
 
 function App() {
     return (

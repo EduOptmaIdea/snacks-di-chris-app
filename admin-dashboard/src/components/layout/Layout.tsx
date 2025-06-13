@@ -1,8 +1,9 @@
-import { useState, useEffect, useContext } from 'react'; // Import useContext
+import { useState, useEffect, useContext } from 'react';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import Sidebar from './Sidebar';
 import defaultAvatar from '../../assets/default-avatar.png';
-import { AuthContext } from '../../context/AuthContext'; // Import AuthContext
+import { AuthContext } from '../../context/AuthContext';
+import '../../styles/global.css'; // Import global styles
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -11,14 +12,11 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const authContext = useContext(AuthContext); // Usar useContext
+    const authContext = useContext(AuthContext);
 
-    // Verificar se o contexto foi carregado antes de acessar adminUser
     const adminUser = authContext?.adminUser;
-
-    // Extrair nome e avatar do adminUser, com fallbacks
-    const userName = adminUser?.userName || 'Usuário'; // Usa userName do adminUser ou 'Usuário'
-    const userAvatar = adminUser?.avatar; // Usa avatar do adminUser
+    const userName = adminUser?.userName || 'Usuário';
+    const userAvatar = adminUser?.avatar;
 
     useEffect(() => {
         const checkIfMobile = () => {
@@ -34,7 +32,7 @@ const Layout = ({ children }: LayoutProps) => {
     };
 
     return (
-        <div className="flex h-screen bg-gray-100">
+        <div className="flex h-screen bg-gray-100 relative">
             {/* Sidebar para desktop */}
             {!isMobile && <Sidebar isMobile={false} />}
 
@@ -50,40 +48,119 @@ const Layout = ({ children }: LayoutProps) => {
 
             {/* Conteúdo principal */}
             <div className="flex-1 flex flex-col overflow-hidden">
-                {/* Cabeçalho */}
+                {/* Cabeçalho - z-index reduzido */}
                 <header className="bg-white shadow-sm z-10">
-                    <div className="px-4 py-3 flex items-center justify-between">
-                        {isMobile && (
-                            <button
-                                onClick={toggleMobileMenu}
-                                className="text-gray-600 hover:text-gray-900 focus:outline-none"
-                            >
-                                <Bars3Icon className="h-6 w-6" />
-                            </button>
-                        )}
-                        <div className="flex-1 flex justify-between items-center">
-                            {/* Título */}
-                            <h1 className="text-xl font-semibold text-gray-800">
-                                <span style={{ fontFamily: 'Neufreit, sans-serif', color: '#a9373e', fontSize: '22px' }}>SNACKS</span>
-                                <span style={{ fontFamily: 'Plau, sans-serif', color: '#a9373e', fontSize: '22px' }}> di Chris</span>
-                                <span style={{ fontFamily: 'Roboto, sans-serif', color: '#a9373e', fontWeight: 'normal' }}> | Área Administrativa</span>
-                            </h1>
-                            {/* Informações do Usuário */}
-                            <div className="ml-4 flex items-center gap-3">
-                                <span style={{ fontFamily: 'Robotosemi, sans-serif', color: '#333', fontSize: '18px' }}>{userName}</span>
-                                <img
-                                    className="h-12 w-12 rounded-full object-cover bg-[#a9373e]"
-                                    src={userAvatar || defaultAvatar} // Usa avatar do adminUser ou fallback
-                                    alt="Avatar do usuário"
-                                    onError={(e) => { (e.target as HTMLImageElement).src = defaultAvatar; }}
-                                />
+                    <div className="px-2 py-2 flex items-center justify-between w-full">
+                        {isMobile ? (
+                            <>
+                                {/* Esquerda: Botão + Título */}
+                                <div className="flex items-start gap-2">
+                                    <button
+                                        onClick={toggleMobileMenu}
+                                        className="text-gray-600 hover:text-gray-900 focus:outline-none"
+                                    >
+                                        <Bars3Icon className="h-6 w-6" />
+                                    </button>
+
+                                    <div className="flex flex-col leading-tight">
+                                        {/* Linha 1: SNACKS + di Chris juntos */}
+                                        <div className="flex gap-1">
+                                            <span style={{
+                                                fontFamily: 'Neufreit, sans-serif',
+                                                color: '#a9373e',
+                                                fontSize: '12px',
+                                                fontWeight: 'bold'
+                                            }}>
+                                                SNACKS
+                                            </span>
+                                            <span style={{
+                                                fontFamily: 'Plau, sans-serif',
+                                                color: '#a9373e',
+                                                fontSize: '12px'
+                                            }}>
+                                                di Chris
+                                            </span>
+                                        </div>
+
+                                        {/* Linha 2: Área Administrativa */}
+                                        <span style={{
+                                            fontFamily: 'Roboto, sans-serif',
+                                            color: '#a9373e',
+                                            fontSize: '10px'
+                                        }}>
+                                            Área Administrativa
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                                {/* Direita: Nome + Avatar */}
+                                <div className="flex items-center gap-2">
+                                    <span style={{
+                                        fontFamily: 'Robotosemi, sans-serif',
+                                        color: '#333',
+                                        fontSize: '10px'
+                                    }}>
+                                        {userName}
+                                    </span>
+                                    <img
+                                        className="h-10 w-10 rounded-full object-cover bg-[#a9373e]"
+                                        src={userAvatar || defaultAvatar}
+                                        alt="Avatar do usuário"
+                                        onError={(e) => { (e.target as HTMLImageElement).src = defaultAvatar; }}
+                                    />
+                                </div>
+                            </>
+                        ) : (
+                            // Versão desktop
+                            <div className="flex-1 flex justify-between items-center">
+                                <h1 className="text-xl font-semibold text-gray-800">
+                                    <span style={{
+                                        fontFamily: 'Neufreit, sans-serif',
+                                        color: '#a9373e',
+                                        fontSize: '22px'
+                                    }}>
+                                        SNACKS
+                                    </span>
+                                    <span style={{
+                                        fontFamily: 'Plau, sans-serif',
+                                        color: '#a9373e',
+                                        fontSize: '22px'
+                                    }}>
+                                        di Chris
+                                    </span>
+                                    <span style={{
+                                        fontFamily: 'Roboto, sans-serif',
+                                        color: '#a9373e',
+                                        fontWeight: 'normal'
+                                    }}>
+                                        {' '}| Área Administrativa
+                                    </span>
+                                </h1>
+
+                                <div className="ml-4 flex items-center gap-3">
+                                    <span style={{
+                                        fontFamily: 'Robotosemi, sans-serif',
+                                        color: '#333',
+                                        fontSize: '18px'
+                                    }}>
+                                        {userName}
+                                    </span>
+                                    <img
+                                        className="h-12 w-12 rounded-full object-cover bg-[#a9373e]"
+                                        src={userAvatar || defaultAvatar}
+                                        alt="Avatar do usuário"
+                                        onError={(e) => { (e.target as HTMLImageElement).src = defaultAvatar; }}
+                                    />
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </header>
 
+
                 {/* Conteúdo da página */}
-                <main className="flex-1 overflow-auto p-4">
+                <main className="flex-1 overflow-auto px-2 py-0 relative z-20">
                     <div className="container mx-auto">
                         {children}
                     </div>

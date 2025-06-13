@@ -120,7 +120,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="dashboard">
-      <h1>Dashboard Administrativo</h1>
+      <h1 className='items-start'>Dashboard Administrativo</h1>
 
       {loading && <div className="dashboard-loading">Carregando produtos...</div>}
       {error && <div className="dashboard-error">{error}</div>}

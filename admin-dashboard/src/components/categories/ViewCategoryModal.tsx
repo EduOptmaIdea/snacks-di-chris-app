@@ -2,6 +2,11 @@ import React from 'react';
 import ProductModal from './CategoryModal';
 import { Timestamp } from 'firebase/firestore';
 
+// Interface para mapas de referência (ID -> Nome)
+interface ReferenceMap {
+  [key: string]: string;
+}
+
 // Interface completa para dados do produto, incluindo metadados
 interface FullCategoryData {
   id: string;
@@ -19,6 +24,7 @@ interface ViewCategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
   category: FullCategoryData | null;
+  usersMap: ReferenceMap;
 }
 
 // Função auxiliar para formatar Timestamps
@@ -27,10 +33,17 @@ const formatTimestamp = (timestamp: Timestamp | undefined): string => {
   return timestamp.toDate().toLocaleString('pt-BR');
 };
 
+// Função auxiliar para obter nome do usuário
+const getUserName = (userId: string | undefined, map: ReferenceMap): string => {
+  if (!userId) return 'Sistema'; // Ou 'Desconhecido'
+  return map[userId] || userId; // Retorna nome ou ID se não encontrado
+};
+
 const ViewCategoryModal: React.FC<ViewCategoryModalProps> = ({
   isOpen,
   onClose,
   category,
+  usersMap
 }) => {
   if (!isOpen || !category) return null;
 
@@ -38,6 +51,10 @@ const ViewCategoryModal: React.FC<ViewCategoryModalProps> = ({
   const imageUrl = category.image || defaultImage;
 
   const availability = category.activeCategory ? 'Sim' : 'Não';
+
+  // Obter nomes dos usuários
+  const createdByName = getUserName(category.createdBy, usersMap);
+  const lastUpdatedByName = getUserName(category.lastUpdatedBy, usersMap);
 
   return (
     <ProductModal isOpen={isOpen} onClose={onClose} title="Detalhes da categoria">
@@ -63,8 +80,8 @@ const ViewCategoryModal: React.FC<ViewCategoryModalProps> = ({
 
           {/* Metadados */}
           <div className="text-xs text-gray-500 pt-2 border-t border-gray-200 mt-3">
-            <p><strong>Criado em:</strong> {formatTimestamp(category.createdAt)} por {category.createdBy || 'Desconhecido'}</p>
-            <p><strong>Última Atualização:</strong> {formatTimestamp(category.updatedAt)} por {category.lastUpdatedBy || 'Desconhecido'}</p>
+            <p><strong>Criado em:</strong> {formatTimestamp(category.createdAt)} por {createdByName || 'Desconhecido'}</p>
+            <p><strong>Última Atualização:</strong> {formatTimestamp(category.updatedAt)} por {lastUpdatedByName || 'Desconhecido'}</p>
           </div>
         </div>
       </div>

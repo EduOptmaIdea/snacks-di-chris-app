@@ -1,0 +1,20 @@
+/* Garante que o modal esteja sempre no topo */
+.ReactModal__Overlay {
+  z-index: 1000 !important;
+}
+
+/* Header fixo com z-index controlado */
+header {
+  z-index: 20 !important;
+  position: relative;
+}
+
+/* Sidebar com z-index adequado */
+aside {
+  z-index: 30 !important;
+}
+
+/* Garante que os modais de conteúdo fiquem acima do header */
+.modal-content {
+  z-index: 1001 !important;
+}

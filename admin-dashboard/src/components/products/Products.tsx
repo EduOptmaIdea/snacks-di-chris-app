@@ -17,6 +17,11 @@ interface ReferenceItem {
   name: string;
 }
 
+interface UserReferenceItem {
+  id: string;
+  userName: string; // Assumindo que o campo no Firestore é userName
+}
+
 interface ReferenceMap {
   [key: string]: string;
 }
@@ -70,6 +75,7 @@ const Products: React.FC = () => {
   const [categoriesMap, setCategoriesMap] = useState<ReferenceMap>({});
   const [ingredientsMap, setIngredientsMap] = useState<ReferenceMap>({});
   const [allergensMap, setAllergensMap] = useState<ReferenceMap>({});
+  const [usersMap, setUsersMap] = useState<ReferenceMap>({}); // Mapa de usuários (ID -> Nome)
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
@@ -124,6 +130,11 @@ const Products: React.FC = () => {
       const allergensList = allergensSnapshot.docs.map(doc => ({ id: doc.id, name: doc.data().name || 'Sem nome' })) as ReferenceItem[];
       setAllergens(allergensList);
       setAllergensMap(allergensList.reduce((acc, cur) => ({ ...acc, [cur.id]: cur.name }), {}));
+
+      // Buscar Usuários (para mapear IDs para nomes)
+      const usersSnapshot = await getDocs(collection(db, 'adminUser'));
+      const usersList = usersSnapshot.docs.map(doc => ({ id: doc.id, userName: doc.data().userName || 'Desconhecido' })) as UserReferenceItem[]; // Assumindo campo 'userName'
+      setUsersMap(usersList.reduce((acc, cur) => ({ ...acc, [cur.id]: cur.userName }), {}));
 
     } catch (err) {
       console.error("Erro ao buscar dados:", err);
@@ -288,16 +299,20 @@ const Products: React.FC = () => {
   return (
     <div className="admin-container p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Gerenciamento de Produtos</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">
+          Gerenciamento de Produtos
+        </h1>
+
         {permissions.canWrite && (
           <button
             onClick={handleAddNew}
-            className="bg-[#efb42b] hover:bg-[#d9a326] text-[#333] font-bold py-2 px-4 rounded shadow"
+            className="text-sm sm:text-base bg-[#efb42b] hover:bg-[#d9a326] text-[#333] font-bold py-2 px-3 sm:px-4 rounded shadow"
           >
             + Novo Produto
           </button>
         )}
       </div>
+
 
       {loading && <div className="text-center py-4">Carregando...</div>}
       {error && <div className="text-red-500 text-center py-4 bg-red-100 rounded">{error}</div>}
@@ -324,6 +339,7 @@ const Products: React.FC = () => {
         categoriesMap={categoriesMap}
         ingredientsMap={ingredientsMap}
         allergensMap={allergensMap}
+        usersMap={usersMap} // Passar o mapa de usuários
       />
 
       <ProductModal

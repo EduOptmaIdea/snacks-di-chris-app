@@ -11,17 +11,27 @@ import ViewCategoryModal from './ViewCategoryModal'; // Modal genérico para o f
 import CategoryForm from './CategoryForm';
 import DeleteCategoryModal from './DeleteCategoryModal';
 
-// Interfaces específicas para Categorias
+// Interfaces
+interface UserReferenceItem {
+  id: string;
+  userName: string;
+}
+
+interface ReferenceMap {
+  [key: string]: string;
+}
+
 interface CategoryData {
   id: string;
-  category?: string; // Nome da categoria
-  description?: string; // Descrição opcional
-  activeCategory?: boolean; // Status da categoria
+  category?: string; // Ajustado para categoryName
+  description?: string;
+  order?: number; // Adicionado campo order
+  active?: boolean; // Adicionado campo active
   createdAt?: Timestamp;
-  createdBy?: string;
+  createdBy?: string; // User ID
   updatedAt?: Timestamp;
-  lastUpdatedBy?: string;
-  image?: string | null;
+  lastUpdatedBy?: string; // User ID
+  image?: string | null; // Mantido campo image conforme código anterior
 }
 
 interface CategoryFormData {
@@ -41,6 +51,7 @@ interface CategoryPermissions {
 const Categories: React.FC = () => {
   const { currentUser, adminUser } = useAuth();
   const [categoriesData, setCategoriesData] = useState<CategoryData[]>([]);
+  const [usersMap, setUsersMap] = useState<ReferenceMap>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
@@ -75,9 +86,14 @@ const Categories: React.FC = () => {
     try {
       const categoriesSnapshot = await getDocs(collection(db, 'categories'));
       const categoriesList = categoriesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CategoryData[];
-      // Ordenar categorias alfabeticamente pelo nome da categoria
       categoriesList.sort((a, b) => (a.category ?? '').localeCompare(b.category ?? ''));
       setCategoriesData(categoriesList);
+
+      // Buscar Usuários (para mapear IDs para nomes)
+      const usersSnapshot = await getDocs(collection(db, 'users'));
+      const usersList = usersSnapshot.docs.map(doc => ({ id: doc.id, userName: doc.data().userName || 'Desconhecido' })) as UserReferenceItem[];
+      setUsersMap(usersList.reduce((acc, cur) => ({ ...acc, [cur.id]: cur.userName }), {}));
+
     } catch (err) {
       console.error("Erro ao buscar categorias:", err);
       setError('Falha ao carregar categorias. Verifique o console para mais detalhes.');
@@ -265,6 +281,7 @@ const Categories: React.FC = () => {
         isOpen={isViewModalOpen}
         onClose={handleCloseModals}
         category={selectedCategory}
+        usersMap={usersMap}
       />
 
       <CategoryModal

@@ -1,8 +1,5 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
-// Assume utility functions for storage upload exist (e.g., in ../../utils/storageUtils)
-// import { uploadProductImage } from '../../utils/storageUtils'; 
-// Assume utility functions for firestore exist (e.g., in ../../utils/firestoreUtils)
-// import { fetchCategories, fetchIngredients, fetchAllergens } from '../../utils/firestoreUtils';
+import '../../styles/global.css'; // Import global styles
 
 // Interface for the full product data used in the form
 interface ProductFormData {
@@ -87,7 +84,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
     if (type === 'checkbox') {
       const { checked } = e.target as HTMLInputElement;
-      // Handle multi-select checkboxes (ingredients, allergens)
+
       if (name === 'ingredientRefs' || name === 'allergenicAgentRefs') {
         setFormData(prev => ({
           ...prev,
@@ -96,21 +93,45 @@ const ProductForm: React.FC<ProductFormProps> = ({
             : prev[name].filter(ref => ref !== value),
         }));
       } else {
-        // Handle single toggles (available, descontinued)
-        // Note: descontinued logic is inverted (checked=true means descontinued=true/Inactive)
-        // available logic is direct (checked=true means available=true/Yes)
-        setFormData(prev => ({
-          ...prev,
-          [name]: checked,
-        }));
+        setFormData(prev => {
+          const updatedForm = { ...prev, [name]: checked };
+
+          // Se marcar como descontinuado: zera o estoque e torna indisponível
+          // Regras especiais:
+          if (type === 'checkbox') {
+            const input = e.target as HTMLInputElement;
+            const checked = input.checked;
+
+            const updatedForm = { ...prev, [name]: checked };
+
+            if (name === 'descontinued' && checked) {
+              updatedForm.currentStock = 0;
+              updatedForm.available = false;
+            } else if (name === 'available' && checked && prev.descontinued) {
+              updatedForm.descontinued = false;
+            }
+
+            return updatedForm;
+          }
+          return updatedForm;
+        });
       }
     } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: type === 'number' ? parseFloat(value) || 0 : value,
-      }));
+      const newValue = type === 'number' ? parseFloat(value) || 0 : value;
+
+      setFormData(prev => {
+        const updatedForm = { ...prev, [name]: newValue };
+
+        // Se estoque for alterado para 0, tornar indisponível
+        if (name === 'currentStock' && parseInt(value) === 0) {
+          updatedForm.available = false;
+        }
+
+        return updatedForm;
+      });
     }
   };
+
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -152,116 +173,195 @@ const ProductForm: React.FC<ProductFormProps> = ({
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && <div className="text-red-500 text-sm p-2 bg-red-100 rounded">{error}</div>}
 
-      {/* Image Upload and Preview */}
-      <div className="flex flex-col items-center space-y-2">
-        <img
-          src={imagePreview || '/default.webp'}
-          alt="Pré-visualização"
-          className="h-32 w-32 object-cover rounded border border-gray-300 mb-2"
-          onError={(e) => (e.currentTarget.src = '/default.webp')}
-        />
-        <input
-          type="file"
-          id="imageUpload"
-          accept="image/png, image/jpeg, image/webp"
-          onChange={handleImageChange}
-          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-        />
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        {/* Image Upload and Preview */}
+        <div className="md:col-span-1 flex justify-center items-start">
+          <div className="flex flex-col items-center space-y-2">
+            <img
+              src={imagePreview || '/default.webp'}
+              alt="Pré-visualização"
+              className="h-32 w-32 object-cover rounded border border-gray-300 mb-2"
+              onError={(e) => (e.currentTarget.src = '/default.webp')}
+            />
+            <input
+              type="file"
+              id="imageUpload"
+              accept="image/png, image/jpeg, image/webp"
+              onChange={handleImageChange}
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            />
+          </div>
+        </div>
 
-      {/* Form Fields */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="productname" className="block text-sm font-medium text-gray-700">Nome do Produto</label>
-          <input type="text" name="productname" id="productname" value={formData.productname} onChange={handleChange} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-        </div>
-        <div>
-          <label htmlFor="categoryRef" className="block text-sm font-medium text-gray-700">Categoria</label>
-          <select name="categoryRef" id="categoryRef" value={formData.categoryRef} onChange={handleChange} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-            <option value="">Selecione...</option>
-            {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="price" className="block text-sm font-medium text-gray-700">Preço (R$)</label>
-          <input type="number" name="price" id="price" value={formData.price} onChange={handleChange} required min="0" step="0.01" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-        </div>
-        <div>
-          <label htmlFor="currentStock" className="block text-sm font-medium text-gray-700">Estoque Atual</label>
-          <input type="number" name="currentStock" id="currentStock" value={formData.currentStock} onChange={handleChange} required min="0" step="1" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-        </div>
-      </div>
+        {/* Form Fields */}
+        <div className="md:col-span-2 space-y-4">
 
-      <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700">Descrição</label>
-        <textarea name="description" id="description" value={formData.description} onChange={handleChange} rows={3} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
-      </div>
+          {/* Nome do Produto em linha separada */}
+          <div>
+            <label htmlFor="productname" className="block text-sm font-bold text-[#A9373E] mb-1">
+              Nome do Produto
+            </label>
+            <input
+              type="text"
+              name="productname"
+              id="productname"
+              value={formData.productname}
+              onChange={handleChange}
+              required
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-[#A9373E] font-semibold px-3 py-3 sm:text-sm"
+            />
+          </div>
 
-      {/* Toggles */}
-      <div className="flex items-center space-x-6">
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            name="available"
-            id="available"
-            checked={formData.available}
-            onChange={handleChange}
-            className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-          />
-          <label htmlFor="available" className="ml-2 block text-sm text-gray-900">Disponível para Venda</label>
-        </div>
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            name="descontinued"
-            id="descontinued"
-            checked={formData.descontinued} // checked = Inativo
-            onChange={handleChange}
-            className="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
-          />
-          <label htmlFor="descontinued" className="ml-2 block text-sm text-gray-900">Produto Descontinuado (Inativo)</label>
-        </div>
-      </div>
-
-      {/* Multi-Select Checkboxes (Ingredients) */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Ingredientes</label>
-        <div className="mt-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-40 overflow-y-auto border p-2 rounded-md">
-          {ingredients.map(ing => (
-            <div key={ing.id} className="flex items-center">
-              <input
-                type="checkbox"
-                id={`ing-${ing.id}`}
-                name="ingredientRefs"
-                value={ing.id}
-                checked={formData.ingredientRefs.includes(ing.id)}
+          {/* Demais campos em grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="categoryRef" className="block text-sm font-medium text-gray-700">Categoria</label>
+              <select
+                name="categoryRef"
+                id="categoryRef"
+                value={formData.categoryRef}
                 onChange={handleChange}
-                className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-              />
-              <label htmlFor={`ing-${ing.id}`} className="ml-2 block text-sm text-gray-900">{ing.name}</label>
+                required
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-3 sm:text-sm"
+              >
+                <option value="">Selecione...</option>
+                {categories.map(cat => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Multi-Select Checkboxes (Allergens) */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Agentes Alergênicos</label>
-        <div className="mt-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-40 overflow-y-auto border p-2 rounded-md">
-          {allergens.map(alg => (
-            <div key={alg.id} className="flex items-center">
+            <div>
+              <label htmlFor="price" className="block text-sm font-medium text-gray-700">Valor (R$)</label>
               <input
-                type="checkbox"
-                id={`alg-${alg.id}`}
-                name="allergenicAgentRefs"
-                value={alg.id}
-                checked={formData.allergenicAgentRefs.includes(alg.id)}
+                type="number"
+                name="price"
+                id="price"
+                value={formData.price}
                 onChange={handleChange}
-                className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                required
+                min="0"
+                step="0.01"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-3 sm:text-sm"
               />
-              <label htmlFor={`alg-${alg.id}`} className="ml-2 block text-sm text-gray-900">{alg.name}</label>
             </div>
-          ))}
+
+            <div>
+              <label htmlFor="currentStock" className="block text-sm font-medium text-gray-700">Estoque Atual</label>
+              <input
+                type="number"
+                name="currentStock"
+                id="currentStock"
+                value={formData.currentStock}
+                onChange={handleChange}
+                required
+                min="0"
+                step="1"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-3 sm:text-sm"
+              />
+            </div>
+          </div>
+
+          {/* Descrição */}
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700">Descrição</label>
+            <textarea
+              name="description"
+              id="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows={3}
+              required
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 sm:text-sm"
+            />
+          </div>
+        </div>
+
+
+        {/* Toggles*/}
+        <div className="flex flex-col space-y-4">
+          {/* Disponível para venda */}
+          <div className="flex items-center space-x-4">
+            <label htmlFor="available" className="flex items-center cursor-pointer space-x-2">
+              <span className="text-sm text-gray-900">Disponível para Venda</span>
+              <input
+                id="available"
+                name="available"
+                type="checkbox"
+                checked={formData.available}
+                onChange={handleChange}
+                className="peer sr-only"
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-checked:bg-green-500 rounded-full relative transition duration-300 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
+            </label>
+          </div>
+
+
+          {/* Produto descontinuado */}
+          <div className="flex items-center space-x-4">
+            <label htmlFor="descontinued" className="flex items-center cursor-pointer space-x-2">
+              <span className="text-sm text-gray-900">Produto Descontinuado (Inativo)</span>
+              <input
+                id="descontinued"
+                name="descontinued"
+                type="checkbox"
+                checked={formData.descontinued}
+                onChange={handleChange}
+                className="peer sr-only"
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-checked:bg-red-500 rounded-full relative transition duration-300 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
+            </label>
+          </div>
+
+        </div>
+
+
+        {/* Ingredientes (lista vertical ordenada) */}
+        <div className="mt-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Ingredientes</label>
+          <div className="flex flex-col gap-2 max-h-40 overflow-y-auto border p-2 rounded-md">
+            {ingredients
+              .slice()
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map(ing => (
+                <div key={ing.id} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={`ing-${ing.id}`}
+                    name="ingredientRefs"
+                    value={ing.id}
+                    checked={formData.ingredientRefs.includes(ing.id)}
+                    onChange={handleChange}
+                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                  />
+                  <label htmlFor={`ing-${ing.id}`} className="ml-2 block text-sm text-gray-900">{ing.name}</label>
+                </div>
+              ))}
+          </div>
+        </div>
+
+        {/* Agentes Alergênicos (lista vertical ordenada) */}
+        <div className="mt-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Agentes Alergênicos</label>
+          <div className="flex flex-col gap-2 max-h-40 overflow-y-auto border p-2 rounded-md">
+            {allergens
+              .slice()
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map(alg => (
+                <div key={alg.id} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={`alg-${alg.id}`}
+                    name="allergenicAgentRefs"
+                    value={alg.id}
+                    checked={formData.allergenicAgentRefs.includes(alg.id)}
+                    onChange={handleChange}
+                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                  />
+                  <label htmlFor={`alg-${alg.id}`} className="ml-2 block text-sm text-gray-900">{alg.name}</label>
+                </div>
+              ))}
+          </div>
         </div>
       </div>
 
@@ -288,4 +388,3 @@ const ProductForm: React.FC<ProductFormProps> = ({
 };
 
 export default ProductForm;
-
